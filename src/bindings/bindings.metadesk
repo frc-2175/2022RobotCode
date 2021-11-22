@@ -1,4 +1,3 @@
-/*
 @include("<frc/Joystick.h>")
 io: {
   @class("frc::Joystick")
@@ -36,12 +35,12 @@ io: {
   }
 }
 
-
 @include("<cassert>")
-@include("<ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>")
-@include("<ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>")
-@include("<ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>")
+//@include("<ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>")
+//@include("<ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>")
+//@include("<ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>")
 @include("<frc/drive/DifferentialDrive.h>")
+@include("<frc/motorcontrol/MotorController.h>")
 @include("<units/time.h>")
 //@include('"rev/CANSparkMax.h"')
 motors: {
@@ -57,11 +56,12 @@ motors: {
     StopMotor();
   }
 
-  //@baseclass
-  //"frc::PIDOutput": {
-  //  PIDWrite(double output);
-  //}
+  @baseclass
+  "frc::PIDOutput": {
+    PIDWrite(double output);
+  }
 
+  /*
   @baseclass
   "ctre::phoenix::motorcontrol::can::BaseMotorController": {
     @converter("ctre::phoenix::motorcontrol::IMotorController") toIMotorController();
@@ -166,7 +166,7 @@ motors: {
   }
 
   @class("ctre::phoenix::motorcontrol::can::WPI_VictorSPX")
-  //@extends("frc::PIDOutput")
+  @extends("frc::PIDOutput")
   @extends("frc::MotorController")
   @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
   @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
@@ -180,7 +180,7 @@ motors: {
   }
 
   @class("ctre::phoenix::motorcontrol::can::WPI_TalonSRX")
-  //@extends("frc::PIDOutput")
+  @extends("frc::PIDOutput")
   @extends("frc::MotorController")
   @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
   @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
@@ -272,6 +272,7 @@ motors: {
     @cast int SetInverted(bool inverted);
     bool GetInverted();
   }
+  */
   
   @class("frc::DifferentialDrive")
   DifferentialDrive: {
@@ -285,7 +286,6 @@ motors: {
     ArcadeDrive(double xSpeed, double zRotation, bool squareInputs);
   }
 }
-
 
 @include("<frc/Solenoid.h>")
 @include("<frc/DoubleSolenoid.h>")
@@ -307,7 +307,6 @@ solenoids: {
   }
 }
 
-*/
 
 @include("<frc/Timer.h>")
 time: {
@@ -328,12 +327,12 @@ ahrs: {
     Reset();
   }
 } 
+*/
 
 @include("<frc/RobotBase.h>")
 robotbase: {
   bool IsReal() """    return frc::RobotBase::IsReal();""";
 }
-
 
 @include("<string_view>")
 @include("<wpi/span.h>")
@@ -349,4 +348,3 @@ dashboard: {
     @static PutBooleanArray("const char* keyName", "int* value", size_t size) """    frc::SmartDashboard::PutBooleanArray((std::string_view)keyName, wpi::span(value, size));""";
   }
 }
-*/

@@ -2,5 +2,47 @@
 
 local ffi = require("ffi")
 ffi.cdef[[
+void* Joystick_new(int port);
+double Joystick_GetX(void* _this);
+double Joystick_GetY(void* _this);
+double Joystick_GetZ(void* _this);
+double Joystick_GetTwist(void* _this);
+double Joystick_GetThrottle(void* _this);
+bool Joystick_GetTrigger(void* _this);
+bool Joystick_GetTriggerPressed(void* _this);
+bool Joystick_GetTriggerReleased(void* _this);
+bool Joystick_GetTop(void* _this);
+bool Joystick_GetTopPressed(void* _this);
+bool Joystick_GetTopReleased(void* _this);
+double Joystick_GetMagnitude(void* _this);
+double Joystick_GetDirectionRadians(void* _this);
+double Joystick_GetDirectionDegrees(void* _this);
+bool Joystick_GetRawButton(void* _this, int button);
+bool Joystick_GetRawButtonPressed(void* _this, int button);
+bool Joystick_GetRawButtonReleased(void* _this, int button);
+double Joystick_GetRawAxis(void* _this, int axis);
+int Joystick_GetPOV(void* _this);
+int Joystick_GetAxisCount(void* _this);
+int Joystick_GetPOVCount(void* _this);
+int Joystick_GetButtonCount(void* _this);
+const char* Joystick_GetName(void* _this);
+int Joystick_GetPort(void* _this);
+void Joystick_SetRumble(void* _this, int type, double value);
+void* DifferentialDrive_new(void* leftMotor, void* rightMotor);
+void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zRotation, bool squareInputs);
+void* Solenoid_new(int moduleType, int channel);
+void Solenoid_Set(void* _this, bool on);
+bool Solenoid_Get(void* _this);
+void* DoubleSolenoid_new(int moduleType, int forwardChannel, int reverseChannel);
+void* DoubleSolenoid_newWithModule(int moduleNumber, int moduleType, int forwardChannel, int reverseChannel);
+void DoubleSolenoid_Set(void* _this, int value);
+int DoubleSolenoid_Get(void* _this);
 double GetFPGATimestamp();
+bool IsReal();
+void SmartDashboard_PutNumber(const char* keyName, double value);
+void SmartDashboard_PutNumberArray( const char* keyName,  double* value, size_t size);
+void SmartDashboard_PutString(const char* keyName, const char* value);
+void SmartDashboard_PutStringArray( const char* keyName, const char * * value, size_t size);
+void SmartDashboard_PutBoolean(const char* keyName, bool value);
+void SmartDashboard_PutBooleanArray( const char* keyName,  int* value, size_t size);
 ]]
