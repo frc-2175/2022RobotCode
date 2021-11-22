@@ -116,8 +116,6 @@ model {
             // Enable run tasks for this component
             wpi.cpp.enableExternalTasks(it)
 
-            // Enable simulation for this component
-            wpi.sim.enable(it)
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
             wpi.cpp.vendor.cpp(it)
             wpi.cpp.deps.wpilib(it)
@@ -144,6 +142,8 @@ model {
 
             // Enable run tasks for this component
             wpi.cpp.enableExternalTasks(it)
+            
+            wpi.sim.enable(it)
 
             wpi.cpp.vendor.cpp(it)
             wpi.cpp.deps.wpilib(it)

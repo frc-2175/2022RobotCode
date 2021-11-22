@@ -27,6 +27,9 @@ setlocal
 @REM Removing `2>/dev/null` is not portable but it does work for this specific case,
 @REM and I think it just shuts up a warning.
 
+@REM You should probably run `./gradlew installRoboRIOToolchain -Ptoolchain-install-force`
+@REM at the start of every new season.
+
 set LUAJIT_PATH=LuaJIT-2.1
 set YEAR=2022
 set PATH=%PATH%;%USERPROFILE%\.gradle\toolchains\frc\%YEAR%\roborio\bin
