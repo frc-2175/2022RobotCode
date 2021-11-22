@@ -53,6 +53,44 @@ wpi.sim.addGui().defaultEnabled = true
 // Enable DS but not by default
 wpi.sim.addDriverstation()
 
+class FileDependencySet implements NativeDependencySet {
+    private FileCollection headerFiles;
+    private FileCollection linkFiles;
+    private FileCollection emptySet;
+
+    FileDependencySet(FileCollection files, FileCollection headerFiles, FileCollection emptySet) {
+        linkFiles = files
+        this.headerFiles = headerFiles
+        this.emptySet = emptySet
+    }
+
+    @Override
+    FileCollection getIncludeRoots() {
+        return headerFiles
+    }
+
+    @Override
+    FileCollection getLinkFiles() {
+        return linkFiles
+    }
+
+    @Override
+    FileCollection getRuntimeFiles() {
+        return emptySet
+    }
+}
+
+def luajit_athena = new FileDependencySet(
+    project.files("luajitTest/libluajit.a"),
+    project.files('luajitTest/include'),
+    project.files("luajitTest/libluajit.so"))
+
+def luajit_win64 = new FileDependencySet(
+    project.files("luajitTest/lua51.lib", "luajitTest/luajit.lib", "luajitTest/buildvm.lib", "luajitTest/minilua.lib"),
+    project.files('luajitTest/include'),
+    project.files("luajitTest/lua51.dll"))
+
+
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
@@ -68,6 +106,10 @@ model {
                 }
             }
 
+            binaries.all{
+                it.lib luajit_athena
+            }
+
             // Set deploy task to deploy this component
             deployArtifact.component = it
 
@@ -79,8 +121,6 @@ model {
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
             wpi.cpp.vendor.cpp(it)
             wpi.cpp.deps.wpilib(it)
-
-            wpi.cpp.deps.useLibrary(it, "luajit_athena")
         }
         simulatorProgram(NativeExecutableSpec) { 
             targetPlatform wpi.platforms.desktop
@@ -98,31 +138,15 @@ model {
                 }
             }
 
+            binaries.all{
+                it.lib luajit_win64
+            }
+
             // Enable run tasks for this component
             wpi.cpp.enableExternalTasks(it)
 
             wpi.cpp.vendor.cpp(it)
             wpi.cpp.deps.wpilib(it)
-
-            wpi.cpp.deps.useLibrary(it, "luajit_win64")
-        }
-    }
-    libraries {
-        // See the following for platform details: 
-        // https://github.com/wpilibsuite/native-utils/blob/main/ToolchainPlugin/src/main/java/edu/wpi/first/toolchain/NativePlatforms.java 
-        luajit_athena(jaci.gradle.nativedeps.NativeLib) { 
-            headerDirs << 'include' 
-            staticMatchers << '*.a'
-            dynamicMatchers << '*.so'
-            file = project.file("lib/luajit.zip")
-            targetPlatforms << wpi.platforms.roborio
-        }
-        luajit_win64(jaci.gradle.nativedeps.NativeLib) {
-            headerDirs << 'include'
-            staticMatchers << '*.lib'
-            dynamicMatchers << '*.dll'
-            file = project.file("lib/luajit.zip")
-            targetPlatforms << wpi.platforms.desktop
         }
     }
 }

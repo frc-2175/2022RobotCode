@@ -45,8 +45,8 @@ io: {
 //@include('"rev/CANSparkMax.h"')
 motors: {
   @baseclass
-  "frc::SpeedController": {
-    @converter("frc::SpeedController") toSpeedController();
+  "frc::MotorController": {
+    @converter("frc::MotorController") toSpeedController();
     Set(double value);
     SetVoltage(@cast("units::volt_t") double output); // TODO: Is it legal to simply cast a double to units::volt_t?
     double Get();
