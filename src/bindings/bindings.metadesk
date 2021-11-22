@@ -222,7 +222,6 @@ motors: {
         return (double)_result;""";
   }
 
-  /*
   @class("rev::CANSparkMax")
   @extends("frc::MotorController")
   SparkMax: {
@@ -273,7 +272,6 @@ motors: {
     @cast int SetInverted(bool inverted);
     bool GetInverted();
   }
-  */
   
   @class("frc::DifferentialDrive")
   DifferentialDrive: {
