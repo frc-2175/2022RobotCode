@@ -81,14 +81,14 @@ class FileDependencySet implements NativeDependencySet {
 }
 
 def luajit_athena = new FileDependencySet(
-    project.files("luajitTest/libluajit.a"),
-    project.files('luajitTest/include'),
-    project.files("luajitTest/libluajit.so"))
+    project.files("lib/libluajit.a"),
+    project.files('lib/include'),
+    project.files("lib/libluajit.so"))
 
 def luajit_win64 = new FileDependencySet(
-    project.files("luajitTest/lua51.lib", "luajitTest/luajit.lib", "luajitTest/buildvm.lib", "luajitTest/minilua.lib"),
-    project.files('luajitTest/include'),
-    project.files("luajitTest/lua51.dll"))
+    project.files("lib/lua51.lib", "lib/luajit.lib", "lib/buildvm.lib", "lib/minilua.lib"),
+    project.files('lib/include'),
+    project.files("lib/lua51.dll"))
 
 
 model {

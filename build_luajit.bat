@@ -9,7 +9,10 @@ setlocal
 @REM MingW-Win64-builds downloads from the link below, and installed version 8.1.0
 @REM for x86-64 with win32 threads and SJLJ exceptions.
 
-@REM http://mingw-w64.org/doku.php/download#mingw-builds
+@REM http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download
+
+@REM You may need to actually remove your existing at C:\msys64\mingw64 and replace
+@REM it with the new one you installed to get things to work.
 
 @REM Then make sure that you have a recent copy of Visual Studio installed. You MUST
 @REM run this script from a Visual Studio command prompt, and you MUST make sure that
@@ -60,13 +63,8 @@ pushd %LUAJIT_PATH%
         copy *.a dist
         copy *.so dist
     popd
-
-    @REM Make zip
-    pushd src\dist
-        tar -acf luajit.zip include *.lib *.dll *.a *.so
-    popd
 popd
 
-move %LUAJIT_PATH%\src\dist\luajit.zip lib
+xcopy %LUAJIT_PATH%\src\dist\ lib /q /e /y
 
 endlocal
