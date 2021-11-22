@@ -1,0 +1,348 @@
+@include("<frc/Joystick.h>")
+io: {
+  @class("frc::Joystick")
+  Joystick: {
+    @constructor new(int port);
+    double GetX();
+    double GetY();
+    double GetZ();
+    double GetTwist();
+    double GetThrottle();
+    bool GetTrigger();
+    bool GetTriggerPressed();
+    bool GetTriggerReleased();
+    bool GetTop();
+    bool GetTopPressed();
+    bool GetTopReleased();
+    double GetMagnitude();
+    double GetDirectionRadians();
+    double GetDirectionDegrees();
+
+    // GenericHID
+    bool GetRawButton(int button);
+    bool GetRawButtonPressed(int button);
+    bool GetRawButtonReleased(int button);
+    double GetRawAxis(int axis);
+    int GetPOV(); // Note that this takes an optional argument in case you somehow have more than one POV. I'm leaving that argument out.
+    int GetAxisCount();
+    int GetPOVCount();
+    int GetButtonCount();
+    "const char*" GetName() """    auto _result = ((frc::Joystick*)_this)
+        ->GetName();
+    return _result.c_str();""";
+    int GetPort();
+    SetRumble(@cast("frc::GenericHID::RumbleType") int type, double value);
+  }
+}
+
+
+@include("<cassert>")
+@include("<ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>")
+@include("<ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>")
+@include("<ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>")
+@include("<frc/drive/DifferentialDrive.h>")
+@include("<units/time.h>")
+//@include('"rev/CANSparkMax.h"')
+motors: {
+  @baseclass
+  "frc::SpeedController": {
+    @converter("frc::SpeedController") toSpeedController();
+    Set(double value);
+    SetVoltage(@cast("units::volt_t") double output); // TODO: Is it legal to simply cast a double to units::volt_t?
+    double Get();
+    @alias("SetInverted") SetInvertedBool(bool isInverted);
+    @alias("GetInverted") bool GetInvertedBool();
+    Disable();
+    StopMotor();
+  }
+
+  //@baseclass
+  //"frc::PIDOutput": {
+  //  PIDWrite(double output);
+  //}
+
+  @baseclass
+  "ctre::phoenix::motorcontrol::can::BaseMotorController": {
+    @converter("ctre::phoenix::motorcontrol::IMotorController") toIMotorController();
+    @alias("Set") SetWithControlMode(@cast("ctre::phoenix::motorcontrol::ControlMode") int mode, double value);
+    @alias("Set") SetWithControlModeAndDemands(@cast("ctre::phoenix::motorcontrol::ControlMode") int mode, double demand0, @cast("ctre::phoenix::motorcontrol::DemandType") int demand1Type, double demand1);
+    NeutralOutput();
+    SetNeutralMode(@cast("ctre::phoenix::motorcontrol::NeutralMode") int neutralMode);
+    SetSensorPhase(bool PhaseSensor);
+    SetInverted(@cast("ctre::phoenix::motorcontrol::InvertType") int invertType);
+    int ConfigFactoryDefault(int timeoutMs);
+    int ConfigOpenloopRamp(double secondsFromNeutralToFull, int timeoutMs);
+    int ConfigClosedloopRamp(double secondsFromNeutralToFull, int timeoutMs);
+    int ConfigPeakOutputForward(double percentOut, int timeoutMs);
+    int ConfigPeakOutputReverse(double percentOut, int timeoutMs);
+    int ConfigNominalOutputForward(double percentOut, int timeoutMs);
+    int ConfigNominalOutputReverse(double percentOut, int timeoutMs);
+    int ConfigNeutralDeadband(double percentDeadband, int timeoutMs);
+    int ConfigVoltageCompSaturation(double voltage, int timeoutMs);
+    int ConfigVoltageMeasurementFilter(int filterWindowSamples, int timeoutMs);
+    EnableVoltageCompensation(bool enable);
+    bool IsVoltageCompensationEnabled();
+    double GetBusVoltage();
+    double GetMotorOutputPercent();
+    double GetMotorOutputVoltage();
+    double GetTemperature();
+    int ConfigSelectedFeedbackCoefficient(double coefficient, int pidIdx, int timeoutMs);
+    int ConfigSensorTerm(@cast("ctre::phoenix::motorcontrol::SensorTerm") int sensorTerm, @cast("ctre::phoenix::motorcontrol::FeedbackDevice") int feedbackDevice);
+    double GetSelectedSensorPosition(int pidIdx);
+    double GetSelectedSensorVelocity(int pidIdx);
+    int SetSelectedSensorPosition(double sensorPos, int pidIdx, int timeoutMs);
+    int SetControlFramePeriod(@cast("ctre::phoenix::motorcontrol::ControlFrame") int frame, int periodMs);
+    OverrideLimitSwitchesEnable(bool enable);
+    int ConfigForwardSoftLimitThreshold(double forwardSensorLimit, int timeoutMs);
+    int ConfigReverseSoftLimitThreshold(double reverseSensorLimit, int timeoutMs);
+    OverrideSoftLimitsEnable(bool enable);
+    int Config_kP(int slotIdx, double value, int timeoutMs);
+    int Config_kI(int slotIdx, double value, int timeoutMs);
+    int Config_kD(int slotIdx, double value, int timeoutMs);
+    int Config_kF(int slotIdx, double value, int timeoutMs);
+    int Config_IntegralZone(int slotIdx, double value, int timeoutMs);
+    int ConfigAllowableClosedloopError(int slotIdx, double allowableCloseLoopError, int timeoutMs);
+    int ConfigMaxIntegralAccumulator(int slotIdx, double iaccum, int timeoutMs);
+    int ConfigClosedLoopPeakOutput(int slotIdx, double percentOut, int timeoutMs);
+    int ConfigClosedLoopPeriod(int slotIdx, int loopTimeMs, int timeoutMs);
+    int ConfigAuxPIDPolarity(bool invert, int timeoutMs);
+    int SetIntegralAccumulator(double iaccum, int pidIdx, int timeoutMs);
+    double GetClosedLoopError(int pidIdx);
+    double GetIntegralAccumulator(int pidIdx);
+    double GetErrorDerivative(int pidIdx);
+    int SelectProfileSlot(int slotIdx, int pidIdx);
+    double GetClosedLoopTarget(int pidIdx);
+    double GetActiveTrajectoryPosition(int pidIdx);
+    double GetActiveTrajectoryArbFeedFwd(int pidIdx);
+    int ConfigMotionCruiseVelocity(double sensorUnitsPer100ms, int timeoutMs);
+    int ConfigMotionAcceleration(double sensorUnitsPer100msPerSec, int timeoutMs);
+    int ConfigMotionSCurveStrength(int curveStrength, int timeoutMs);
+    int ClearMotionProfileTrajectories();
+    int GetMotionProfileTopLevelBufferCount();
+    // I am definitely not porting other motion profile stuff right now
+    int ConfigFeedbackNotContinuous(bool feedbackNotContinuous, int timeoutMs);
+    int ConfigClearPositionOnLimitF(bool clearPositionOnLimitF, int timeoutMs);
+    int ConfigClearPositionOnLimitR(bool clearPositionOnLimitR, int timeoutMs);
+    int ConfigClearPositionOnQuadIdx(bool clearPositionOnQuadIdx, int timeoutMs);
+    int ConfigLimitSwitchDisableNeutralOnLOS(bool limitSwitchDisableNeutralOnLOS, int timeoutMs);
+    int ConfigSoftLimitDisableNeutralOnLOS(bool softLimitDisableNeutralOnLOS, int timeoutMs);
+    int ConfigPulseWidthPeriod_EdgesPerRot(int pulseWidthPeriod_EdgesPerRot, int timeoutMs);
+    int ConfigPulseWidthPeriod_FilterWindowSz(int pulseWidthPeriod_FilterWindowSz, int timeoutMs);
+    int GetLastError();
+    // Faults?? Another time
+    int GetFirmwareVersion();
+    bool HasResetOccurred();
+    // We don't need custom signal stuff
+    int GetBaseID();
+    @cast int GetControlMode();
+    Follow(@deref @cast("ctre::phoenix::motorcontrol::IMotorController*") void* masterToFollow);
+    // Not supporting the aux PID variant of Follow right now
+    ValueUpdated();
+  }
+
+  @baseclass
+  "ctre::phoenix::motorcontrol::can::BaseTalon": {
+    double GetOutputCurrent();
+    double GetStatorCurrent();
+    double GetSupplyCurrent();
+    int ConfigVelocityMeasurementPeriod(@cast("ctre::phoenix::motorcontrol::VelocityMeasPeriod") int period, int timeoutMs);
+    int ConfigVelocityMeasurementWindow(int windowSize, int timeoutMs);
+    int ConfigForwardLimitSwitchSource(@cast("ctre::phoenix::motorcontrol::LimitSwitchSource") int limitSwitchSource, @cast("ctre::phoenix::motorcontrol::LimitSwitchNormal") int normalOpenOrClose, int timeoutMs);
+    int ConfigReverseLimitSwitchSource(@cast("ctre::phoenix::motorcontrol::LimitSwitchSource") int limitSwitchSource, @cast("ctre::phoenix::motorcontrol::LimitSwitchNormal") int normalOpenOrClose, int timeoutMs);
+    int IsFwdLimitSwitchClosed();
+    int IsRevLimitSwitchClosed();
+  }
+
+  @baseclass
+  "ctre::phoenix::motorcontrol::can::WPI_BaseMotorController": {
+    // GetDescription
+    Feed();
+    SetExpiration(@cast("units::time::second_t") double expirationTime);
+    bool IsAlive();
+    SetSafetyEnabled(bool enabled);
+    bool IsSafetyEnabled();
+    // GetMotorSafety
+  }
+
+  @class("ctre::phoenix::motorcontrol::can::WPI_VictorSPX")
+  //@extends("frc::PIDOutput")
+  @extends("frc::SpeedController")
+  @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
+  @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
+  VictorSPX: {
+    @constructor new(int deviceNumber);
+    @alias("Set") SetWithVictorSPXControlMode(@cast("ctre::phoenix::motorcontrol::VictorSPXControlMode") int mode, double value);
+    @alias("Set") SetWithVictorSPXControlModeAndDemands(@cast("ctre::phoenix::motorcontrol::VictorSPXControlMode") int mode, double demand0, @cast("ctre::phoenix::motorcontrol::DemandType") int demand1Type, double demand1);
+    double GetExpiration() """auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
+        ->GetExpiration();
+        return (double)_result;""";
+  }
+
+  @class("ctre::phoenix::motorcontrol::can::WPI_TalonSRX")
+  //@extends("frc::PIDOutput")
+  @extends("frc::SpeedController")
+  @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
+  @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
+  @extends("ctre::phoenix::motorcontrol::can::BaseTalon")
+  TalonSRX: {
+    @constructor new(int deviceNumber);
+    @alias("Set") SetWithTalonSRXControlMode(@cast("ctre::phoenix::motorcontrol::TalonSRXControlMode") int mode, double value);
+    @alias("Set") SetWithTalonSRXControlModeAndDemands(@cast("ctre::phoenix::motorcontrol::TalonSRXControlMode") int mode, double demand0, @cast("ctre::phoenix::motorcontrol::DemandType") int demand1Type, double demand1);
+    int ConfigSelectedFeedbackSensor(@cast("ctre::phoenix::motorcontrol::FeedbackDevice") int feedbackDevice, int pidIdx, int timeoutMs);
+    // ConfigSupplyCurrentLimit
+    int ConfigPeakCurrentLimit(int amps, int timeoutMs);
+    int ConfigPeakCurrentDuration(int milliseconds, int timeoutMs);
+    int ConfigContinuousCurrentLimit(int amps, int timeoutMs);
+    EnableCurrentLimit(bool enable);
+    double GetExpiration() """auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
+        ->GetExpiration();
+        return (double)_result;""";
+  }
+
+  @class("ctre::phoenix::motorcontrol::can::WPI_TalonFX")
+  //@extends("frc::PIDOutput")
+  @extends("frc::SpeedController")
+  @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
+  @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
+  @extends("ctre::phoenix::motorcontrol::can::BaseTalon")
+  TalonFX: {
+    @constructor new(int deviceNumber);
+    @alias("Set") SetWithTalonFXControlMode(@cast("ctre::phoenix::motorcontrol::TalonFXControlMode") int mode, double value);
+    @alias("Set") SetWithTalonFXControlModeAndDemands(@cast("ctre::phoenix::motorcontrol::TalonFXControlMode") int mode, double demand0, @cast("ctre::phoenix::motorcontrol::DemandType") int demand1Type, double demand1);
+    @alias("SetInverted") SetInvertedTalonFX(@cast("ctre::phoenix::motorcontrol::TalonFXInvertType") int invertType);
+    ConfigStatorCurrentLimit(bool enable, double currentLimit) """
+    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
+        ->ConfigStatorCurrentLimit(ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration(enable, currentLimit, 0, 0));
+    """;
+    int ConfigSelectedFeedbackSensor(@cast("ctre::phoenix::motorcontrol::FeedbackDevice") int feedbackDevice, int pidIdx, int timeoutMs);
+    // @alias("ConfigSelectedFeedbackSensor") int ConfigSelectedFeedbackSensorTalonFX(@cast("ctre::phoenix::motorcontrol::TalonFXFeedbackDevice") int feedbackDevice, int pidIdx, int timeoutMs);
+    double GetExpiration() """auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
+        ->GetExpiration();
+        return (double)_result;""";
+  }
+
+  //@class("rev::CANSparkMax")
+  //@extends("frc::SpeedController")
+  //SparkMax: {
+  //  @constructor new(int deviceID, @cast("rev::CANSparkMax::MotorType") int type);
+//
+  //  @alloc("rev::CANEncoder") @cast void* GetEncoder();
+  //  // not bothering with alternate encoder
+  //  // current limit stuff seems to be good by default, not binding it right now
+  //  @cast int SetIdleMode(@cast("rev::CANSparkMax::IdleMode") int mode);
+  //  @cast int GetIdleMode();
+  //  @cast int EnableVoltageCompensation(double nominalVoltage);
+  //  @cast int DisableVoltageCompensation();
+  //  double GetVoltageCompensationNominalVoltage();
+  //  @cast int SetOpenLoopRampRate(double rate);
+  //  @cast int SetClosedLoopRampRate(double rate);
+  //  @cast int Follow(@cast("rev::CANSparkMax&") void* leader, bool invert);
+  //  // don't need the other follow mode
+  //  bool IsFollower();
+  //  // skipping faults
+  //  double GetBusVoltage();
+  //  double GetAppliedOutput();
+  //  double GetOutputCurrent();
+  //  double GetMotorTemperature();
+  //  // faults? flash?
+  //  @cast int SetCANTimeout(int milliseconds);
+  //  @cast int EnableSoftLimit(@cast("rev::CANSparkMax::SoftLimitDirection") int direction, bool enable);
+  //  bool IsSoftLimitEnabled(@cast("rev::CANSparkMax::SoftLimitDirection") int direction);
+  //  @cast int SetSoftLimit(@cast("rev::CANSparkMax::SoftLimitDirection") int direction, double limit);
+  //  double GetSoftLimit(@cast("rev::CANSparkMax::SoftLimitDirection") int direction);
+  //  @cast int GetLastError();
+//
+  //  int GetFirmwareVersion();
+  //  // uh oh, strings
+  //  int GetDeviceId();
+  //  // we don't expose the ability to set motor types here - use the GUI
+  //  @cast int RestoreFactoryDefaults(bool persist);
+  //}
+//
+  //@class("rev::CANEncoder")
+  //SparkMaxEncoder: {
+  //  double GetPosition();
+  //  double GetVelocity();
+  //  @cast int SetPosition(double position);
+  //  @cast int SetPositionConversionFactor(double factor);
+  //  @cast int SetVelocityConversionFactor(double factor);
+  //  double GetPositionConversionFactor();
+  //  double GetVelocityConversionFactor();
+  //  @cast int SetInverted(bool inverted);
+  //  bool GetInverted();
+  //}
+  
+  @class("frc::DifferentialDrive")
+  DifferentialDrive: {
+    @constructor new(void* leftMotor, void* rightMotor) """
+      assert(leftMotor);
+      assert(rightMotor);
+      auto l = (frc::SpeedController*)leftMotor;
+      auto r = (frc::SpeedController*)rightMotor;
+      return new frc::DifferentialDrive(*l, *r);
+    """;
+    ArcadeDrive(double xSpeed, double zRotation, bool squareInputs);
+  }
+}
+
+
+@include("<frc/Solenoid.h>")
+@include("<frc/DoubleSolenoid.h>")
+@include('"frc/PneumaticsModuleType.h"')
+solenoids: {
+  @class("frc::Solenoid")
+  Solenoid: {
+    @constructor new(@cast("frc::PneumaticsModuleType") int moduleType, int channel);
+    Set(bool on);
+    bool Get();
+  }
+
+  @class("frc::DoubleSolenoid")
+  DoubleSolenoid: {
+    @constructor new(@cast("frc::PneumaticsModuleType") int moduleType, int forwardChannel, int reverseChannel);
+    @constructor newWithModule(int moduleNumber, @cast("frc::PneumaticsModuleType") int moduleType, int forwardChannel, int reverseChannel);
+    Set(@cast("frc::DoubleSolenoid::Value") int value);
+    int Get();
+  }
+}
+
+
+@include("<frc/Timer.h>")
+time: {
+  double GetFPGATimestamp() """    return (double)frc::Timer::GetFPGATimestamp();
+  """;
+}
+
+@include("<frc/SPI.h>")
+@include('"AHRS.h"')
+ahrs: {
+  @class("AHRS")
+  AHRS: {
+    // if i'm getting this right, ports just go to an enum
+    // the port we will be using(kMXP) is set to 1. I'll add this enum as a table in lua somewhere
+    @constructor new(@cast("frc::SPI::Port") int value);
+    float GetPitch();
+    Reset();
+  }
+} 
+
+@include("<frc/RobotBase.h>")
+robotbase: {
+  bool IsReal() """    return frc::RobotBase::IsReal();""";
+}
+
+
+@include("<string_view>")
+@include("<wpi/span.h>")
+@include("<frc/smartdashboard/SmartDashboard.h>")
+dashboard: {
+  @class("frc::SmartDashboard")
+  SmartDashboard: {
+    @static PutNumber(@cast("std::string_view") "const char*" keyName, double value);
+    @static PutNumberArray("const char* keyName", "double* value", size_t size) """    frc::SmartDashboard::PutNumberArray((std::string_view)keyName, wpi::span(value, size));""";
+    @static PutString(@cast("std::string_view")"const char*" keyName, @cast("std::string_view")"const char*" value);
+    @static PutStringArray("const char* keyName", "const char * " *value, size_t size) """    frc::SmartDashboard::PutStringArray((std::string_view)keyName, wpi::span(std::vector<std::string>(value, value + size)));""";
+    @static PutBoolean(@cast("std::string_view")"const char*" keyName, bool value);
+    @static PutBooleanArray("const char* keyName", "int* value", size_t size) """    frc::SmartDashboard::PutBooleanArray((std::string_view)keyName, wpi::span(value, size));""";
+  }
+}
