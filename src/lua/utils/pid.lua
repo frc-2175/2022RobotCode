@@ -21,7 +21,7 @@ function NewPIDController(p, i, d)
             local i = 0
             if shouldRunIntegral then
                 if threshold == 0 or (input < (threshold + setpoint) and input > (setpoint - threshold)) then
-                    integral = integral + dt * error
+                    integral = integral + self.dt * error
                 else
                     integral = 0
                 end
@@ -29,10 +29,10 @@ function NewPIDController(p, i, d)
                 shouldRunIntegral = true
             end
             local d
-            if previousError == nil or dt == 0 then
+            if previousError == nil or self.dt == 0 then
                 d = 0
             else
-                d = ((error - previousError) / dt) * kd
+                d = ((error - previousError) / self.dt) * self.kd
             end
             previousError = error
             return p + i + d

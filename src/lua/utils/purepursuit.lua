@@ -2,6 +2,7 @@ require("utils.vector")
 require("utils.math")
 require("utils.pid")
 require("wpilib.ahrs")
+require("wpilib.motors")
 
 local previousClosestPoint = 0;
 local purePursuitPID = NewPIDController(0.02, 0, 0.002);
@@ -82,9 +83,9 @@ function PurePursuit(pathResult, isBackwards)
     local turnValue = purePursuitPID:pid(-angle, 0)
     local speed = GetTrapezoidSpeed(0.5, 0.75, 0.5, pathResult.numberOfActualPoints, 4, 20, indexOfClosestPoint)
     if isBackwards then
-        blendedDrive(-speed, -turnValue, false)
+        DifferentialDrive:arcadeDrive(-speed, -turnValue, false)
     else
-        blendedDrive(speed, turnValue, false)
+        DifferentialDrive:arcadeDrive(speed, turnValue, false)
     end
     previousClosestPoint = indexOfClosestPoint
 

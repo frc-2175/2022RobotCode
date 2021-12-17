@@ -11,7 +11,7 @@
 ---@param t number
 ---@return number blendedValue
 function lerp(a, b, t)
-    return (1 - t) * a + t * b
+	return (1 - t) * a + t * b
 end
 
 --- Returns the sign of the input number `n`
@@ -23,11 +23,11 @@ end
 ---@param n number
 ---@return number sign
 function sign(n)
-    local val = 0
-    if n > 0 then
-        val = 1
-    elseif n < 0 then
-        val = -1
-    end
-    return val
+	local val = 0
+	if n > 0 then
+		val = 1
+	elseif n < 0 then
+		val = -1
+	end
+	return val
 end

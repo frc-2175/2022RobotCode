@@ -1,7 +1,5 @@
 local ffi = require("ffi")
 
-getFPGATimestamp = ffi.C.GetFPGATimestamp()
+getFPGATimestamp = ffi.C.GetFPGATimestamp
 
-function getTimeSeconds()
-    return ffi.C.GetFPGATimestamp()
-end
+getTimeSeconds = ffi.C.GetFPGATimestamp
