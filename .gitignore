@@ -155,3 +155,10 @@ gradle-app.setting
 bin/
 imgui.ini
 
+simgui*.json
+
+simulator/**/*.import
+simulator/bin
+
+# .obj files in the simulator are actually 3D models, not C++ object files
+!simulator/**/*.obj

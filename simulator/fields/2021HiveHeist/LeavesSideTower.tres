@@ -1,0 +1,8 @@
+[gd_resource type="SpatialMaterial" format=2]
+
+[resource]
+albedo_color = Color( 0.3775, 0.6, 0.066, 1 )
+roughness = 0.81
+clearcoat_enabled = true
+clearcoat = 1.0
+clearcoat_gloss = 1.0

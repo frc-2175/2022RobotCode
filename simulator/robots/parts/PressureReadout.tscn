@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/SIsilicon.3d.text/label_3d.gd" type="Script" id=1]
+[ext_resource path="res://robots/parts/PressureReadout.gd" type="Script" id=2]
+
+
+[node name="PressureReadout" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="Label3D" type="Spatial" parent="."]
+transform = Transform( 0.0950131, 0, 0, 0, 0.0950131, 0, 0, 0, 0.0950131, 0, 0, 0 )
+script = ExtResource( 1 )
+text = "0 psi"
+text_size = 1.0
+font = null
+align = 3
+color = Color( 0, 0, 0, 1 )
+metallic = 0.0
+roughness = 0.5
+emission_color = Color( 1, 1, 1, 1 )
+emission_strength = 0.0
+extrude = 0.0
+max_steps = 256
+step_size = 1.0

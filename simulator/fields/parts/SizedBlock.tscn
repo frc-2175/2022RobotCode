@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://fields/parts/SizedBlock.gd" type="Script" id=1]
+
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 0.3048, 0.1524, 0.3048 )
+
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0.792157, 0.215686, 0.215686, 1 )
+
+[sub_resource type="CubeMesh" id=2]
+material = SubResource( 3 )
+
+[node name="SizedBlock" type="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.360689, 0.543822, 0 )
+script = ExtResource( 1 )
+color = Color( 0.792157, 0.215686, 0.215686, 1 )
+
+[node name="Collision" type="CollisionShape" parent="."]
+shape = SubResource( 1 )
+
+[node name="Mesh" type="MeshInstance" parent="."]
+transform = Transform( 0.3048, 0, 0, 0, 0.1524, 0, 0, 0, 0.3048, 0, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = null

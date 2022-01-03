@@ -1,0 +1,608 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/models/chain.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://assets/materials/SimpleSteelMaterial.tres" type="Material" id=2]
+
+[sub_resource type="GDScript" id=8]
+script/source = "extends Spatial
+
+export(NodePath) var start_node
+export(NodePath) var end_node
+
+onready var start_joint: Joint = $StartJoint
+onready var end_joint: Joint = $EndJoint
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	if start_node:
+		start_joint.set_node_a(start_node)
+		start_joint.set_node_b(@\"Link1\")
+	if end_node:
+		end_joint.set_node_a(@\"Link24\")
+		end_joint.set_node_b(end_node)
+"
+
+[sub_resource type="ConvexPolygonShape" id=7]
+points = PoolVector3Array( 0.041733, 0, -0.0044, 0.042312, 0, 0, 0.041215, 0.002, -0.004261, 0.041776, 0.002, 0, 0.039801, 0.003464, -0.003882, 0.040312, 0.003464, 0, 0.037869, 0.004, -0.003365, 0.038312, 0.004, 0, 0.035937, 0.003464, -0.002847, 0.036312, 0.003464, 0, 0.034523, 0.002, -0.002468, 0.034848, 0.002, 0, 0.034005, 0, -0.002329, 0.034312, 0, 0, 0.034005, 0, -0.002329, 0.034312, 0, 0, 0.034523, -0.002, -0.002468, 0.034848, -0.002, 0, 0.035937, -0.003464, -0.002847, 0.036312, -0.003464, 0, 0.037869, -0.004, -0.003365, 0.038312, -0.004, 0, 0.039801, -0.003464, -0.003882, 0.040312, -0.003464, 0, 0.041215, -0.002, -0.004261, 0.041776, -0.002, 0, 0.040034, 0, -0.0085, 0.03957, 0.002, -0.008232, 0.038302, 0.003464, -0.0075, 0.03657, 0.004, -0.0065, 0.034838, 0.003464, -0.0055, 0.03357, 0.002, -0.004768, 0.033106, 0, -0.0045, 0.033106, 0, -0.0045, 0.03357, -0.002, -0.004768, 0.034838, -0.003464, -0.0055, 0.03657, -0.004, -0.0065, 0.038302, -0.003464, -0.0075, 0.03957, -0.002, -0.008232, 0.037333, 0, -0.012021, 0.036953, 0.002, -0.011642, 0.035918, 0.003464, -0.010607, 0.034504, 0.004, -0.009192, 0.03309, 0.003464, -0.007778, 0.032055, 0.002, -0.006743, 0.031676, 0, -0.006364, 0.031676, 0, -0.006364, 0.032055, -0.002, -0.006743, 0.03309, -0.003464, -0.007778, 0.034504, -0.004, -0.009192, 0.035918, -0.003464, -0.010607, 0.036953, -0.002, -0.011642, 0.033812, 0, -0.014722, 0.033544, 0.002, -0.014258, 0.032812, 0.003464, -0.01299, 0.031812, 0.004, -0.011258, 0.030812, 0.003464, -0.009526, 0.030079, 0.002, -0.008258, 0.029812, 0, -0.007794, 0.029812, 0, -0.007794, 0.030079, -0.002, -0.008258, 0.030812, -0.003464, -0.009526, 0.031812, -0.004, -0.011258, 0.032812, -0.003464, -0.01299, 0.033544, -0.002, -0.014258, 0.029711, 0, -0.016421, 0.029573, 0.002, -0.015903, 0.029194, 0.003464, -0.014489, 0.028676, 0.004, -0.012557, 0.028159, 0.003464, -0.010625, 0.02778, 0.002, -0.009211, 0.027641, 0, -0.008693, 0.027641, 0, -0.008693, 0.02778, -0.002, -0.009211, 0.028159, -0.003464, -0.010625, 0.028676, -0.004, -0.012557, 0.029194, -0.003464, -0.014489, 0.029573, -0.002, -0.015903, 0.025312, 0, -0.017, 0.025312, 0.002, -0.016464, 0.025312, 0.003464, -0.015, 0.025312, 0.004, -0.013, 0.025312, 0.003464, -0.011, 0.025312, 0.002, -0.009536, 0.025312, 0, -0.009, 0.025312, 0, -0.009, 0.025312, -0.002, -0.009536, 0.025312, -0.003464, -0.011, 0.025312, -0.004, -0.013, 0.025312, -0.003464, -0.015, 0.025312, -0.002, -0.016464, -0.029352, 0, -0.016421, -0.025182, 0, -0.017, -0.029214, 0.002, -0.015903, -0.025182, 0.002, -0.016464, -0.028835, 0.003464, -0.014489, -0.025182, 0.003464, -0.015, -0.028317, 0.004, -0.012557, -0.025182, 0.004, -0.013, -0.0278, 0.003464, -0.010625, -0.025182, 0.003464, -0.011, -0.027421, 0.002, -0.009211, -0.025182, 0.002, -0.009536, -0.027282, 0, -0.008693, -0.025182, 0, -0.009, -0.027282, 0, -0.008693, -0.025182, 0, -0.009, -0.027421, -0.002, -0.009211, -0.025182, -0.002, -0.009536, -0.0278, -0.003464, -0.010625, -0.025182, -0.003464, -0.011, -0.028317, -0.004, -0.012557, -0.025182, -0.004, -0.013, -0.028835, -0.003464, -0.014489, -0.025182, -0.003464, -0.015, -0.029214, -0.002, -0.015903, -0.025182, -0.002, -0.016464, -0.033453, 0, -0.014722, -0.033185, 0.002, -0.014258, -0.032453, 0.003464, -0.01299, -0.031453, 0.004, -0.011258, -0.030453, 0.003464, -0.009526, -0.02972, 0.002, -0.008258, -0.029453, 0, -0.007794, -0.029453, 0, -0.007794, -0.02972, -0.002, -0.008258, -0.030453, -0.003464, -0.009526, -0.031453, -0.004, -0.011258, -0.032453, -0.003464, -0.01299, -0.033185, -0.002, -0.014258, -0.036974, 0, -0.012021, -0.036594, 0.002, -0.011642, -0.035559, 0.003464, -0.010607, -0.034145, 0.004, -0.009192, -0.032731, 0.003464, -0.007778, -0.031696, 0.002, -0.006743, -0.031317, 0, -0.006364, -0.031317, 0, -0.006364, -0.031696, -0.002, -0.006743, -0.032731, -0.003464, -0.007778, -0.034145, -0.004, -0.009192, -0.035559, -0.003464, -0.010607, -0.036594, -0.002, -0.011642, -0.039675, 0, -0.0085, -0.039211, 0.002, -0.008232, -0.037943, 0.003464, -0.0075, -0.036211, 0.004, -0.0065, -0.034479, 0.003464, -0.0055, -0.033211, 0.002, -0.004768, -0.032747, 0, -0.0045, -0.032747, 0, -0.0045, -0.033211, -0.002, -0.004768, -0.034479, -0.003464, -0.0055, -0.036211, -0.004, -0.0065, -0.037943, -0.003464, -0.0075, -0.039211, -0.002, -0.008232, -0.041374, 0, -0.0044, -0.040856, 0.002, -0.004261, -0.039442, 0.003464, -0.003882, -0.03751, 0.004, -0.003365, -0.035578, 0.003464, -0.002847, -0.034164, 0.002, -0.002468, -0.033646, 0, -0.002329, -0.033646, 0, -0.002329, -0.034164, -0.002, -0.002468, -0.035578, -0.003464, -0.002847, -0.03751, -0.004, -0.003365, -0.039442, -0.003464, -0.003882, -0.040856, -0.002, -0.004261, -0.041953, 0, 0, -0.041417, 0.002, 0, -0.039953, 0.003464, 0, -0.037953, 0.004, 0, -0.035953, 0.003464, 0, -0.034489, 0.002, 0, -0.033953, 0, 0, -0.033953, 0, 0, -0.034489, -0.002, 0, -0.035953, -0.003464, 0, -0.037953, -0.004, 0, -0.039953, -0.003464, 0, -0.041417, -0.002, 0, -0.041374, 0, 0.0044, -0.041953, 0, 0, -0.040856, 0.002, 0.004261, -0.041417, 0.002, 0, -0.039442, 0.003464, 0.003882, -0.039953, 0.003464, 0, -0.03751, 0.004, 0.003365, -0.037953, 0.004, 0, -0.035578, 0.003464, 0.002847, -0.035953, 0.003464, 0, -0.034164, 0.002, 0.002468, -0.034489, 0.002, 0, -0.033646, 0, 0.002329, -0.033953, 0, 0, -0.033646, 0, 0.002329, -0.033953, 0, 0, -0.034164, -0.002, 0.002468, -0.034489, -0.002, 0, -0.035578, -0.003464, 0.002847, -0.035953, -0.003464, 0, -0.03751, -0.004, 0.003365, -0.037953, -0.004, 0, -0.039442, -0.003464, 0.003882, -0.039953, -0.003464, 0, -0.040856, -0.002, 0.004261, -0.041417, -0.002, 0, -0.039675, 0, 0.0085, -0.039211, 0.002, 0.008232, -0.037943, 0.003464, 0.0075, -0.036211, 0.004, 0.0065, -0.034479, 0.003464, 0.0055, -0.033211, 0.002, 0.004768, -0.032747, 0, 0.0045, -0.032747, 0, 0.0045, -0.033211, -0.002, 0.004768, -0.034479, -0.003464, 0.0055, -0.036211, -0.004, 0.0065, -0.037943, -0.003464, 0.0075, -0.039211, -0.002, 0.008232, -0.036974, 0, 0.012021, -0.036594, 0.002, 0.011642, -0.035559, 0.003464, 0.010607, -0.034145, 0.004, 0.009192, -0.032731, 0.003464, 0.007778, -0.031696, 0.002, 0.006743, -0.031317, 0, 0.006364, -0.031317, 0, 0.006364, -0.031696, -0.002, 0.006743, -0.032731, -0.003464, 0.007778, -0.034145, -0.004, 0.009192, -0.035559, -0.003464, 0.010607, -0.036594, -0.002, 0.011642, -0.033453, 0, 0.014722, -0.033185, 0.002, 0.014258, -0.032453, 0.003464, 0.01299, -0.031453, 0.004, 0.011258, -0.030453, 0.003464, 0.009526, -0.02972, 0.002, 0.008258, -0.029453, 0, 0.007794, -0.029453, 0, 0.007794, -0.02972, -0.002, 0.008258, -0.030453, -0.003464, 0.009526, -0.031453, -0.004, 0.011258, -0.032453, -0.003464, 0.01299, -0.033185, -0.002, 0.014258, -0.029352, 0, 0.016421, -0.029214, 0.002, 0.015903, -0.028835, 0.003464, 0.014489, -0.028317, 0.004, 0.012557, -0.0278, 0.003464, 0.010625, -0.027421, 0.002, 0.009211, -0.027282, 0, 0.008693, -0.027282, 0, 0.008693, -0.027421, -0.002, 0.009211, -0.0278, -0.003464, 0.010625, -0.028317, -0.004, 0.012557, -0.028835, -0.003464, 0.014489, -0.029214, -0.002, 0.015903, 0.025312, 0, 0.017, -0.025182, 0, 0.017, 0.025312, 0.002, 0.016464, -0.025182, 0.002, 0.016464, 0.025312, 0.003464, 0.015, -0.025182, 0.003464, 0.015, 0.025312, 0.004, 0.013, -0.025182, 0.004, 0.013, 0.025312, 0.003464, 0.011, 0.025312, 0.003464, 0.011, -0.025182, 0.004, 0.013, -0.025182, 0.003464, 0.011, 0.025312, 0.002, 0.009536, -0.025182, 0.002, 0.009536, 0.025312, 0, 0.009, -0.025182, 0, 0.009, 0.025312, 0, 0.009, -0.025182, 0, 0.009, 0.025312, -0.002, 0.009536, -0.025182, -0.002, 0.009536, 0.025312, -0.003464, 0.011, -0.025182, -0.003464, 0.011, -0.025182, -0.004, 0.013, -0.025182, -0.004, 0.013, 0.025312, -0.003464, 0.015, -0.025182, -0.003464, 0.015, 0.025312, -0.002, 0.016464, -0.025182, -0.002, 0.016464, 0.029711, 0, 0.016421, 0.025312, 0, 0.017, 0.029573, 0.002, 0.015903, 0.025312, 0.002, 0.016464, 0.029194, 0.003464, 0.014489, 0.025312, 0.003464, 0.015, 0.028676, 0.004, 0.012557, 0.025312, 0.004, 0.013, 0.028159, 0.003464, 0.010625, 0.02778, 0.002, 0.009211, 0.027641, 0, 0.008693, 0.027641, 0, 0.008693, 0.02778, -0.002, 0.009211, 0.028159, -0.003464, 0.010625, 0.028676, -0.004, 0.012557, 0.029194, -0.003464, 0.014489, 0.025312, -0.003464, 0.015, 0.029573, -0.002, 0.015903, 0.025312, -0.002, 0.016464, 0.033812, 0, 0.014722, 0.033544, 0.002, 0.014258, 0.032812, 0.003464, 0.01299, 0.031812, 0.004, 0.011258, 0.030812, 0.003464, 0.009526, 0.030079, 0.002, 0.008258, 0.029812, 0, 0.007794, 0.029812, 0, 0.007794, 0.030079, -0.002, 0.008258, 0.030812, -0.003464, 0.009526, 0.031812, -0.004, 0.011258, 0.032812, -0.003464, 0.01299, 0.033544, -0.002, 0.014258, 0.037333, 0, 0.012021, 0.036953, 0.002, 0.011642, 0.035918, 0.003464, 0.010607, 0.034504, 0.004, 0.009192, 0.03309, 0.003464, 0.007778, 0.032055, 0.002, 0.006743, 0.031676, 0, 0.006364, 0.031676, 0, 0.006364, 0.032055, -0.002, 0.006743, 0.03309, -0.003464, 0.007778, 0.034504, -0.004, 0.009192, 0.035918, -0.003464, 0.010607, 0.036953, -0.002, 0.011642, 0.040034, 0, 0.0085, 0.03957, 0.002, 0.008232, 0.038302, 0.003464, 0.0075, 0.03657, 0.004, 0.0065, 0.034838, 0.003464, 0.0055, 0.03357, 0.002, 0.004768, 0.033106, 0, 0.0045, 0.033106, 0, 0.0045, 0.03357, -0.002, 0.004768, 0.034838, -0.003464, 0.0055, 0.03657, -0.004, 0.0065, 0.038302, -0.003464, 0.0075, 0.03957, -0.002, 0.008232, 0.041733, 0, 0.0044, 0.041215, 0.002, 0.004261, 0.039801, 0.003464, 0.003882, 0.037869, 0.004, 0.003365, 0.035937, 0.003464, 0.002847, 0.034523, 0.002, 0.002468, 0.034005, 0, 0.002329, 0.034005, 0, 0.002329, 0.034523, -0.002, 0.002468, 0.035937, -0.003464, 0.002847, 0.037869, -0.004, 0.003365, 0.039801, -0.003464, 0.003882, 0.041215, -0.002, 0.004261, -0.025182, -0.002, -0.016464, 0.025312, -0.002, -0.016464, -0.025182, 0, -0.017, 0.025312, 0, -0.017, -0.025182, -0.003464, -0.015, 0.025312, -0.003464, -0.015, -0.025182, -0.004, -0.013, 0.025312, -0.004, -0.013, 0.025312, -0.003464, -0.011, -0.025182, 0.004, -0.013, 0.025312, 0.004, -0.013, -0.025182, 0.003464, -0.011, -0.025182, 0.003464, -0.015, 0.025312, 0.003464, -0.015, -0.025182, 0.002, -0.016464, 0.025312, 0.002, -0.016464, -0.025182, -0.002, 0.016464, -0.025182, 0, 0.017, -0.025182, -0.003464, 0.015, -0.025182, -0.004, 0.013, -0.025182, 0.003464, 0.015, -0.025182, 0.002, 0.016464 )
+
+[node name="Chain" type="Spatial"]
+script = SubResource( 8 )
+
+[node name="Link1" type="RigidBody" parent="."]
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link1"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link1"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link2" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.129473, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link2"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link2"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link3" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26234, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link3"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link3"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link4" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.391813, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link4"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link4"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link5" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.523521, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link5"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link5"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link6" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.652994, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link6"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link6"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link7" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.783422, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link7"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link7"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link8" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.912895, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link8"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link8"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link9" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.04576, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link9"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link9"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link10" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.17523, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link10"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link10"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link11" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.30694, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link11"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link11"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link12" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.43642, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link12"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link12"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link13" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.56903, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link13"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link13"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link14" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.69851, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link14"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link14"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link15" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.83137, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link15"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link15"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link16" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.96085, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link16"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link16"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link17" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.09255, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link17"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link17"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link18" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 2.22203, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link18"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link18"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link19" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.35245, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link19"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link19"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link20" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 2.48193, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link20"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link20"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link21" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.61479, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link21"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link21"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link22" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 2.74427, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link22"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link22"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link23" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.87597, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link23"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link23"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Link24" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.00545, 0, 0 )
+collision_layer = 32
+collision_mask = 15
+mass = 0.1
+
+[node name="chain" type="MeshInstance" parent="Link24"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Link24"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+shape = SubResource( 7 )
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065288, 0, 0 )
+nodes/node_a = NodePath("../Link1")
+nodes/node_b = NodePath("../Link2")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint2" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.197405, 0, 0 )
+nodes/node_a = NodePath("../Link2")
+nodes/node_b = NodePath("../Link3")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint3" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.326605, 0, 0 )
+nodes/node_a = NodePath("../Link3")
+nodes/node_b = NodePath("../Link4")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint4" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.458944, 0, 0 )
+nodes/node_a = NodePath("../Link4")
+nodes/node_b = NodePath("../Link5")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint5" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58685, 0, 0 )
+nodes/node_a = NodePath("../Link5")
+nodes/node_b = NodePath("../Link6")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint6" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58685, 0, 0 )
+nodes/node_a = NodePath("../Link5")
+nodes/node_b = NodePath("../Link6")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint7" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.719037, 0, 0 )
+nodes/node_a = NodePath("../Link6")
+nodes/node_b = NodePath("../Link7")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint8" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.848624, 0, 0 )
+nodes/node_a = NodePath("../Link7")
+nodes/node_b = NodePath("../Link8")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint9" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.979351, 0, 0 )
+nodes/node_a = NodePath("../Link8")
+nodes/node_b = NodePath("../Link9")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint10" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.11194, 0, 0 )
+nodes/node_a = NodePath("../Link9")
+nodes/node_b = NodePath("../Link10")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint11" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.24227, 0, 0 )
+nodes/node_a = NodePath("../Link10")
+nodes/node_b = NodePath("../Link11")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint12" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37146, 0, 0 )
+nodes/node_a = NodePath("../Link11")
+nodes/node_b = NodePath("../Link12")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint13" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.50234, 0, 0 )
+nodes/node_a = NodePath("../Link12")
+nodes/node_b = NodePath("../Link13")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint14" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.63275, 0, 0 )
+nodes/node_a = NodePath("../Link13")
+nodes/node_b = NodePath("../Link14")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint15" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.76622, 0, 0 )
+nodes/node_a = NodePath("../Link14")
+nodes/node_b = NodePath("../Link15")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint16" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.89681, 0, 0 )
+nodes/node_a = NodePath("../Link15")
+nodes/node_b = NodePath("../Link16")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint17" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.02893, 0, 0 )
+nodes/node_a = NodePath("../Link16")
+nodes/node_b = NodePath("../Link17")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint18" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.15753, 0, 0 )
+nodes/node_a = NodePath("../Link17")
+nodes/node_b = NodePath("../Link18")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint19" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.28705, 0, 0 )
+nodes/node_a = NodePath("../Link18")
+nodes/node_b = NodePath("../Link19")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint20" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4171, 0, 0 )
+nodes/node_a = NodePath("../Link19")
+nodes/node_b = NodePath("../Link20")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint21" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.54621, 0, 0 )
+nodes/node_a = NodePath("../Link20")
+nodes/node_b = NodePath("../Link21")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint22" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.68034, 0, 0 )
+nodes/node_a = NodePath("../Link21")
+nodes/node_b = NodePath("../Link22")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint23" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.81264, 0, 0 )
+nodes/node_a = NodePath("../Link22")
+nodes/node_b = NodePath("../Link23")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="Generic6DOFJoint24" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.93958, 0, 0 )
+nodes/node_a = NodePath("../Link23")
+nodes/node_b = NodePath("../Link24")
+angular_limit_x/upper_angle = 45.0
+angular_limit_x/lower_angle = -45.0
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+
+[node name="StartJoint" type="Generic6DOFJoint" parent="."]
+
+[node name="EndJoint" type="Generic6DOFJoint" parent="."]

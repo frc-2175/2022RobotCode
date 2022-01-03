@@ -1,0 +1,106 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://robots/parts/IntakeArea.gd" type="Script" id=1]
+[ext_resource path="res://robots/parts/Wheel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/materials/SimpleAluminumMaterial.tres" type="Material" id=3]
+[ext_resource path="res://robots/parts/Robot.gd" type="Script" id=4]
+[ext_resource path="res://robots/parts/RobotBox.gd" type="Script" id=5]
+[ext_resource path="res://robots/parts/IntakeLauncher.gd" type="Script" id=6]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 0.2286, 0.127, 0.3048 )
+
+[sub_resource type="CubeMesh" id=2]
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 0.144377, 0.149753, 0.221915 )
+
+[node name="SingleRobot(everything)" type="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.03622, 6.91616 )
+script = ExtResource( 4 )
+
+[node name="Chassis" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.612053, 0 )
+collision_layer = 12
+collision_mask = 5
+mass = 9.2811
+can_sleep = false
+
+[node name="RobotBox" type="CollisionShape" parent="Chassis"]
+shape = SubResource( 1 )
+script = ExtResource( 5 )
+material = "Aluminum"
+unit = 0
+width = 18.0
+height = 10.0
+depth = 24.0
+thickness_inches = 0.125
+solid = false
+visual_material = null
+recreate_children = false
+
+[node name="Mesh" type="MeshInstance" parent="Chassis/RobotBox"]
+transform = Transform( 0.2286, 0, 0, 0, 0.127, 0, 0, 0, 0.3048, 0, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = ExtResource( 3 )
+
+[node name="FrontLeft" parent="." instance=ExtResource( 2 )]
+transform = Transform( -1, 0, -3.25841e-07, 0, 1, 0, 3.25841e-07, 0, -1, -0.2, -0.8, -0.2 )
+motor_id = 15
+speed_multiplier = 0.6
+drag_multiplier = 0.4
+
+[node name="FrontRight" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.8, -0.2 )
+motor_id = 16
+offline_drive_side = 1
+speed_multiplier = 0.6
+drag_multiplier = 0.4
+
+[node name="BackRight" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.8, 0.2 )
+motor_id = 16
+offline_drive_side = 1
+speed_multiplier = 0.6
+drag_multiplier = 0.4
+
+[node name="BackLeft" parent="." instance=ExtResource( 2 )]
+transform = Transform( -1, 0, -3.25841e-07, 0, 1, 0, 3.25841e-07, 0, -1, -0.2, -0.8, 0.2 )
+motor_id = 15
+speed_multiplier = 0.6
+drag_multiplier = 0.4
+
+[node name="JointFL" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21124, -0.732589, -0.221762 )
+nodes/node_a = NodePath("../Chassis")
+nodes/node_b = NodePath("../FrontLeft")
+
+[node name="JointFR" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.201892, -0.732589, -0.221762 )
+nodes/node_a = NodePath("../Chassis")
+nodes/node_b = NodePath("../FrontRight")
+
+[node name="jointBR" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.203387, -0.732589, 0.178111 )
+nodes/node_a = NodePath("../Chassis")
+nodes/node_b = NodePath("../BackRight")
+
+[node name="jointBL" type="Generic6DOFJoint" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.194836, -0.732589, 0.21513 )
+nodes/node_a = NodePath("../Chassis")
+nodes/node_b = NodePath("../BackLeft")
+
+[node name="RobotIntakeArea" type="Area" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.801861, 0 )
+collision_layer = 0
+collision_mask = 2
+script = ExtResource( 1 )
+launcher = NodePath("../RobotLauncher")
+
+[node name="CollisionShape" type="CollisionShape" parent="RobotIntakeArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0385773, -0.0870872 )
+shape = SubResource( 3 )
+
+[node name="RobotLauncher" type="Spatial" parent="."]
+transform = Transform( -4.2167e-08, 1.57369e-07, -1, 0.965926, 0.258819, 0, 0.258819, -0.965926, -1.62921e-07, 0, -0.317648, 0.232766 )
+script = ExtResource( 6 )
