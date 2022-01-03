@@ -36,9 +36,9 @@ io: {
 }
 
 @include("<cassert>")
-//@include("<ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>")
-//@include("<ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>")
-//@include("<ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>")
+@include("<ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>")
+@include("<ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>")
+@include("<ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>")
 @include("<frc/drive/DifferentialDrive.h>")
 @include("<frc/motorcontrol/MotorController.h>")
 @include("<units/time.h>")
@@ -61,7 +61,6 @@ motors: {
     PIDWrite(double output);
   }
 
-  /*
   @baseclass
   "ctre::phoenix::motorcontrol::can::BaseMotorController": {
     @converter("ctre::phoenix::motorcontrol::IMotorController") toIMotorController();
@@ -166,7 +165,7 @@ motors: {
   }
 
   @class("ctre::phoenix::motorcontrol::can::WPI_VictorSPX")
-  @extends("frc::PIDOutput")
+  //@extends("frc::PIDOutput")
   @extends("frc::MotorController")
   @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
   @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
@@ -180,7 +179,7 @@ motors: {
   }
 
   @class("ctre::phoenix::motorcontrol::can::WPI_TalonSRX")
-  @extends("frc::PIDOutput")
+  //@extends("frc::PIDOutput")
   @extends("frc::MotorController")
   @extends("ctre::phoenix::motorcontrol::can::BaseMotorController")
   @extends("ctre::phoenix::motorcontrol::can::WPI_BaseMotorController")
@@ -222,6 +221,7 @@ motors: {
         return (double)_result;""";
   }
 
+  /*
   @class("rev::CANSparkMax")
   @extends("frc::MotorController")
   SparkMax: {
