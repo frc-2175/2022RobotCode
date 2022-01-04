@@ -152,13 +152,17 @@ gradle-app.setting
 .classpath
 .project
 .settings/
-bin/
-imgui.ini
 
+bin/
+!lib/bin
+!lib/bin/lua51*/*.exe
+
+imgui.ini
 simgui*.json
 
 simulator/**/*.import
-simulator/bin
-
+simulator/.mono
 # .obj files in the simulator are actually 3D models, not C++ object files
 !simulator/**/*.obj
+!simulator/bin
+!simulator/bin/**/*.exe

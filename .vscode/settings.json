@@ -7,7 +7,7 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "bin/": true,
+    // "bin/": true,
     "**/.classpath": true,
     "**/.project": true,
     "**/.settings": true,
@@ -102,4 +102,5 @@
   "luahelper.format.tab_width": 4,
   "luahelper.Warn.CheckNoUseAssign": true,
   "luahelper.Warn.AllEnable": false,
+  "wpilib.selectDefaultSimulateExtension": false,
 }

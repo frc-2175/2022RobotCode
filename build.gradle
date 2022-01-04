@@ -48,10 +48,12 @@ def includeDesktopSupport = true
 // Set to true to run simulation in debug mode
 wpi.cpp.debugSimulation = false
 
-// Default enable simgui
+// Enable simulator plugins
 wpi.sim.addGui().defaultEnabled = true
-// Enable DS but not by default
-wpi.sim.addDriverstation()
+wpi.sim.addWebsocketsServer().defaultEnabled = true
+
+// Disable DS by default
+// wpi.sim.addDriverstation()
 
 class FileDependencySet implements NativeDependencySet {
     private FileCollection headerFiles;
@@ -81,14 +83,14 @@ class FileDependencySet implements NativeDependencySet {
 }
 
 def luajit_athena = new FileDependencySet(
-    project.files("lib/libluajit.a"),
-    project.files('lib/include'),
-    project.files("lib/libluajit.so"))
+    project.files("lib/lib/libluajit.a"),
+    project.files('lib/lib/include'),
+    project.files("lib/lib/libluajit.so"))
 
 def luajit_win64 = new FileDependencySet(
-    project.files("lib/lua51.lib", "lib/luajit.lib", "lib/buildvm.lib", "lib/minilua.lib"),
-    project.files('lib/include'),
-    project.files("lib/lua51.dll"))
+    project.files("lib/lib/lua51.lib", "lib/lib/luajit.lib", "lib/lib/buildvm.lib", "lib/lib/minilua.lib"),
+    project.files('lib/lib/include'),
+    project.files("lib/lib/lua51.dll"))
 
 
 model {

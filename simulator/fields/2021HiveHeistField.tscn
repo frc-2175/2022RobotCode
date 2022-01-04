@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://assets/environments/DefaultEnv.tres" type="Environment" id=1]
 [ext_resource path="res://robots/parts/sim_devices/SimClient.gd" type="Script" id=2]
@@ -11,7 +11,6 @@
 [ext_resource path="res://fields/2021HiveHeist/RedTower.tres" type="Material" id=9]
 [ext_resource path="res://assets/materials/CarpetMaterial.tres" type="Material" id=10]
 [ext_resource path="res://fields/2021HiveHeist/BlueTower.tres" type="Material" id=11]
-[ext_resource path="res://robots/BoxOnWheels.tscn" type="PackedScene" id=12]
 [ext_resource path="res://fields/2021HiveHeist/SideFlowerTower.tscn" type="PackedScene" id=13]
 [ext_resource path="res://fields/2021HiveHeist/LeftTower.tscn" type="PackedScene" id=14]
 [ext_resource path="res://fields/2021HiveHeist/RightTower.tscn" type="PackedScene" id=15]
@@ -42,7 +41,7 @@ points = PoolVector3Array( 0.041733, 0, -0.0044, 0.042312, 0, 0, 0.041215, 0.002
 script = ExtResource( 2 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 0.999975, -0.00444541, 0.00545082, 0, 0.774956, 0.632015, -0.00703371, -0.632, 0.774937, -1.24427, 1.5022, 6.84027 )
+transform = Transform( 0.999975, -0.00444541, 0.00545082, 0, 0.774956, 0.632015, -0.00703371, -0.632, 0.774937, -1.24792, 1.5022, 6.83921 )
 fov = 90.0
 script = ExtResource( 4 )
 target = NodePath("../Robots(andstuff)/Robot")
@@ -825,8 +824,5 @@ spot_angle = 44.2549
 
 [node name="Robots(andstuff)" type="Spatial" parent="."]
 
-[node name="Robot" parent="Robots(andstuff)" instance=ExtResource( 12 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96504, 6.91616 )
-
-[node name="Robot2" parent="Robots(andstuff)" instance=ExtResource( 22 )]
-transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.820593, 0.195985, 6.97763 )
+[node name="Robot" parent="Robots(andstuff)" instance=ExtResource( 22 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.0997238, 0.195985, 6.97763 )
