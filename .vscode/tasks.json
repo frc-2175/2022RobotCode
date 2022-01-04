@@ -14,13 +14,23 @@
         },
 
         {
+            "label": "Build Bindings",
+            "group": "build",
+            "type": "shell",
+            "command": "${workspaceFolder}\\scripts\\build_bindings.bat"
+        },
+        {
+            "label": "Build LuaJIT",
+            "group": "build",
+            "type": "shell",
+            "command": "${workspaceFolder}\\scripts\\build_luajit.bat"
+        },
+
+        {
             "label": "Download Godot",
             "group": "build",
             "type": "shell",
             "command": "${workspaceFolder}\\scripts\\download_godot.bat",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
             "problemMatcher": []
         },
         {

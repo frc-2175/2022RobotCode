@@ -14,9 +14,8 @@ setlocal
 @REM You may need to actually remove your existing at C:\msys64\mingw64 and replace
 @REM it with the new one you installed to get things to work.
 
-@REM Then make sure that you have a recent copy of Visual Studio installed. You MUST
-@REM run this script from a Visual Studio command prompt, and you MUST make sure that
-@REM it will compile as x64 instead of x86.
+@REM Then make sure that you have Visual Studio 2019 installed on your C drive. This
+@REM script will run vcvarsall in order to properly use MSVC.
 
 @REM You then may also need to modify the src/Makefile in LuaJIT to remove
 @REM `2>/dev/null` from `TARGET_AR`. I believe that due to a bug in the target and
@@ -39,6 +38,8 @@ set PATH=%PATH%;%USERPROFILE%\.gradle\toolchains\frc\%YEAR%\roborio\bin
 
 set ATHENA_MAKE=frc%YEAR%-make
 set ATHENA_FLAGS=HOST_CC="gcc -m32" CROSS=arm-frc%YEAR%-linux-gnueabi- TARGET_CFLAGS="-mcpu=cortex-a9 -mfloat-abi=softfp" TARGET_SYS="Linux"
+
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 pushd %LUAJIT_PATH%
     pushd src
