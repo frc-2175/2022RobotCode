@@ -1,0 +1,141 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://assets/materials/SimpleAluminumMaterial.tres" type="Material" id=1]
+[ext_resource path="res://robots/parts/Robot.gd" type="Script" id=2]
+[ext_resource path="res://robots/parts/RobotBox.gd" type="Script" id=3]
+[ext_resource path="res://robots/parts/Wheel.tscn" type="PackedScene" id=4]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 0.381, 0.003175, 0.381 )
+
+[sub_resource type="CubeMesh" id=2]
+material = ExtResource( 1 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 0.0254, 0.0127, 0.4064 )
+
+[sub_resource type="CubeMesh" id=4]
+material = ExtResource( 1 )
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 0.0254, 0.0127, 0.4064 )
+
+[sub_resource type="CubeMesh" id=6]
+material = ExtResource( 1 )
+
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 0.0254, 0.0127, 0.381 )
+
+[sub_resource type="CubeMesh" id=8]
+material = ExtResource( 1 )
+
+[sub_resource type="BoxShape" id=9]
+extents = Vector3( 0.0254, 0.0127, 0.381 )
+
+[sub_resource type="CubeMesh" id=10]
+material = ExtResource( 1 )
+
+[node name="Robot" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="Chassis" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00126187, 0, 0.0273107 )
+collision_layer = 12
+collision_mask = 5
+mass = 13.7851
+can_sleep = false
+
+[node name="FramePlate" type="CollisionShape" parent="Chassis"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.55299e-07, 0, -0.0273107 )
+shape = SubResource( 1 )
+script = ExtResource( 3 )
+width = 30.0
+height = 0.25
+depth = 30.0
+solid = true
+
+[node name="Mesh" type="MeshInstance" parent="Chassis/FramePlate"]
+transform = Transform( 0.381, 0, 0, 0, 0.003175, 0, 0, 0, 0.381, 0, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="FrameR" type="CollisionShape" parent="Chassis"]
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.393301, 0.0266999, -0.0273107 )
+shape = SubResource( 3 )
+script = ExtResource( 3 )
+depth = 32.0
+
+[node name="Mesh" type="MeshInstance" parent="Chassis/FrameR"]
+transform = Transform( 0.0254, 0, 0, 0, 0.0127, 0, 0, 0, 0.4064, 0, 0, 0 )
+mesh = SubResource( 4 )
+material/0 = null
+
+[node name="FrameL" type="CollisionShape" parent="Chassis"]
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.393304, 0.0266999, -0.0273107 )
+shape = SubResource( 5 )
+script = ExtResource( 3 )
+depth = 32.0
+
+[node name="Mesh" type="MeshInstance" parent="Chassis/FrameL"]
+transform = Transform( 0.0254, 0, 0, 0, 0.0127, 0, 0, 0, 0.4064, 0, 0, 0 )
+mesh = SubResource( 6 )
+material/0 = null
+
+[node name="FrameB" type="CollisionShape" parent="Chassis"]
+transform = Transform( 1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 2.55299e-07, 0.0266999, 0.364448 )
+shape = SubResource( 7 )
+script = ExtResource( 3 )
+depth = 30.0
+
+[node name="Mesh" type="MeshInstance" parent="Chassis/FrameB"]
+transform = Transform( 0.0254, 0, 0, 0, 0.0127, 0, 0, 0, 0.381, 0, 0, 0 )
+mesh = SubResource( 8 )
+material/0 = null
+
+[node name="FrameF" type="CollisionShape" parent="Chassis"]
+transform = Transform( 1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, -1.83936e-08, 0.0266999, -0.420446 )
+shape = SubResource( 9 )
+script = ExtResource( 3 )
+depth = 30.0
+
+[node name="Mesh" type="MeshInstance" parent="Chassis/FrameF"]
+transform = Transform( 0.0254, 0, 0, 0, 0.0127, 0, 0, 0, 0.381, 0, 0, 0 )
+mesh = SubResource( 10 )
+material/0 = null
+
+[node name="Wheels" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0620611, 0 )
+
+[node name="WheelRB" parent="Wheels" instance=ExtResource( 4 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.425501, 0.0240924, -0.297402 )
+offline_drive_side = 1
+
+[node name="Chassis2WheelRB" type="Generic6DOFJoint" parent="Wheels"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407876, 0.0210302, -0.296396 )
+nodes/node_a = NodePath("../../Chassis")
+nodes/node_b = NodePath("../WheelRB")
+
+[node name="WheelRF" parent="Wheels" instance=ExtResource( 4 )]
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.425501, 0.0240924, 0.291805 )
+offline_drive_side = 1
+
+[node name="Chassis2WheelRF" type="Generic6DOFJoint" parent="Wheels"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.407876, 0.0210302, 0.292811 )
+nodes/node_a = NodePath("../../Chassis")
+nodes/node_b = NodePath("../WheelRF")
+
+[node name="WheelLB" parent="Wheels" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42733, 0.0240924, -0.297402 )
+
+[node name="Chassis2WheelLB" type="Generic6DOFJoint" parent="Wheels"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.406372, 0.0210302, -0.296396 )
+nodes/node_a = NodePath("../../Chassis")
+nodes/node_b = NodePath("../WheelLB")
+
+[node name="WheelLF" parent="Wheels" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42733, 0.0240924, 0.291805 )
+
+[node name="Chassis2WheelLF" type="Generic6DOFJoint" parent="Wheels"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.406372, 0.0210302, 0.292811 )
+nodes/node_a = NodePath("../../Chassis")
+nodes/node_b = NodePath("../WheelLF")
