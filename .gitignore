@@ -157,6 +157,12 @@ bin/
 !lib/bin
 !lib/bin/lua51*/*.exe
 
+!lib/lib/*.a
+!lib/lib/*.dll
+!lib/lib/*.dylib
+!lib/lib/*.lib
+!lib/lib/*.so
+
 imgui.ini
 simgui*.json
 

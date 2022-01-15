@@ -82,13 +82,18 @@ class FileDependencySet implements NativeDependencySet {
 def luajit_athena = new FileDependencySet(
     project.files("lib/lib/libluajit.a"),
     project.files('lib/lib/include'),
-    project.files("lib/lib/libluajit.so"))
-
+    project.files("lib/lib/libluajit.so")
+)
 def luajit_win64 = new FileDependencySet(
     project.files("lib/lib/lua51.lib", "lib/lib/luajit.lib", "lib/lib/buildvm.lib", "lib/lib/minilua.lib"),
     project.files('lib/lib/include'),
-    project.files("lib/lib/lua51.dll"))
-
+    project.files("lib/lib/lua51.dll")
+)
+def luajit_mac = new FileDependencySet(
+    project.files('lib/lib/mac_x86_libluajit-5.1.a'),
+    project.files('lib/lib/include'),
+    project.files('lib/lib/mac_x86_libluajit-5.1.2.1.0.dylib')
+)
 
 model {
     components {
@@ -137,6 +142,7 @@ model {
 
             binaries.all{
                 it.lib luajit_win64
+                it.lib luajit_mac
             }
 
             // Enable run tasks for this component
