@@ -282,7 +282,7 @@ mesh = SubResource( 14 )
 material/0 = null
 
 [node name="PressureReadout" parent="Chassis" instance=ExtResource( 13 )]
-transform = Transform( 0.592199, 0, 0, 0, 0.592199, 0, 0, 0, 0.592199, -0.00761699, 0.100071, -0.233095 )
+transform = Transform( 0.592199, 0, 0, 0, 0.592199, 0, 0, 0, 0.592199, -0.00761696, 0.100071, -0.233095 )
 
 [node name="AirTank" parent="Chassis" instance=ExtResource( 14 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0655189, 0.00644577, -0.253044 )
@@ -315,7 +315,7 @@ device_id = 3
 motor_shoot_when = 1
 
 [node name="NavX" type="Spatial" parent="Chassis"]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 2.23517e-07, 1.19209e-07, -8.19564e-07 )
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 2.57045e-07, 1.19209e-07, -8.04663e-07 )
 script = ExtResource( 15 )
 
 [node name="Wheels" type="Spatial" parent="."]
@@ -479,7 +479,7 @@ nodes/node_b = NodePath("../../../../Chassis")
 collision/exclude_nodes = false
 
 [node name="Intake" type="RigidBody" parent="Intake/BotFront/ArmPosition"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.03356e-05, -5.96046e-08, 0.292001 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.03225e-05, -5.96046e-08, 0.292001 )
 collision_layer = 20
 collision_mask = 5
 mass = 4.47897
@@ -488,13 +488,13 @@ can_sleep = false
 angular_damp = 1.0
 
 [node name="Motor" type="Spatial" parent="Intake/BotFront/ArmPosition/Intake"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00753741, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00753742, 0, 0 )
 script = ExtResource( 3 )
 controller_type = 2
 motor_id = 3
 
 [node name="Axle" type="CollisionShape" parent="Intake/BotFront/ArmPosition/Intake"]
-transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 4.03356e-05, 0, 0 )
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 4.03225e-05, 0, 0 )
 shape = SubResource( 23 )
 script = ExtResource( 20 )
 material = "Steel"
@@ -579,7 +579,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0254, 0 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0254, 0 )
 
 [node name="RobotBox" type="CollisionShape" parent="Intake/BotFront/ArmPosition/Intake"]
-transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.00126026, 0, 0 )
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.00126027, 0, 0 )
 shape = SubResource( 28 )
 script = ExtResource( 6 )
 width = 4.0
@@ -699,7 +699,7 @@ nodes/node_b = NodePath("../../../../../../ArmPosition/Arm")
 transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0.0254, 0 )
 nodes/node_a = NodePath("../../Base")
 nodes/node_b = NodePath("../../Rod")
-linear_limit/upper_distance = 0.15
+linear_limit/upper_distance = 0.127
 linear_limit/lower_distance = 0.0
 angular_limit/upper_angle = 180.0
 angular_limit/lower_angle = -180.0
@@ -768,7 +768,7 @@ nodes/node_b = NodePath("../../../../../../ArmPosition/Arm")
 transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0.0254, 0 )
 nodes/node_a = NodePath("../../Base")
 nodes/node_b = NodePath("../../Rod")
-linear_limit/upper_distance = 0.15
+linear_limit/upper_distance = 0.127
 linear_limit/lower_distance = 0.0
 angular_limit/upper_angle = 180.0
 angular_limit/lower_angle = -180.0

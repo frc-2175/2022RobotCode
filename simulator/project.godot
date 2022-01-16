@@ -129,7 +129,7 @@ _global_script_class_icons={
 [application]
 
 config/name="2022 Robot Simulator"
-run/main_scene="res://fields/2021HiveHeistField.tscn"
+run/main_scene="res://fields/2022RapidReact/2022RapidReactField.tscn"
 config/icon="res://icon.png"
 
 [debug]

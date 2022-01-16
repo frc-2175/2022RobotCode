@@ -1,0 +1,130 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://fields/parts/Field.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/textures/CarpetTwistNatural001_COL_3K.jpg" type="Texture" id=2]
+[ext_resource path="res://assets/textures/CarpetTwistNatural001_AO_3K.jpg" type="Texture" id=3]
+[ext_resource path="res://assets/textures/CarpetTwistNatural001_NRM_3K.png" type="Texture" id=4]
+[ext_resource path="res://assets/textures/CarpetTwistNatural001_SSS_3K.jpg" type="Texture" id=5]
+[ext_resource path="res://fields/2022RapidReact/Hangar.tscn" type="PackedScene" id=6]
+[ext_resource path="res://fields/parts/FollowingCamera.gd" type="Script" id=7]
+[ext_resource path="res://robots/2022ClimberTest.tscn" type="PackedScene" id=8]
+[ext_resource path="res://robots/parts/sim_devices/SimClient.gd" type="Script" id=9]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.443137, 0.560784, 0.6, 1 )
+albedo_texture = ExtResource( 2 )
+normal_enabled = true
+normal_scale = 2.0
+normal_texture = ExtResource( 4 )
+ao_enabled = true
+ao_light_affect = 0.0
+ao_texture = ExtResource( 3 )
+ao_on_uv2 = false
+ao_texture_channel = 0
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.0
+subsurf_scatter_texture = ExtResource( 5 )
+uv1_scale = Vector3( 20, 20, 20 )
+
+[node name="Spatial" type="Spatial"]
+script = ExtResource( 9 )
+
+[node name="Field" parent="." instance=ExtResource( 1 )]
+material/1 = SubResource( 1 )
+
+[node name="LightingL" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0242519, 0, -0.800258 )
+
+[node name="SpotLight" type="SpotLight" parent="LightingL"]
+transform = Transform( 0.829243, -0.014981, -0.558688, 0.558889, 0.0222278, 0.828945, 0, -0.999641, 0.026805, -7.49156, 7.23281, 0 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight6" type="SpotLight" parent="LightingL"]
+transform = Transform( 0.829243, -0.014981, -0.558688, 0.558889, 0.0222278, 0.828945, 0, -0.999641, 0.026805, -7.49156, 7.23281, 5.32665 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight7" type="SpotLight" parent="LightingL"]
+transform = Transform( 0.829243, -0.014981, -0.558688, 0.558889, 0.0222278, 0.828945, 0, -0.999641, 0.026805, -7.49156, 7.23281, 2.37234 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight8" type="SpotLight" parent="LightingL"]
+transform = Transform( 0.829243, -0.014981, -0.558688, 0.558889, 0.0222278, 0.828945, 0, -0.999641, 0.026805, -7.49156, 7.23281, -2.02025 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight9" type="SpotLight" parent="LightingL"]
+transform = Transform( 0.829243, -0.014981, -0.558688, 0.558889, 0.0222278, 0.828945, 0, -0.999641, 0.026805, -7.49156, 7.23281, -3.73542 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight10" type="SpotLight" parent="LightingL"]
+transform = Transform( 0.829243, -0.014981, -0.558688, 0.558889, 0.0222278, 0.828945, 0, -0.999641, 0.026805, -7.49156, 7.23281, -5.20732 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="LightingR" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18826, 0, 0 )
+
+[node name="SpotLight2" type="SpotLight" parent="LightingR"]
+transform = Transform( -0.829243, 0.0149811, 0.558688, 0.558889, 0.0222278, 0.828945, 7.24947e-08, 0.999641, -0.026805, 8.78627, 7.23281, 2.37928 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight3" type="SpotLight" parent="LightingR"]
+transform = Transform( -0.829243, 0.0149811, 0.558688, 0.558889, 0.0222278, 0.828945, 7.24947e-08, 0.999641, -0.026805, 8.78627, 7.23281, -5.95305 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight4" type="SpotLight" parent="LightingR"]
+transform = Transform( -0.829243, 0.0149811, 0.558688, 0.558889, 0.0222278, 0.828945, 7.24947e-08, 0.999641, -0.026805, 8.78627, 7.23281, -3.16456 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight11" type="SpotLight" parent="LightingR"]
+transform = Transform( -0.829243, 0.0149811, 0.558688, 0.558889, 0.0222278, 0.828945, 7.24947e-08, 0.999641, -0.026805, 8.78627, 7.23281, 0 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="SpotLight12" type="SpotLight" parent="LightingR"]
+transform = Transform( -0.829243, 0.0149811, 0.558688, 0.558889, 0.0222278, 0.828945, 7.24947e-08, 0.999641, -0.026805, 8.78627, 7.23281, 4.74453 )
+light_energy = 0.6
+shadow_enabled = true
+spot_range = 100.0
+spot_angle = 44.2549
+
+[node name="Hangar" parent="." instance=ExtResource( 6 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 2.37239, 4.76837e-07, -6.35043 )
+
+[node name="Hangar2" parent="." instance=ExtResource( 6 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.372, 0, 6.35 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -0.522424, 0, 0.852686, 0, 1, 0, -0.852686, 0, -0.522424, 1.69858, 2.38224, 3.80224 )
+script = ExtResource( 7 )
+target = NodePath("../Robot")
+
+[node name="Robot" parent="." instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.974135, 0.209811, 4.90574 )

@@ -1,9 +1,12 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://assets/materials/SimpleAluminumMaterial.tres" type="Material" id=1]
 [ext_resource path="res://robots/parts/Robot.gd" type="Script" id=2]
 [ext_resource path="res://robots/parts/RobotBox.gd" type="Script" id=3]
 [ext_resource path="res://robots/parts/Wheel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://robots/parts/Piston.gd" type="Script" id=5]
+[ext_resource path="res://robots/parts/RobotCylinder.gd" type="Script" id=6]
+[ext_resource path="res://assets/materials/DirtyGlassMaterial.tres" type="Material" id=7]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 0.381, 0.003175, 0.381 )
@@ -35,18 +38,50 @@ extents = Vector3( 0.0254, 0.0127, 0.381 )
 [sub_resource type="CubeMesh" id=10]
 material = ExtResource( 1 )
 
+[sub_resource type="CylinderShape" id=11]
+radius = 0.023876
+height = 0.6096
+
+[sub_resource type="CylinderMesh" id=12]
+material = ExtResource( 1 )
+
+[sub_resource type="CylinderShape" id=13]
+radius = 0.011938
+height = 0.635
+
+[sub_resource type="CylinderMesh" id=14]
+material = ExtResource( 1 )
+
+[sub_resource type="BoxShape" id=15]
+extents = Vector3( 0.003175, 0.0635, 0.0127 )
+
+[sub_resource type="CubeMesh" id=16]
+material = ExtResource( 7 )
+
+[sub_resource type="BoxShape" id=17]
+extents = Vector3( 0.003175, 0.0127, 0.0508 )
+
+[sub_resource type="CubeMesh" id=18]
+material = ExtResource( 7 )
+
+[sub_resource type="BoxShape" id=19]
+extents = Vector3( 0.003175, 0.0254, 0.0127 )
+
+[sub_resource type="CubeMesh" id=20]
+material = ExtResource( 7 )
+
 [node name="Robot" type="Spatial"]
 script = ExtResource( 2 )
 
 [node name="Chassis" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00126187, 0, 0.0273107 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00126186, 0.00741813, -9.25772e-05 )
 collision_layer = 12
 collision_mask = 5
 mass = 13.7851
 can_sleep = false
 
 [node name="FramePlate" type="CollisionShape" parent="Chassis"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.55299e-07, 0, -0.0273107 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6403e-07, -0.00741813, 9.25772e-05 )
 shape = SubResource( 1 )
 script = ExtResource( 3 )
 width = 30.0
@@ -60,7 +95,7 @@ mesh = SubResource( 2 )
 material/0 = null
 
 [node name="FrameR" type="CollisionShape" parent="Chassis"]
-transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.393301, 0.0266999, -0.0273107 )
+transform = Transform( -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.393301, 0.0192818, 9.25772e-05 )
 shape = SubResource( 3 )
 script = ExtResource( 3 )
 depth = 32.0
@@ -71,7 +106,7 @@ mesh = SubResource( 4 )
 material/0 = null
 
 [node name="FrameL" type="CollisionShape" parent="Chassis"]
-transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.393304, 0.0266999, -0.0273107 )
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.393304, 0.0192818, 9.25772e-05 )
 shape = SubResource( 5 )
 script = ExtResource( 3 )
 depth = 32.0
@@ -82,7 +117,7 @@ mesh = SubResource( 6 )
 material/0 = null
 
 [node name="FrameB" type="CollisionShape" parent="Chassis"]
-transform = Transform( 1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 2.55299e-07, 0.0266999, 0.364448 )
+transform = Transform( 1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 3.59989e-21, 4.37114e-08, -1, -4.37114e-08, 2.6403e-07, 0.0192818, 0.391851 )
 shape = SubResource( 7 )
 script = ExtResource( 3 )
 depth = 30.0
@@ -93,7 +128,7 @@ mesh = SubResource( 8 )
 material/0 = null
 
 [node name="FrameF" type="CollisionShape" parent="Chassis"]
-transform = Transform( 1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, -1.83936e-08, 0.0266999, -0.420446 )
+transform = Transform( 1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, -3.59989e-21, 4.37114e-08, 1, -4.37114e-08, -9.66247e-09, 0.0192818, -0.393043 )
 shape = SubResource( 9 )
 script = ExtResource( 3 )
 depth = 30.0
@@ -139,3 +174,125 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42733, 0.0240924, 0.291805 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.406372, 0.0210302, 0.292811 )
 nodes/node_a = NodePath("../../Chassis")
 nodes/node_b = NodePath("../WheelLF")
+
+[node name="Piston" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00174269, 0 )
+script = ExtResource( 5 )
+length_inches = 24.0
+
+[node name="Base" type="RigidBody" parent="Piston"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3048, 0 )
+collision_layer = 12
+collision_mask = 5
+mass = 1.35942
+can_sleep = false
+
+[node name="Cylinder" type="CollisionShape" parent="Piston/Base"]
+shape = SubResource( 11 )
+script = ExtResource( 6 )
+radius_inches = 0.94
+length_inches = 24.0
+
+[node name="Mesh" type="MeshInstance" parent="Piston/Base/Cylinder"]
+transform = Transform( 0.023876, 0, 0, 0, 0.3048, 0, 0, 0, 0.023876, 0, 0, 0 )
+mesh = SubResource( 12 )
+material/0 = null
+
+[node name="Start" type="Spatial" parent="Piston/Base/Cylinder"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3048, 0 )
+
+[node name="End" type="Spatial" parent="Piston/Base/Cylinder"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3048, 0 )
+
+[node name="SliderJoint" type="SliderJoint" parent="Piston/Base"]
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0.0254, 0 )
+nodes/node_a = NodePath("../../Base")
+nodes/node_b = NodePath("../../Rod")
+linear_limit/upper_distance = 0.5842
+linear_limit/lower_distance = 0.0
+angular_limit/upper_angle = 10.0
+angular_limit/lower_angle = -10.0
+
+[node name="Rod" type="RigidBody" parent="Piston"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3302, 0 )
+collision_layer = 12
+collision_mask = 5
+mass = 0.767627
+can_sleep = false
+
+[node name="Cylinder" type="CollisionShape" parent="Piston/Rod"]
+shape = SubResource( 13 )
+script = ExtResource( 6 )
+radius_inches = 0.47
+length_inches = 25.0
+solid = true
+
+[node name="Mesh" type="MeshInstance" parent="Piston/Rod/Cylinder"]
+transform = Transform( 0.011938, 0, 0, 0, 0.3175, 0, 0, 0, 0.011938, 0, 0, 0 )
+mesh = SubResource( 14 )
+material/0 = null
+
+[node name="Start" type="Spatial" parent="Piston/Rod/Cylinder"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3175, 0 )
+
+[node name="End" type="Spatial" parent="Piston/Rod/Cylinder"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3175, 0 )
+
+[node name="Piston2Hook" type="Generic6DOFJoint" parent="Piston/Rod/Cylinder/End"]
+nodes/node_a = NodePath("../../..")
+nodes/node_b = NodePath("../../../../../Hook")
+
+[node name="Generic6DOFJoint" type="Generic6DOFJoint" parent="."]
+nodes/node_a = NodePath("../Piston/Base")
+nodes/node_b = NodePath("../Chassis")
+
+[node name="Hook" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.713613, 0.0019645 )
+collision_layer = 12
+collision_mask = 5
+mass = 0.0612876
+can_sleep = false
+
+[node name="RobotBox" type="CollisionShape" parent="Hook"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00394696, -0.0019645 )
+shape = SubResource( 15 )
+script = ExtResource( 3 )
+material = "Polycarb"
+width = 0.25
+height = 5.0
+depth = 1.0
+solid = true
+
+[node name="Mesh" type="MeshInstance" parent="Hook/RobotBox"]
+transform = Transform( 0.003175, 0, 0, 0, 0.0635, 0, 0, 0, 0.0127, 0, 0, 0 )
+mesh = SubResource( 16 )
+material/0 = null
+
+[node name="RobotBox2" type="CollisionShape" parent="Hook"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0721505, 0.0359112 )
+shape = SubResource( 17 )
+script = ExtResource( 3 )
+material = "Polycarb"
+width = 0.25
+depth = 4.0
+solid = true
+
+[node name="Mesh" type="MeshInstance" parent="Hook/RobotBox2"]
+transform = Transform( 0.003175, 0, 0, 0, 0.0127, 0, 0, 0, 0.0508, 0, 0, 0 )
+mesh = SubResource( 18 )
+material/0 = null
+
+[node name="RobotBox3" type="CollisionShape" parent="Hook"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.034612, 0.0739043 )
+shape = SubResource( 19 )
+script = ExtResource( 3 )
+material = "Polycarb"
+width = 0.25
+height = 2.0
+depth = 1.0
+solid = true
+
+[node name="Mesh" type="MeshInstance" parent="Hook/RobotBox3"]
+transform = Transform( 0.003175, 0, 0, 0, 0.0254, 0, 0, 0, 0.0127, 0, 0, 0 )
+mesh = SubResource( 20 )
+material/0 = null

@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fields/2022RapidReact/Hangar.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://assets/materials/SimpleSteelMaterial.tres" type="Material" id=2]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 0.166412, 0.94378, 0.165739 )
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 1.22002, 0.165658, 0.165746 )
+
+[sub_resource type="CylinderShape" id=3]
+radius = 0.0156646
+height = 2.74413
+
+[node name="StaticBody" type="StaticBody"]
+
+[node name="Hangar" type="MeshInstance" parent="."]
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 2 )
+material/1 = null
+material/2 = null
+material/3 = null
+material/4 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.35867, 0.936611, 1.20679 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.359, 0.937, 1.207 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape3" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.35867, 0.936611, -1.207 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape4" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.359, 0.937, -1.207 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape5" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7141, 1.20672 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape6" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.714, -1.207 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape7" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.56959, 1.22255, 0 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape8" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.502822, 1.5144, 0 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape9" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.107041, 1.90493, 0 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape10" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.716307, 2.29526, 0 )
+shape = SubResource( 3 )

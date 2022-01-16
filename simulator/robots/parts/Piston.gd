@@ -101,10 +101,10 @@ func _editor_process():
 	RobotUtil.reset_children(slider)
 	slider.set_node_a(@"../../Base")
 	slider.set_node_b(@"../../Rod")
-	slider.set_param(SliderJoint.PARAM_LINEAR_LIMIT_UPPER, 0.15)
+	slider.set_param(SliderJoint.PARAM_LINEAR_LIMIT_UPPER, Math.in2m(length_inches - 1))
 	slider.set_param(SliderJoint.PARAM_LINEAR_LIMIT_LOWER, 0)
-	slider._set_upper_limit_angular(180)
-	slider._set_lower_limit_angular(-180)
+	slider._set_upper_limit_angular(10)
+	slider._set_lower_limit_angular(-10)
 
 func _ready():
 	if solenoid_type == SolenoidType.Solenoid:
