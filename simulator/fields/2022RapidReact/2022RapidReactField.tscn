@@ -122,7 +122,7 @@ transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 2.37239
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.372, 0, 6.35 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( -0.522424, 0, 0.852686, 0, 1, 0, -0.852686, 0, -0.522424, 1.69858, 2.38224, 3.80224 )
+transform = Transform( -0.84168, 0, 0.539976, 0, 1, 0, -0.539976, 0, -0.84168, -0.523171, 2.37121, 2.67483 )
 script = ExtResource( 7 )
 target = NodePath("../Robot")
 

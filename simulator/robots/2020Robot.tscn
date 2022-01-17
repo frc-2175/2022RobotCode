@@ -701,8 +701,8 @@ nodes/node_a = NodePath("../../Base")
 nodes/node_b = NodePath("../../Rod")
 linear_limit/upper_distance = 0.127
 linear_limit/lower_distance = 0.0
-angular_limit/upper_angle = 180.0
-angular_limit/lower_angle = -180.0
+angular_limit/upper_angle = 10.0
+angular_limit/lower_angle = -10.0
 
 [node name="Rod" type="RigidBody" parent="Intake/BotFront/Pistons/Left"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1016, 0 )
@@ -770,8 +770,8 @@ nodes/node_a = NodePath("../../Base")
 nodes/node_b = NodePath("../../Rod")
 linear_limit/upper_distance = 0.127
 linear_limit/lower_distance = 0.0
-angular_limit/upper_angle = 180.0
-angular_limit/lower_angle = -180.0
+angular_limit/upper_angle = 10.0
+angular_limit/lower_angle = -10.0
 
 [node name="Rod" type="RigidBody" parent="Intake/BotFront/Pistons/Right"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1016, 0 )
