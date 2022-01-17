@@ -9,40 +9,47 @@ local purePursuitPID = NewPIDController(0.02, 0, 0.002);
 local position = NewVector(0, 0)
 local navx = NewAHRS(PortList.kMXP)
 
----@param pathResult table
----@param fieldPosition any 
+---@param pathResult table - a pure pursuit path
+---@param fieldPosition any - the robot's current position on the field
 ---@param previousClosestPoint number
 ---@return number indexOfClosestPoint
+--[[
+    looks through all points on the list, finds & returns the point
+    closest to current robot position 
+--]]
 function FindClosestPoint(pathResult, fieldPosition, previousClosestPoint)
     local indexOfClosestPoint = 0
-    local startIndex = previousClosestPoint - 36
+    local startIndex = previousClosestPoint - 36 --36 lookahead distance (in)
     local endIndex = previousClosestPoint + 36
+    --making sure indexes make sense
     if startIndex < 1 then
         startIndex = 1
     end
     if endIndex > pathResult.numberOfActualPoints then
         endIndex = pathResult.numberOfActualPoints
     end
-    local minDistance = (pathResult.path[1] - fieldPosition):length()
-    for i = startIndex, endIndex do
+    local minDistance = (pathResult.path[1] - fieldPosition):length() -- minimum distance you will have to travel
+    for i = startIndex, endIndex do --check through each point in list, and ...
         local distanceToPoint = (pathResult.path[i] - fieldPosition):length()
         if distanceToPoint <= minDistance then
             indexOfClosestPoint = i
-            minDistance = distanceToPoint
+            minDistance = distanceToPoint --if we find a closer one, that becomes the new minDist
         end
     end
     return indexOfClosestPoint
 end
 
----@param pathResult table
----@param fieldPosition any
----@param lookAhead number
----@param closestPoint number
----@return number goalPoint
+---@param pathResult table - a pure pursuit path
+---@param fieldPosition any - current robot position
+---@param lookAhead number - number of indexes to look ahead in path
+---@param closestPoint number - INDEX OF closest point in path to current position, basically where we are, ish
+---@return number goalPoint - returns the index we should be aiming for
+
 function FindGoalPoint(pathResult, fieldPosition, lookAhead, closestPoint)
-    closestPoint = closestPoint or 0
-    return math.min(closestPoint + lookAhead, #pathResult.path)
-end
+    closestPoint = closestPoint or 0 --default 0
+    return math.min(closestPoint + lookAhead, #pathResult.path) --# is length operator
+    --in case we are aiming PAST the end of the path, just aim at the end instead
+end 
 
 ---@param point any
 ---@return number degAngle
@@ -67,7 +74,7 @@ function NewPurePursuitResult(indexOfClosestPoint, indexOfGoalPoint, goalPoint)
     return p
 end
 
----@param pathResult table
+---@param pathResult table - the path we want to drive
 ---@param isBackwards boolean
 ---@return table result
 function PurePursuit(pathResult, isBackwards)
