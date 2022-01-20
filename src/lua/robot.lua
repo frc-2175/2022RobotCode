@@ -10,7 +10,7 @@ function robot.robotInit()
 	rightMotor:setInverted(CTREInvertType.InvertMotorOutput)
 	drive = DifferentialDrive:new(leftMotor, rightMotor)
 
-	print("froggers")
+	print("RIP Blockboy, you will never be forgotten.")
 end
 
 -- teleop periodic : WHERE EVERTHING HAPPENS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
