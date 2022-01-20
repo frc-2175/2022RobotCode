@@ -78,6 +78,11 @@ function VictorSPX:get()
 	return ffi.C.VictorSPX_Get(self.motor)
 end
 
+function VictorSPX:getSelectedSensorPosition(pidIdx)
+	pidIdx = pidIdx or 0
+	return ffi.C.VictorSPX_GetSelectedSensorPosition(self.motor, pidIdx)
+end
+
 function VictorSPX:set(value)
 	ffi.C.VictorSPX_Set(self.motor, value)
 end
@@ -128,6 +133,11 @@ function TalonSRX:getOutputCurrent()
 	return ffi.C.TalonSRX_GetOutputCurrent(self.motor)
 end
 
+function TalonSRX:getSelectedSensorPosition(pidIdx)
+	pidIdx = pidIdx or 0
+	return ffi.C.TalonSRX_GetSelectedSensorPosition(self.motor, pidIdx)
+end
+
 function TalonSRX:getStatorCurrent()
 	return ffi.C.TalonSRX_GetStatorCurrent(self.motor)
 end
@@ -156,6 +166,11 @@ end
 
 function TalonFX:get()
 	return ffi.C.TalonFX_Get(self.motor)
+end
+
+function TalonFX:getSelectedSensorPosition(pidIdx)
+	pidIdx = pidIdx or 0
+	return ffi.C.TalonFX_GetSelectedSensorPosition(self.motor, pidIdx)
 end
 
 function TalonFX:getStatorCurrent()

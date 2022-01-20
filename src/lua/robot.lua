@@ -25,7 +25,8 @@ function robot.teleopPeriodic()
 	else
 		intakeMotor:set(0)
 	end
-
+	print("g")
+	print("encoder uhh :" .. rightMotor:getSelectedSensorPosition(0))
 end
 
 function robot.autonomousInit()
