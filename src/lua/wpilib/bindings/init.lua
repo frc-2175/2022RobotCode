@@ -328,6 +328,10 @@ void* DoubleSolenoid_newWithModule(int moduleNumber, int moduleType, int forward
 void DoubleSolenoid_Set(void* _this, int value);
 int DoubleSolenoid_Get(void* _this);
 double GetFPGATimestamp();
+void* AHRS_new(int value);
+float AHRS_GetPitch(void* _this);
+float AHRS_GetAngle(void* _this);
+void AHRS_Reset(void* _this);
 bool IsReal();
 void SmartDashboard_PutNumber(const char* keyName, double value);
 void SmartDashboard_PutNumberArray( const char* keyName,  double* value, size_t size);

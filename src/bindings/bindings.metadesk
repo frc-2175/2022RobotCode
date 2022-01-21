@@ -314,20 +314,22 @@ time: {
   """;
 }
 
-/*
+
 @include("<frc/SPI.h>")
 @include('"AHRS.h"')
 ahrs: {
   @class("AHRS")
   AHRS: {
+    //stands for ast ridge LOW school
     // if i'm getting this right, ports just go to an enum
     // the port we will be using(kMXP) is set to 1. I'll add this enum as a table in lua somewhere
     @constructor new(@cast("frc::SPI::Port") int value);
     float GetPitch();
+    float GetAngle();
     Reset();
   }
 } 
-*/
+
 
 @include("<frc/RobotBase.h>")
 robotbase: {

@@ -9,8 +9,9 @@ function robot.robotInit()
 
 	rightMotor:setInverted(CTREInvertType.InvertMotorOutput)
 	drive = DifferentialDrive:new(leftMotor, rightMotor)
+	navx = AHRS:new(1)
 
-	print("RIP Blockboy, you will never be forgotten.")
+	print("RIP Blockboy, you will never be forgotten. <3")
 end
 
 -- teleop periodic : WHERE EVERTHING HAPPENS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -27,6 +28,7 @@ function robot.teleopPeriodic()
 	end
 	print("g")
 	print("encoder uhh :" .. rightMotor:getSelectedSensorPosition(0))
+	print("navh uhh :".. navx:getAngle())
 end
 
 function robot.autonomousInit()
