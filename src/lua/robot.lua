@@ -1,3 +1,5 @@
+require("utils.logger")
+
 require("utils.vector")
 
 TICKS_TO_INCHES = 112.0/182931.0 --stolen from java code, should be right numvber but confirm?
@@ -19,6 +21,9 @@ function robot.robotInit()
 	navx = AHRS:new()
 
 	print("RIP Blockboy, you will never be forgotten. <3")
+	local testLog = log("test")
+	testLog:stop()
+
 end
 
 -- function getAverageEncoderDistance() 
@@ -103,4 +108,4 @@ end
 
 function robot.autonomousPeriodic()
 end
---Elizabeth was here 
+-- Elizabeth was here 
