@@ -7,6 +7,15 @@ lastEncoderDistanceLeft = 0
 lastEncoderDistanceRight = 0
 position = NewVector(0,0)
 
+function resetTracking()
+	lastEncoderDistanceLeft = 0
+	lastEncoderDistanceRight = 0
+	-- zeroEncoderLeft = leftMotor:getSelectedSensorPosition(0)
+	-- zeroEncoderRight = rightMotor:getSelectedSensorPosition(0)
+	position = new Vector(0,0)
+	navx.reset();
+end
+
 function robot.robotInit()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
@@ -23,6 +32,8 @@ function robot.robotInit()
 	print("RIP Blockboy, you will never be forgotten. <3")
 	local testLog = log("test")
 	testLog:stop()
+
+	resetTracking()
 
 end
 
@@ -65,22 +76,7 @@ end
 -- 	lastEncoderDistanceLeft = getLeftDistance(); 
 -- 	lastEncoderDistanceRight = getRightDistance();
 -- }
-function resetTracking()
-	lastEncoderDistanceLeft = 0
-	lastEncoderDistanceRight = 0
-	-- zeroEncoderLeft = leftMotor:getSelectedSensorPosition(0)
-	-- zeroEncoderRight = rightMotor:getSelectedSensorPosition(0)
-	position = new Vector(0,0)
-	navx.reset();
-end
--- public void resetTracking() {
--- 	lastEncoderDistanceLeft = 0;
--- 	lastEncoderDistanceRight = 0;
--- 	zeroEncoderLeft = leftMaster.getSelectedSensorPosition(0);
--- 	zeroEncoderRight = rightMaster.getSelectedSensorPosition(0);
--- 	position = new Vector(0, 0);
--- 	navx.reset();
--- }
+
 
 -- teleop periodic : WHERE EVERTHING HAPPENS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 function robot.teleopPeriodic()

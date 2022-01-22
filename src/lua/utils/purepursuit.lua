@@ -7,7 +7,7 @@ require("wpilib.motors")
 local previousClosestPoint = 0;
 local purePursuitPID = NewPIDController(0.02, 0, 0.002);
 local position = NewVector(0, 0)
-local navx = NewAHRS(PortList.kMXP)
+local navx = AHRS:new()
 
 ---@param pathResult table - a pure pursuit path
 ---@param fieldPosition any - the robot's current position on the field
