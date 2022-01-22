@@ -13,7 +13,7 @@ DoubleSolenoidValue = {
 Solenoid = {}
 
 function Solenoid:new(channel)
-	o = {
+	local o = {
 		solenoid = ffi.C.Solenoid_new(channel),
 	}
 	setmetatable(o, self)

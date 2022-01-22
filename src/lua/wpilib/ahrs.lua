@@ -9,21 +9,24 @@ PortList = {
 	kUSB2 = 3,
 }
 
-AHRS = {}
+AHRS = {
+	getAngle = function(self)
+		return ffi.C.AHRS_GetAngle(self.ahrs);
+	end,
+	reset = function(self)
+		ffi.C.AHRS_Reset(self.ahrs);
+	end,
+	getPitch = function(self)
+		return ffi.c.AHRS_GetPitch(self.ahrs);
+	end,
+}
+AHRS.__index = AHRS
 
-function AHRS:new(port) 
+function AHRS:new(port)
 	local a = {
 		ahrs = ffi.C.AHRS_new(port),
-		getAngle = function(self)
-			return ffi.C.AHRS_GetAngle(self.AHRS);
-		end,
-		reset = function(self)
-			ffi.C.AHRS_Reset(self.AHRS);
-		end.
-		getPitch = function(self)
-			ffi.c.AHRS_GetPitch(self);
 	}
-	stmetatable(o, self)
+	setmetatable(a, self)
 	self.__index = selfreturn
-	return o
+	return a
 end

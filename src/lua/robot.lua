@@ -1,3 +1,5 @@
+require("utils.logger")
+
 function robot.robotInit()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
@@ -12,6 +14,9 @@ function robot.robotInit()
 	navx = AHRS:new(1)
 
 	print("RIP Blockboy, you will never be forgotten. <3")
+	local testLog = log("test")
+	testLog:stop()
+
 end
 
 -- teleop periodic : WHERE EVERTHING HAPPENS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -36,4 +41,4 @@ end
 
 function robot.autonomousPeriodic()
 end
---Elizabeth was here 
+-- Elizabeth was here 
