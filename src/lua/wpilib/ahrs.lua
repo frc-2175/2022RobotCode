@@ -1,29 +1,21 @@
 local ffi = require("ffi")
 
--- lil nav x
-PortList = {
-	kOnboard = 0,
-	kMXP = 1,
-	kUSB = 2,
-	kUSB1 = 2,
-	kUSB2 = 3,
-}
-
 AHRS = {}
 
-function AHRS:new(port) 
+function AHRS:new() 
 	local a = {
-		ahrs = ffi.C.AHRS_new(port),
+		ahrs = ffi.C.AHRS_new(4),
 		getAngle = function(self)
-			return ffi.C.AHRS_GetAngle(self.AHRS);
+			return ffi.C.AHRS_GetAngle(self.ahrs);
 		end,
 		reset = function(self)
-			ffi.C.AHRS_Reset(self.AHRS);
-		end.
+			ffi.C.AHRS_Reset(self.ahrs);
+		end,
 		getPitch = function(self)
-			ffi.c.AHRS_GetPitch(self);
+			return ffi.c.AHRS_GetPitch(self.ahrs);
+		end
 	}
-	stmetatable(o, self)
+	setmetatable(a, self)
 	self.__index = selfreturn
-	return o
+	return a
 end
