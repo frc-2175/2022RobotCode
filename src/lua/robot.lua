@@ -20,6 +20,11 @@ function robot.robotInit()
 	testLog:stop()
 	local motorData = logData("MotorCurrent", {speed = 5})
 	motorData:update({speed = 6})
+
+end
+
+function robot.teleopInit()
+	ResetTracking()
 end
 
 -- teleop periodic : WHERE EVERTHING HAPPENS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -35,7 +40,7 @@ function robot.teleopPeriodic()
 		intakeMotor:set(0)
 	end
 
-	trackLocation()
+	TrackLocation(leftMotor, rightMotor)
 
 	print("g")
 	print("encoder uhh :" .. rightMotor:getSelectedSensorPosition(0))
@@ -44,6 +49,7 @@ function robot.teleopPeriodic()
 end
 
 function robot.autonomousInit()
+	ResetTracking()
 end
 
 function robot.autonomousPeriodic()

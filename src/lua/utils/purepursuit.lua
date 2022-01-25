@@ -4,8 +4,11 @@ require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
 
-local TICKS_TO_INCHES = 112.0 / 182931.0 -- stolen from java code, should be right numvber but confirm?
-local navx = NewAHRS(PortList.kMXP)
+TICKS_TO_INCHES = 138/30711
+local navx = AHRS:new()
+local previousClosestPoint = 0;
+local purePursuitPID = NewPIDController(0.02, 0, 0.002);
+local position = NewVector(0, 0)
 
 ---@param path table - a pure pursuit path
 ---@param fieldPosition any - the robot's current position on the field
@@ -65,6 +68,8 @@ end
 
 function TrackLocation(leftMotor, rightMotor)
 	-- first, get the distance we've traveled since last time trackLocation was called
+	lastEncoderDistanceLeft = lastEncoderDistanceLeft or 0
+	lastEncoderDistanceRight = lastEncoderDistanceRight or 0
 	distanceLeft = (leftMotor:getSelectedSensorPosition() * TICKS_TO_INCHES) - lastEncoderDistanceLeft
 	distanceRight = (rightMotor:getSelectedSensorPosition() * TICKS_TO_INCHES) -
 		                lastEncoderDistanceRight
@@ -106,7 +111,7 @@ function ResetTracking()
 	-- zeroEncoderLeft = leftMotor:getSelectedSensorPosition(0)
 	-- zeroEncoderRight = rightMotor:getSelectedSensorPosition(0)
 	position = NewVector(0, 0)
-	navx.reset();
+	navx:reset();
 end
 -- public void resetTracking() {
 -- 	lastEncoderDistanceLeft = 0;
