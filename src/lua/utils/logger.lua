@@ -42,3 +42,25 @@ function log(message, parent)
 	return log
 end
 
+local dataMetatable = {
+	update = function(self, value)
+		self.time = getFPGATimestamp()
+		self.value = value
+		writeLine(self)
+	end
+}
+dataMetatable.__index = dataMetatable
+
+function logData(name, value)
+	local data = {
+		type = "data",
+		name = name,
+		time = getFPGATimestamp(),
+		value = value
+	}
+	setmetatable(data, dataMetatable)
+
+	writeLine(data)
+
+	return data
+end
