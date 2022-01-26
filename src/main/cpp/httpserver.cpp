@@ -12,16 +12,17 @@
 namespace uv = wpi::uv;
 
 class MyHttpServerConnection : public wpi::HttpServerConnection {
- public:
+public:
   explicit MyHttpServerConnection(std::shared_ptr<uv::Stream> stream)
     : HttpServerConnection(stream)
-    {}
+  {}
 
- protected:
+protected:
   void ProcessRequest() override;
 };
 
 void MyHttpServerConnection::ProcessRequest() {
+  fmt::print(stderr, "HTTP request: '{}'\n", m_request.GetUrl());
   wpi::UrlParser url{m_request.GetUrl(),
                      m_request.GetMethod() == wpi::HTTP_CONNECT};
   if (!url.IsValid()) {
@@ -52,17 +53,24 @@ void MyHttpServerConnection::ProcessRequest() {
   }
 }
 
+
+wpi::EventLoopRunner loop;
+
 void StartHTTPServer() {
   // Kick off the event loop on a separate thread
-  wpi::EventLoopRunner loop;
   loop.ExecAsync([](uv::Loop& loop) {
     auto tcp = uv::Tcp::Create(loop);
 
+    auto printErrors = [](uv::Error err) {
+      fmt::print(stderr, "SERVER ERROR: ({} {}) {}\n", err.code(), err.name(), err.str());
+    };
+    tcp->error.connect(printErrors);
+
     // bind to listen address and port
-    tcp->Bind("", 8080);
+    tcp->Bind("127.0.0.1", 8080);
 
     // when we get a connection, accept it and start reading
-    tcp->connection.connect([srv = tcp.get()] {
+    tcp->connection.connect([srv = tcp.get()]{
       auto tcp = srv->Accept();
       if (!tcp) {
         return;

@@ -9,7 +9,7 @@
 #include "luahelpers.h"
 
 class Robot : public frc::TimedRobot {
-  lua_State *L;
+  lua_State* L;
   bool ok = false;
 
 public:
