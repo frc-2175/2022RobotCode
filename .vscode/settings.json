@@ -68,7 +68,17 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "*.metadesk": "csharp"
+    "*.metadesk": "csharp",
+    "hash_map": "cpp",
+    "hash_set": "cpp",
+    "codecvt": "cpp",
+    "complex": "cpp",
+    "list": "cpp",
+    "unordered_set": "cpp",
+    "filesystem": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "future": "cpp"
   },
   "luahelper.format.indent_width": 1,
   "luahelper.format.use_tab": true,
