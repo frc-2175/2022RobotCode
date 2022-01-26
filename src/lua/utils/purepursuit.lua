@@ -4,10 +4,8 @@ require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
 
-TICKS_TO_INCHES = 138/30711
+local TICKS_TO_INCHES = 138 / 30711 -- stolen from java code, should be right numvber but confirm?
 local navx = AHRS:new()
-local previousClosestPoint = 0;
-local purePursuitPID = NewPIDController(0.02, 0, 0.002);
 local position = NewVector(0, 0)
 
 ---@param path table - a pure pursuit path
@@ -68,11 +66,10 @@ end
 
 function TrackLocation(leftMotor, rightMotor)
 	-- first, get the distance we've traveled since last time trackLocation was called
-	lastEncoderDistanceLeft = lastEncoderDistanceLeft or 0
-	lastEncoderDistanceRight = lastEncoderDistanceRight or 0
-	distanceLeft = (leftMotor:getSelectedSensorPosition() * TICKS_TO_INCHES) - lastEncoderDistanceLeft
-	distanceRight = (rightMotor:getSelectedSensorPosition() * TICKS_TO_INCHES) -
-		                lastEncoderDistanceRight
+	local lastEncoderDistanceLeft = lastEncoderDistanceLeft or 0
+	local lastEncoderDistanceRight = lastEncoderDistanceRight or 0
+	distanceLeft = leftMotor:getSelectedSensorPosition() * TICKS_TO_INCHES - lastEncoderDistanceLeft
+	distanceRight = rightMotor:getSelectedSensorPosition() * TICKS_TO_INCHES - lastEncoderDistanceRight
 	-- calculates avg distance traveled
 	distance = (distanceLeft + distanceRight) / 2
 	-- get our heading in radians
@@ -150,7 +147,7 @@ function PurePursuit:run()
 	else
 		angle = GetAngleToPoint(goalPoint)
 	end
-	local turnValue = purePursuitPID:pid(-angle, 0)
+	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = GetTrapezoidSpeed(
 		0.5, 0.75, 0.5, self.path.numberOfActualPoints, 4, 20, indexOfClosestPoint
 	)

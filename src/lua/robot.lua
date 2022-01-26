@@ -1,5 +1,6 @@
 require("utils.logger")
 require("utils.vector")
+require("utils.path")
 require("utils.purepursuit")
 
 function robot.robotInit()
@@ -16,11 +17,6 @@ function robot.robotInit()
 	navx = AHRS:new()
 
 	print("RIP Blockboy, you will never be forgotten. <3")
-	local testLog = log("test")
-	testLog:stop()
-	local motorData = logData("MotorCurrent", {speed = 5})
-	motorData:update({speed = 6})
-
 end
 
 function robot.teleopInit()
@@ -44,7 +40,7 @@ function robot.teleopPeriodic()
 
 	print("g")
 	print("encoder uhh :" .. rightMotor:getSelectedSensorPosition(0))
-	print("navx uhh :".. navx:getAngle())
+	print("navx uhh :" .. navx:getAngle())
 	print(position)
 end
 
