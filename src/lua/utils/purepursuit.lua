@@ -66,8 +66,8 @@ end
 
 function TrackLocation(leftMotor, rightMotor)
 	-- first, get the distance we've traveled since last time trackLocation was called
-	local lastEncoderDistanceLeft = lastEncoderDistanceLeft or 0
-	local lastEncoderDistanceRight = lastEncoderDistanceRight or 0
+	lastEncoderDistanceLeft = lastEncoderDistanceLeft or 0
+	lastEncoderDistanceRight = lastEncoderDistanceRight or 0
 	distanceLeft = leftMotor:getSelectedSensorPosition() * TICKS_TO_INCHES - lastEncoderDistanceLeft
 	distanceRight = rightMotor:getSelectedSensorPosition() * TICKS_TO_INCHES - lastEncoderDistanceRight
 	-- calculates avg distance traveled

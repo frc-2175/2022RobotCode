@@ -41,7 +41,6 @@ function robot.teleopPeriodic()
 	print("g")
 	print("encoder uhh :" .. rightMotor:getSelectedSensorPosition(0))
 	print("navx uhh :" .. navx:getAngle())
-	print(position)
 end
 
 function robot.autonomousInit()
