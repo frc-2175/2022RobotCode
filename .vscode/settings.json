@@ -16,6 +16,7 @@
   },
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
   "files.associations": {
+    "*.metadesk": "csharp",
     "string": "cpp",
     "array": "cpp",
     "atomic": "cpp",
@@ -68,7 +69,6 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "*.metadesk": "csharp",
     "hash_map": "cpp",
     "hash_set": "cpp",
     "codecvt": "cpp",
@@ -78,7 +78,10 @@
     "filesystem": "cpp",
     "numeric": "cpp",
     "random": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "bitset": "cpp",
+    "csignal": "cpp",
+    "regex": "cpp"
   },
   "luahelper.format.indent_width": 1,
   "luahelper.format.use_tab": true,

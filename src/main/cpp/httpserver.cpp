@@ -1,6 +1,8 @@
 #include "httpserver.h"
 
 #include <cstdio>
+#include <iostream>
+#include <fstream>
 
 #include "fmt/format.h"
 #include "wpi/EventLoopRunner.h"
@@ -8,6 +10,7 @@
 #include "wpi/UrlParser.h"
 #include "wpi/uv/Loop.h"
 #include "wpi/uv/Tcp.h"
+#include "frc/Filesystem.h"
 
 namespace uv = wpi::uv;
 
@@ -20,6 +23,7 @@ public:
 protected:
   void ProcessRequest() override;
 };
+
 
 void MyHttpServerConnection::ProcessRequest() {
   fmt::print(stderr, "HTTP request: '{}'\n", m_request.GetUrl());
@@ -41,13 +45,24 @@ void MyHttpServerConnection::ProcessRequest() {
     query = url.GetQuery();
   }
 
+
+  // mhm yeah oh yeah boogy!!!.
+  FILE* myfile = fopen((frc::filesystem::GetDeployDirectory() + "/example.txt").c_str(), "r");
+  // get file size
+  fseek(myfile, 0, SEEK_END);
+  long stringlength = ftell(myfile);
+
+  // read file to string.
+  std::string mystring(stringlength, '\0');
+  fseek(myfile, 0, SEEK_SET);
+  fread(&mystring[0], sizeof(char), (size_t)stringlength, myfile);
+  std::cout << mystring;
+  fclose(myfile);
+
   const bool isGET = m_request.GetMethod() == wpi::HTTP_GET;
   if (isGET && path == "/") {
     // build HTML root page
-    SendResponse(200, "OK", "text/html",
-                 "<html><head><title>WebServer Example</title></head>"
-                 "<body><p>This is an example root page from the webserver."
-                 "</body></html>");
+    SendResponse(200, "OK", "text/html", mystring);
   } else {
     SendError(404, "Resource not found");
   }
@@ -67,7 +82,7 @@ void StartHTTPServer() {
     tcp->error.connect(printErrors);
 
     // bind to listen address and port
-    tcp->Bind("127.0.0.1", 8080);
+    tcp->Bind("", 2175);
 
     // when we get a connection, accept it and start reading
     tcp->connection.connect([srv = tcp.get()]{
