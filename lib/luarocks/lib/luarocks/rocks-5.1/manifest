@@ -1,0 +1,170 @@
+commands = {
+   tl = {
+      "tl/0.13.2-1"
+   }
+}
+dependencies = {
+   argparse = {
+      ["0.7.1-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 5, string = "5.5"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   compat53 = {
+      ["0.8-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               },
+               {
+                  op = "<",
+                  version = {
+                     5, 5, string = "5.5"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   luafilesystem = {
+      ["1.8.0-1"] = {
+         {
+            constraints = {
+               {
+                  op = ">=",
+                  version = {
+                     5, 1, string = "5.1"
+                  }
+               }
+            },
+            name = "lua"
+         }
+      }
+   },
+   tl = {
+      ["0.13.2-1"] = {
+         {
+            constraints = {},
+            name = "compat53"
+         },
+         {
+            constraints = {},
+            name = "argparse"
+         },
+         {
+            constraints = {},
+            name = "luafilesystem"
+         }
+      }
+   }
+}
+modules = {
+   argparse = {
+      "argparse/0.7.1-1"
+   },
+   ["compat53.init"] = {
+      "compat53/0.8-1"
+   },
+   ["compat53.module"] = {
+      "compat53/0.8-1"
+   },
+   ["compat53.string"] = {
+      "compat53/0.8-1"
+   },
+   ["compat53.table"] = {
+      "compat53/0.8-1"
+   },
+   ["compat53.utf8"] = {
+      "compat53/0.8-1"
+   },
+   lfs = {
+      "luafilesystem/1.8.0-1"
+   },
+   tl = {
+      "tl/0.13.2-1"
+   },
+   ["tl.tl"] = {
+      "tl/0.13.2-1"
+   }
+}
+repository = {
+   argparse = {
+      ["0.7.1-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               argparse = "argparse.lua"
+            }
+         }
+      }
+   },
+   compat53 = {
+      ["0.8-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               ["compat53.init"] = "compat53/init.lua",
+               ["compat53.module"] = "compat53/module.lua",
+               ["compat53.string"] = "compat53/string.so",
+               ["compat53.table"] = "compat53/table.so",
+               ["compat53.utf8"] = "compat53/utf8.so"
+            }
+         }
+      }
+   },
+   luafilesystem = {
+      ["1.8.0-1"] = {
+         {
+            arch = "installed",
+            commands = {},
+            dependencies = {},
+            modules = {
+               lfs = "lfs.so"
+            }
+         }
+      }
+   },
+   tl = {
+      ["0.13.2-1"] = {
+         {
+            arch = "installed",
+            commands = {
+               tl = "tl"
+            },
+            dependencies = {
+               argparse = "0.7.1-1",
+               compat53 = "0.8-1",
+               luafilesystem = "1.8.0-1"
+            },
+            modules = {
+               tl = "tl.lua",
+               ["tl.tl"] = "tl.tl"
+            }
+         }
+      }
+   }
+}
