@@ -7,10 +7,18 @@
                 "isDefault": true
             },
             "type": "process",
-            "command": "${workspaceFolder}\\lib\\bin\\lua51_win64\\lua5.1.exe",
-            "args": [
-                "${workspaceFolder}\\scripts\\test.lua"
-            ]
+            "windows": {
+                "command": "${workspaceFolder}\\lib\\bin\\lua51_win64\\lua5.1.exe",
+                "args": [
+                    "${workspaceFolder}\\scripts\\test.lua"
+                ]
+            },
+            "osx": {
+                "command": "lua",
+                "args": [
+                    "${workspaceFolder}/scripts/test.lua"
+                ]
+            }
         },
 
         {
@@ -19,6 +27,9 @@
             "type": "shell",
             "windows": {
                 "command": "${workspaceFolder}\\scripts\\build_bindings.bat"
+            },
+            "osx": {
+                "command": "${workspaceFolder}/scripts/build_bindings.sh"
             }
         },
         {

@@ -34,39 +34,39 @@ public:
   }
 
   void RobotPeriodic() override {
-    if (ok) RunLuaString(L, "robot.robotPeriodic()");
+    if (ok) RunLuaString(L, "Robot.robotPeriodic()");
   }
 
   void DisabledInit() override {
-    if (ok) RunLuaString(L, "robot.disabledInit()");
+    if (ok) RunLuaString(L, "Robot.disabledInit()");
   }
 
   void DisabledPeriodic() override {
-    if (ok) RunLuaString(L, "robot.disabledPeriodic()");
+    if (ok) RunLuaString(L, "Robot.disabledPeriodic()");
   }
 
   void AutonomousInit() override {
-    if (ok) RunLuaString(L, "robot.autonomousInit()");
+    if (ok) RunLuaString(L, "Robot.autonomousInit()");
   }
 
   void AutonomousPeriodic() override {
-    if (ok) RunLuaString(L, "robot.autonomousPeriodic()");
+    if (ok) RunLuaString(L, "Robot.autonomousPeriodic()");
   }
 
   void TeleopInit() override {
-    if (ok) RunLuaString(L, "robot.teleopInit()");
+    if (ok) RunLuaString(L, "Robot.teleopInit()");
   }
 
   void TeleopPeriodic() override {
-    if (ok) RunLuaString(L, "robot.teleopPeriodic()");
+    if (ok) RunLuaString(L, "Robot.teleopPeriodic()");
   }
 
   void SimulationInit() override {
-    if (ok) RunLuaString(L, "robot.simulationInit()");
+    if (ok) RunLuaString(L, "Robot.simulationInit()");
   }
 
   void SimulationPeriodic() override {
-    if (ok) RunLuaString(L, "robot.simulationPeriodic()");
+    if (ok) RunLuaString(L, "Robot.simulationPeriodic()");
   }
 };
 

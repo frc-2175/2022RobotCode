@@ -508,8 +508,8 @@ LUAFUNC void VictorSPX_SetWithVictorSPXControlModeAndDemands(void* _this, int mo
 }
 
 LUAFUNC double VictorSPX_GetExpiration(void* _this) {
-auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->GetExpiration();
+auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
+        ->GetExpiration();
         return (double)_result;
 }
 
@@ -1094,8 +1094,8 @@ LUAFUNC void TalonSRX_EnableCurrentLimit(void* _this, bool enable) {
 }
 
 LUAFUNC double TalonSRX_GetExpiration(void* _this) {
-auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->GetExpiration();
+auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
+        ->GetExpiration();
         return (double)_result;
 }
 
@@ -1656,10 +1656,8 @@ LUAFUNC void TalonFX_SetInvertedTalonFX(void* _this, int invertType) {
 }
 
 LUAFUNC void TalonFX_ConfigStatorCurrentLimit(void* _this, bool enable, double currentLimit) {
-
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->ConfigStatorCurrentLimit(ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration(enable, currentLimit, 0, 0));
-    
+    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
+        ->ConfigStatorCurrentLimit(ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration(enable, currentLimit, 0, 0));
 }
 
 LUAFUNC int TalonFX_ConfigSelectedFeedbackSensor(void* _this, int feedbackDevice, int pidIdx, int timeoutMs) {
@@ -1669,19 +1667,17 @@ LUAFUNC int TalonFX_ConfigSelectedFeedbackSensor(void* _this, int feedbackDevice
 }
 
 LUAFUNC double TalonFX_GetExpiration(void* _this) {
-auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->GetExpiration();
+auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
+        ->GetExpiration();
         return (double)_result;
 }
 
 LUAFUNC void* DifferentialDrive_new(void* leftMotor, void* rightMotor) {
-
-      assert(leftMotor);
-      assert(rightMotor);
-      auto l = (frc::MotorController*)leftMotor;
-      auto r = (frc::MotorController*)rightMotor;
-      return new frc::DifferentialDrive(*l, *r);
-    
+      assert(leftMotor);
+      assert(rightMotor);
+      auto l = (frc::MotorController*)leftMotor;
+      auto r = (frc::MotorController*)rightMotor;
+      return new frc::DifferentialDrive(*l, *r);
 }
 
 LUAFUNC void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zRotation, bool squareInputs) {

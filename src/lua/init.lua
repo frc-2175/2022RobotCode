@@ -17,7 +17,7 @@ if not table.pack then
     end
 end
 
-robot = {
+Robot = {
     --- Robot-wide initialization code should go here.
     robotInit = function() end,
     --- Periodic code for all robot modes should go here. 

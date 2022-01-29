@@ -1,5 +1,5 @@
 require("subsystems.cargo")
 
-function robot.teleopPeriodic()
+function Robot.teleopPeriodic()
 	runIn()
 end
