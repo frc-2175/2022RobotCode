@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <regex>
 
 #include "fmt/format.h"
 #include "wpi/EventLoopRunner.h"
@@ -11,8 +13,40 @@
 #include "wpi/uv/Loop.h"
 #include "wpi/uv/Tcp.h"
 #include "frc/Filesystem.h"
+#include "frc/RobotBase.h"
+#include "filesystem.hpp"
 
+namespace fs = ghc::filesystem;
 namespace uv = wpi::uv;
+
+std::string deployPath() {
+  if (frc::RobotBase::IsReal()) {
+    return (std::string)"/home/lvuser/deploy/logViewer";
+  } else {
+    return frc::filesystem::GetDeployDirectory() + "/logViewer";
+  }
+}
+
+std::string readFile(std::string path) {
+  FILE* file = fopen((path).c_str(), "r");
+
+  if (!file) {
+    return "File not found";
+  }
+
+  // get file size
+  fseek(file, 0, SEEK_END);
+  long stringlength = ftell(file);
+
+  // read file to string.
+  std::string fileText(stringlength, '\0');
+  fseek(file, 0, SEEK_SET);
+  fread(&fileText[0], sizeof(char), (size_t)stringlength, file);
+  std::cout << fileText;
+  fclose(file);
+
+  return fileText;
+}
 
 class MyHttpServerConnection : public wpi::HttpServerConnection {
 public:
@@ -46,23 +80,36 @@ void MyHttpServerConnection::ProcessRequest() {
   }
 
 
-  // mhm yeah oh yeah boogy!!!.
-  FILE* myfile = fopen((frc::filesystem::GetDeployDirectory() + "/example.txt").c_str(), "r");
-  // get file size
-  fseek(myfile, 0, SEEK_END);
-  long stringlength = ftell(myfile);
+  fs::path logDir(frc::filesystem::GetDeployDirectory() + "/logs/");
+  fs::directory_iterator logIterator(logDir);
 
-  // read file to string.
-  std::string mystring(stringlength, '\0');
-  fseek(myfile, 0, SEEK_SET);
-  fread(&mystring[0], sizeof(char), (size_t)stringlength, myfile);
-  std::cout << mystring;
-  fclose(myfile);
+  std::string fileList;
+
+  for (const auto& entry : logIterator) fileList += entry.path().filename().generic_string() + "\\n";
 
   const bool isGET = m_request.GetMethod() == wpi::HTTP_GET;
-  if (isGET && path == "/") {
-    // build HTML root page
-    SendResponse(200, "OK", "text/html", mystring);
+  if (isGET) {
+    if (path == "/") {
+      // build HTML root page
+      std::string logViewer = readFile(frc::filesystem::GetDeployDirectory() + (std::string)"/logViewer/index.html");
+
+      SendResponse(200, "OK", "text/html", logViewer);
+    } else if (path == "/logs") {
+      SendResponse(200, "OK", "text/plain", fileList);
+    } else if (path.rfind("/logs/", 0) == 0) {
+      // mhm yeah oh yeah boogy!!!.
+      std::string logFile = readFile(frc::filesystem::GetDeployDirectory() + (std::string)path);
+
+      SendResponse(200, "OK", "application/json", logFile);
+    } else if (path == "/normalize.css") {
+      std::string css = readFile(frc::filesystem::GetDeployDirectory() + (std::string)"/logViewer/normalize.css");
+
+      SendResponse(200, "OK", "text/css", css);
+    } else if (path == "/script.js") {
+      std::string js = readFile(frc::filesystem::GetDeployDirectory() + (std::string)"/logViewer/script.js");
+
+      SendResponse(200, "OK", "text/javascript", js);
+    }
   } else {
     SendError(404, "Resource not found");
   }

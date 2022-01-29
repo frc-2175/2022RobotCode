@@ -17,6 +17,9 @@ function robot.robotInit()
 	navx = AHRS:new()
 
 	print("RIP Blockboy, you will never be forgotten. <3")
+	local loggy = log("test")
+	loggy:stop()
+
 end
 
 function robot.teleopInit()

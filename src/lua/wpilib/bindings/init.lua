@@ -339,4 +339,6 @@ void SmartDashboard_PutString(const char* keyName, const char* value);
 void SmartDashboard_PutStringArray( const char* keyName, const char * * value, size_t size);
 void SmartDashboard_PutBoolean(const char* keyName, bool value);
 void SmartDashboard_PutBooleanArray( const char* keyName,  int* value, size_t size);
+const char* GetDeployDirectory();
+void liberate(void* ptr);
 ]]

@@ -81,7 +81,8 @@
     "future": "cpp",
     "bitset": "cpp",
     "csignal": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "*.inc": "cpp"
   },
   "luahelper.format.indent_width": 1,
   "luahelper.format.use_tab": true,

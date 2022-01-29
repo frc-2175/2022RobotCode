@@ -350,3 +350,13 @@ dashboard: {
     @static PutBooleanArray("const char* keyName", "int* value", size_t size) """    frc::SmartDashboard::PutBooleanArray((std::string_view)keyName, wpi::span(value, size));""";
   }
 }
+
+@include("<frc/Filesystem.h>")
+filesystem: {
+  "const char*" GetDeployDirectory() """  return stdStringForLua(frc::filesystem::GetDeployDirectory());""";
+}
+
+@include("<stdlib.h>")
+stdlib: {
+  @static liberate("void*" ptr) """ free(ptr);""";
+}

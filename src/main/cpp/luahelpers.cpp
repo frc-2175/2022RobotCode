@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <cstring>
+#include <string>
 
 #include "luahelpers.h"
 
@@ -40,4 +42,10 @@ int RunLuaString(lua_State* L, const char* str) {
     printf("Failed to run script: %s\n", lua_tostring(L, -1));
   }
   return result;
+}
+
+char* stdStringForLua(std::string str) {
+  char* cstr = new char[str.length() + 1];
+  std::strcpy(cstr, str.c_str());
+  return cstr;
 }

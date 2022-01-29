@@ -33,6 +33,11 @@ deploy {
                     files = project.fileTree('src/lua')
                     directory = '/home/lvuser/lua'
                 }
+
+                frcLogViewerDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                    files = project.fileTree('tools/logViewer')
+                    directory = '/home/lvuser/deploy/logViewer'
+                }
             }
         }
     }
