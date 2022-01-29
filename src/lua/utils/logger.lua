@@ -15,8 +15,8 @@ function uniqueID()
 end
 
 function writeLine(table)
-	io.write(json.encode(table), "\n")
-	io.flush()
+	file:write(json.encode(table), "\n")
+	file:flush()
 end
 
 local logMetatable = {
