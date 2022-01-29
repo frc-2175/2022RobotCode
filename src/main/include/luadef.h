@@ -5,3 +5,9 @@
 #else
 #define LUAFUNC extern "C"
 #endif
+
+// Include stdlib stuff we need for all bindings
+#include <cstring>
+#include <string>
+
+char* stdStringForLua(std::string str);

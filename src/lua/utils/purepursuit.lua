@@ -122,16 +122,16 @@ end
 PurePursuit = {}
 PurePursuit.__index = PurePursuit
 
-function PurePursuit:new(path, isBackwards)
-	local p = {
+function PurePursuit:new(path, isBackwards, p, i, d)
+	local x = {
 		path = path,
 		isBackwards = isBackwards,
 		previousClosestPoint = 0,
-		purePursuitPID = NewPIDController(0.02, 0, 0.002),
+		purePursuitPID = NewPIDController(p, i, d),
 	}
 	setmetatable(p, PurePursuit)
 
-	return p
+	return x
 end
 
 ---@param path table - the path we want to drive

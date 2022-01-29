@@ -1,7 +1,9 @@
 local json = require("utils.json")
 require("wpilib.time")
+require("wpilib.filesystem")
 
-local file = io.open("C:/Users/Student/Documents/Repos/2022LogViewer/TestData/2.log", "w")
+local path = GetDeployDirectory() .. "\\logs\\" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
+local file = io.open(path, "w")
 
 io.output(file)
 
@@ -12,7 +14,7 @@ function uniqueID()
 	return currentID
 end
 
-function writeLine(table) 
+function writeLine(table)
 	io.write(json.encode(table), "\n")
 	io.flush()
 end
@@ -21,7 +23,7 @@ local logMetatable = {
 	stop = function(self)
 		self.time = getFPGATimestamp()
 		writeLine(self)
-	end
+	end,
 }
 logMetatable.__index = logMetatable
 
@@ -33,7 +35,7 @@ function log(message, parent)
 		message = message,
 		id = uniqueID(),
 		time = getFPGATimestamp(),
-		parent = parent
+		parent = parent,
 	}
 	setmetatable(log, logMetatable)
 
@@ -47,7 +49,7 @@ local dataMetatable = {
 		self.time = getFPGATimestamp()
 		self.value = value
 		writeLine(self)
-	end
+	end,
 }
 dataMetatable.__index = dataMetatable
 
@@ -56,7 +58,7 @@ function logData(name, value)
 		type = "data",
 		name = name,
 		time = getFPGATimestamp(),
-		value = value
+		value = value,
 	}
 	setmetatable(data, dataMetatable)
 
