@@ -2,10 +2,14 @@ local json = require("utils.json")
 require("wpilib.time")
 require("wpilib.filesystem")
 
-local path = GetDeployDirectory() .. "\\logs\\" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
-local file = io.open(path, "w")
+local path
+local file
 
-io.output(file)
+function initLogging()
+	path = GetDeployDirectory() .. "\\logs\\" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
+	file = io.open(path, "w")
+	io.output(file)
+end
 
 local currentID = -1
 
