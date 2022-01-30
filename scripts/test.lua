@@ -106,6 +106,16 @@ setmetatable(ffi.C, {
 })
 package.loaded["ffi"] = ffi -- "preload" our fake FFI
 
+function fakefile()
+    local t = {
+        contents = '',
+        write = function(self, stuff)
+            self.contents = self.contents .. stuff
+        end
+    }
+    return t
+end
+
 -------------------------------------------------------------------------------
 -- Create our actual global test module
 
@@ -143,6 +153,12 @@ function t:assertEqual(actual, expected, message)
     end
 end
 
+function t:assertDoesError(func)
+    if pcall(func) then
+        error('expected function to trigger an error, but it did not', 2)
+    end
+end
+
 function runTests()
     local testItems = {}
     for name, func in pairs(tests) do
@@ -166,15 +182,25 @@ function runTests()
         io.write(Blue..test.name..": "..ResetColor)
         io.flush()
 
+        local realStdout, realStderr = io.stdout, io.stderr
+        local fakeStdout, fakeStderr = fakefile(), fakefile()
+        io.stdout = fakeStdout
+        io.stderr = fakeStderr
         local ok, err = xpcall(function()
             test.func(t)
         end, debug.traceback)
+        io.stdout = realStdout
+        io.stderr = realStderr
+
         if err == nil then
             io.write(Green.."OK"..ResetColor.."\n")
         else
             io.write(Red.."ERROR"..ResetColor.."\n")
             failed = true
             print(err)
+            print('Output:')
+            io.stdout:write(fakeStdout.contents)
+            io.stderr:write(fakeStderr.contents)
         end
     end
 

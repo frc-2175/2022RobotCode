@@ -18,15 +18,16 @@ LUAFUNC void Solenoid_Set(void* _this, bool on) {
 LUAFUNC bool Solenoid_Get(void* _this) {
     auto _result = ((frc::Solenoid*)_this)
         ->Get();
-    return _result;
+    return (bool)_result;
+}
+
+LUAFUNC void Solenoid_Toggle(void* _this) {
+    ((frc::Solenoid*)_this)
+        ->Toggle();
 }
 
 LUAFUNC void* DoubleSolenoid_new(int moduleType, int forwardChannel, int reverseChannel) {
     return new frc::DoubleSolenoid((frc::PneumaticsModuleType)moduleType, forwardChannel, reverseChannel);
-}
-
-LUAFUNC void* DoubleSolenoid_newWithModule(int moduleNumber, int moduleType, int forwardChannel, int reverseChannel) {
-    return new frc::DoubleSolenoid(moduleNumber, (frc::PneumaticsModuleType)moduleType, forwardChannel, reverseChannel);
 }
 
 LUAFUNC void DoubleSolenoid_Set(void* _this, int value) {
@@ -34,8 +35,7 @@ LUAFUNC void DoubleSolenoid_Set(void* _this, int value) {
         ->Set((frc::DoubleSolenoid::Value)value);
 }
 
-LUAFUNC int DoubleSolenoid_Get(void* _this) {
-    auto _result = ((frc::DoubleSolenoid*)_this)
-        ->Get();
-    return _result;
+LUAFUNC void DoubleSolenoid_Toggle(void* _this) {
+    ((frc::DoubleSolenoid*)_this)
+        ->Toggle();
 }
