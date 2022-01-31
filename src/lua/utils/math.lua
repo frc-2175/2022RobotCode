@@ -32,12 +32,6 @@ function sign(n)
 	return val
 end
 
-function Clamp(value, min, max)
-	if value < min then
-		return min
-	elseif value > max then
-		return max
-	else
-		return value
-	end
+function clamp(value, min, max)
+	return math.min(math.max(value, min), max)
 end

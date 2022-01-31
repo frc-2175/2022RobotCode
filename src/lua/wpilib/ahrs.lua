@@ -2,7 +2,7 @@ local ffi = require("ffi")
 
 AHRS = {}
 
-function AHRS:new() 
+function AHRS:new()
 	local a = {
 		ahrs = ffi.C.AHRS_new(4),
 		getAngle = function(self)
@@ -13,7 +13,7 @@ function AHRS:new()
 		end,
 		getPitch = function(self)
 			return ffi.c.AHRS_GetPitch(self.ahrs);
-		end
+		end,
 	}
 	setmetatable(a, self)
 	self.__index = selfreturn

@@ -1,7 +1,6 @@
 require("utils.math")
 
-local rampTable = {}
-rampTable.__index = rampTable
+Ramp = {}
 
 --- Creates a new ramp, with a time in seconds to accelerate, `timeToMax`,
 --- and a time in seconds to stop, `timeToStop`.
@@ -12,13 +11,14 @@ rampTable.__index = rampTable
 ---@param timeToMax number
 ---@param timeToStop number
 ---@return table Ramp
-function NewRamp(timeToMax, timeToStop)
+function Ramp:new(timeToMax, timeToStop)
 	local r = {
 		currentSpeed = 0,
 		maxAccel = 1 / (50 * timeToMax),
 		maxDecel = 1 / (50 * timeToStop),
 	}
-	setmetatable(r, rampTable)
+	setmetatable(r, self)
+	self.__index = self
 	return r
 end
 
@@ -27,7 +27,7 @@ end
 ---@param accel number
 ---@param decel number
 ---@return number rampedValue
-function DoGrossRampStuff(curr, targ, accel, decel)
+function doGrossRampStuff(curr, targ, accel, decel)
 	if curr == 0 or (curr > 0 and targ > curr) or (curr < 0 and targ < curr) then
 		-- accelerating
 		change = math.min(math.abs(curr - targ), accel) * sign(targ - curr)
@@ -44,7 +44,7 @@ end
 --- Updates and returns the new speed, limited by the maximum acceleration and deceleration.
 ---@param targetSpeed number
 ---@return number Speed
-function rampTable:Ramp(targetSpeed)
-	self.currentSpeed = DoGrossRampStuff(self.currentSpeed, targetSpeed, self.maxAccel, self.maxDecel)
+function Ramp:ramp(targetSpeed)
+	self.currentSpeed = doGrossRampStuff(self.currentSpeed, targetSpeed, self.maxAccel, self.maxDecel)
 	return self.currentSpeed
 end

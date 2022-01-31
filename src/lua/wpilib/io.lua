@@ -2,7 +2,7 @@ local ffi = require("ffi")
 
 local constantMetatable = {
 	__index = function(table, key)
-		error('"' .. tostring(key) .. '\" is not a valid constant')
+		error("\"" .. tostring(key) .. "\" is not a valid constant")
 	end,
 }
 
@@ -78,7 +78,7 @@ local deadvalue = 0.1
 ---@param value number
 ---@param band number
 ---@return number deadbandedNumber
-function Deadband(value, band)
+function deadband(value, band)
 	local result = 0
 	if (value > band) then
 		result = (value - band) / (1 - band);
@@ -90,12 +90,12 @@ end
 
 ---@return number joyX
 function Joystick:getX()
-	return Deadband(ffi.C.Joystick_GetX(self.joystick), deadvalue)
+	return deadband(ffi.C.Joystick_GetX(self.joystick), deadvalue)
 end
 
 ---@return number joyX
 function Joystick:getY()
-	return Deadband(ffi.C.Joystick_GetY(self.joystick), deadvalue)
+	return deadband(ffi.C.Joystick_GetY(self.joystick), deadvalue)
 end
 
 ---@param button number
@@ -119,7 +119,7 @@ end
 ---@param axis number
 ---@return number axisValue
 function Joystick:getAxis(axis)
-	return Deadband(ffi.C.Joystick_GetRawAxis(self.joystick, axis), deadvalue)
+	return deadband(ffi.C.Joystick_GetRawAxis(self.joystick, axis), deadvalue)
 end
 
 ---@return number throttleValue

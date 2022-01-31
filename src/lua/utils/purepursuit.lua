@@ -4,9 +4,9 @@ require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
 
-local TICKS_TO_INCHES = 138 / 30711 -- stolen from java code, should be right numvber but confirm?
+local TICKS_TO_INCHES = 138 / 30711
 local navx = AHRS:new()
-local position = NewVector(0, 0)
+local position = Vector:new(0, 0)
 
 ---@param path table - a pure pursuit path
 ---@param fieldPosition any - the robot's current position on the field
@@ -16,7 +16,7 @@ local position = NewVector(0, 0)
     looks through all points on the list, finds & returns the point
     closest to current robot position 
 --]]
-function FindClosestPoint(path, fieldPosition, previousClosestPoint)
+function findClosestPoint(path, fieldPosition, previousClosestPoint)
 	local indexOfClosestPoint = 0
 	local startIndex = previousClosestPoint - 36 -- 36 lookahead distance (in)
 	local endIndex = previousClosestPoint + 36
@@ -44,7 +44,7 @@ end
 ---@param closestPoint number - INDEX OF closest point in path to current position, basically where we are, ish
 ---@return number goalPoint - returns the index we should be aiming for
 
-function FindGoalPoint(path, fieldPosition, lookAhead, closestPoint)
+function findGoalPoint(path, fieldPosition, lookAhead, closestPoint)
 	closestPoint = closestPoint or 0 -- default 0
 	return math.min(closestPoint + lookAhead, #path.path) -- # is length operator
 	-- in case we are aiming PAST the end of the path, just aim at the end instead
@@ -52,7 +52,7 @@ end
 
 ---@param point any
 ---@return number degAngle
-function GetAngleToPoint(point)
+function getAngleToPoint(point)
 	if point:length() == 0 then
 		return 0
 	end
@@ -64,7 +64,7 @@ end
 -- 	return ((rightMotor:getSelectedSensorPosition() + leftMotor:getSelectedSensorPosition())/2)*TICKS_TO_INCHES
 -- end
 
-function TrackLocation(leftMotor, rightMotor)
+function trackLocation(leftMotor, rightMotor)
 	-- first, get the distance we've traveled since last time trackLocation was called
 	lastEncoderDistanceLeft = lastEncoderDistanceLeft or 0
 	lastEncoderDistanceRight = lastEncoderDistanceRight or 0
@@ -79,7 +79,7 @@ function TrackLocation(leftMotor, rightMotor)
 	x = math.sin(angle) * distance
 	y = math.cos(angle) * distance
 
-	changeInPosition = NewVector(x, y)
+	changeInPosition = Vector:new(x, y)
 	position = position + changeInPosition
 
 	-- setting the "lastEncoderDistance" for next time
@@ -102,12 +102,12 @@ end
 -- 	lastEncoderDistanceLeft = getLeftDistance(); 
 -- 	lastEncoderDistanceRight = getRightDistance();
 -- }
-function ResetTracking()
+function resetTracking()
 	lastEncoderDistanceLeft = 0
 	lastEncoderDistanceRight = 0
 	-- zeroEncoderLeft = leftMotor:getSelectedSensorPosition(0)
 	-- zeroEncoderRight = rightMotor:getSelectedSensorPosition(0)
-	position = NewVector(0, 0)
+	position = Vector:new(0, 0)
 	navx:reset();
 end
 -- public void resetTracking() {
@@ -127,7 +127,7 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 		path = path,
 		isBackwards = isBackwards,
 		previousClosestPoint = 0,
-		purePursuitPID = NewPIDController(p, i, d),
+		purePursuitPID = PIDController:new(p, i, d),
 	}
 	setmetatable(p, PurePursuit)
 
@@ -138,17 +138,17 @@ end
 ---@param isBackwards boolean
 ---@return table result
 function PurePursuit:run()
-	local indexOfClosestPoint = FindClosestPoint(self.path, position, self.previousClosestPoint)
-	local indexOfGoalPoint = FindGoalPoint(self.path, position, 25, indexOfClosestPoint)
+	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
+	local indexOfGoalPoint = findGoalPoint(self.path, position, 25, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
 	local angle
 	if self.isBackwards then
-		angle = -GetAngleToPoint(-goalPoint)
+		angle = -getAngleToPoint(-goalPoint)
 	else
-		angle = GetAngleToPoint(goalPoint)
+		angle = getAngleToPoint(goalPoint)
 	end
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
-	local speed = GetTrapezoidSpeed(
+	local speed = getTrapezoidSpeed(
 		0.5, 0.75, 0.5, self.path.numberOfActualPoints, 4, 20, indexOfClosestPoint
 	)
 	if self.isBackwards then

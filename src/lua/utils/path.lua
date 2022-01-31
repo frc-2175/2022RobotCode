@@ -14,15 +14,15 @@ require("utils.math")
 --- - `currentDistance` is how far along the 'trapezoid' the robot already is.
 ---
 --- Examples:
---- - `GetTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, -1)` returns the startSpeed `0`
---- - `GetTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 0)` returns the startSpeed `0`
---- - `GetTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 0.5)` returns `0.5` which is halfway between the startSpeed `0` and the
+--- - `getTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, -1)` returns the startSpeed `0`
+--- - `getTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 0)` returns the startSpeed `0`
+--- - `getTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 0.5)` returns `0.5` which is halfway between the startSpeed `0` and the
 --- middleSpeed `1` because currentDistance `0.5` is half of the rampUpDistance `1`
---- - `GetTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 1.5)` returns the middleSpeed `1` because the currentDistance `1.5` is
+--- - `getTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 1.5)` returns the middleSpeed `1` because the currentDistance `1.5` is
 --- after the rampUpDistance but before the totalDistance - rampDownDistance
---- - `GetTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 2.5)` returns `0.75` which is halfway between the middleSpeed `1` and
+--- - `getTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 2.5)` returns `0.75` which is halfway between the middleSpeed `1` and
 --- endSpeed `0.5` because currentDistance `2.5` is halfway between totalDistance - rampDownDistance and totalDistance
---- - `GetTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 3)` returns the endSpeed `0.5`
+--- - `getTrapezoidSpeed(0, 1, 0.5, 3, 1, 1, 3)` returns the endSpeed `0.5`
 ---@param startSpeed number
 ---@param middleSpeed number
 ---@param endSpeed number
@@ -31,7 +31,7 @@ require("utils.math")
 ---@param rampDownDistance number
 ---@param currentDistance number
 ---@return number speed
-function GetTrapezoidSpeed(
+function getTrapezoidSpeed(
 	startSpeed,
 	middleSpeed,
 	endSpeed,
@@ -68,15 +68,15 @@ end
 --- in degrees, `endAng`, and a list of vectors, `path`.
 ---
 --- Examples:
----  - `mySegment = NewPathSegment(90, {})` creates
+---  - `mySegment = newPathSegment(90, {})` creates
 --- a new path segment(with an empty path table).
----  - `mySegment.path = {NewVector(0, 0), NewVector(1, 1)}`
+---  - `mySegment.path = {Vector:new(0, 0), Vector:new(1, 1)}`
 --- sets the path of the new segment you made.
----  - `mySegment.path[1]` returns `NewVector(0, 0)`.
+---  - `mySegment.path[1]` returns `Vector:new(0, 0)`.
 ---@param endAng number
 ---@param path table
 ---@return table PathSegment
-function NewPathSegment(endAng, path)
+function newPathSegment(endAng, path)
 	local p = {
 		endAng = endAng,
 		path = path,
@@ -90,7 +90,7 @@ end
 ---@param startpoint any
 ---@param endpoint any
 ---@return table path
-function MakePathLine(startpoint, endpoint)
+function makePathLine(startpoint, endpoint)
 	local numPoints = math.floor((endpoint - startpoint):length() + 0.5)
 	local pathVector = (endpoint - startpoint):normalized()
 	local path = {}
@@ -103,14 +103,14 @@ end
 
 ---@param dist number
 ---@return table PathSegment
-function MakeLinePathSegment(dist)
-	return NewPathSegment(0, MakePathLine(NewVector(0, 0), NewVector(0, dist)))
+function makeLinePathSegment(dist)
+	return newPathSegment(0, makePathLine(Vector:new(0, 0), Vector:new(0, dist)))
 end
 
 ---@param radius number
 ---@param deg number
 ---@return table PathSegment
-function MakeRightArcPathSegment(radius, deg)
+function makeRightArcPathSegment(radius, deg)
 	local circumfrence = 2 * math.pi * radius
 	local distanceOfPath = circumfrence * (deg / 360)
 	local yEndpoint = radius * math.sin(math.rad(deg))
@@ -122,28 +122,28 @@ function MakeRightArcPathSegment(radius, deg)
 		local angle = (i - 1) * degreesPerInch
 		local yPosition = radius * math.sin(math.rad(angle))
 		local xPosition = radius - (radius * math.cos(math.rad(angle)))
-		path[i] = NewVector(xPosition, yPosition)
+		path[i] = Vector:new(xPosition, yPosition)
 	end
-	path[numPoints] = NewVector(xEndpoint, yEndpoint)
-	return NewPathSegment(-deg, path)
+	path[numPoints] = Vector:new(xEndpoint, yEndpoint)
+	return newPathSegment(-deg, path)
 end
 
 ---@param radius number
 ---@param deg number
 ---@return table PathSegment
-function MakeLeftArcPathSegment(radius, deg)
-	local rightPath = MakeRightArcPathSegment(radius, deg).path
+function makeLeftArcPathSegment(radius, deg)
+	local rightPath = makeRightArcPathSegment(radius, deg).path
 	local leftPath = {}
 	for i = 1, #rightPath do
-		leftPath[i] = NewVector(-rightPath[i].x, rightPath[i].y)
+		leftPath[i] = Vector:new(-rightPath[i].x, rightPath[i].y)
 	end
-	return NewPathSegment(deg, leftPath)
+	return newPathSegment(deg, leftPath)
 end
 
 ---@param path table
 ---@param numberOfActualPoints number
 ---@return table path
-function NewPath(path, numberOfActualPoints)
+function newPath(path, numberOfActualPoints)
 	local p = {
 		path = path,
 		numberOfActualPoints = numberOfActualPoints,
@@ -156,12 +156,12 @@ end
 ---@param startingPos any
 ---@param pathSegments table
 ---@return table path
-function MakePath(isBackwards, startingAng, startingPos, pathSegments)
+function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	local finalPath = {}
 	local previousAng = 0
-	local previousPos = NewVector(0, 0)
+	local previousPos = Vector:new(0, 0)
 	-- add 25 points to the end so the robot knows where to look ahead
-	local endingPoints = MakeLinePathSegment(25)
+	local endingPoints = makeLinePathSegment(25)
 
 	-- create table with all the pathSegments elements and add a new element for endingPoints
 	local pathSegmentsList = pathSegments
@@ -185,7 +185,7 @@ function MakePath(isBackwards, startingAng, startingPos, pathSegments)
 		finalPath[i] = finalPath[i]:rotate(math.rad(startingAng)) + startingPos
 	end
 
-	local pathResult = NewPath(finalPath, #finalPath - #endingPoints.path)
+	local pathResult = newPath(finalPath, #finalPath - #endingPoints.path)
 
 	return pathResult
 end

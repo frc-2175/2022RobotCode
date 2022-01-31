@@ -1,7 +1,7 @@
 local ffi = require("ffi")
 
 ---@return string deployDirectory
-function GetDeployDirectory()
+function getDeployDirectory()
 	local cstr = ffi.C.GetDeployDirectory()
 	local luastr = ffi.string(cstr)
 	ffi.C.liberate(ffi.cast("void*", cstr))
