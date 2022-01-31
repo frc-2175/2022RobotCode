@@ -18,7 +18,7 @@ let resizing = false;
 let mouseStart;
 
 const colors = ["#6ca16a", "#ffa742", "#ba98ed", "#fa6e6e"];
-let currentColors = {};
+const currentColors = {};
 
 // This runs when the page loads once
 window.addEventListener("DOMContentLoaded", () => {
@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
         
 		// Populate the match selector with all of the values
 		for (const match of matches) {
-			let matchOption = document.createElement("option");
+			const matchOption = document.createElement("option");
 			matchOption.setAttribute("value", match);
 			matchOption.innerHTML = "Match " + match;
 			document.querySelector("#matchSelect").appendChild(matchOption);
@@ -62,7 +62,7 @@ window.addEventListener("DOMContentLoaded", () => {
          * @param {*} events the spacetime events to render on screen
          */
 		function renderEvents(events) {
-			for (let event of events) {
+			for (const event of events) {
 				const mostParentID = getMostParentID(event, logs);
 				let color;
 				if (currentColors[mostParentID]) {
@@ -87,8 +87,8 @@ window.addEventListener("DOMContentLoaded", () => {
 		}
 
 		function renderPoints(points) {
-			for (let point of points) {
-				let color = colors[Object.keys(currentColors).length % (colors.length)];
+			for (const point of points) {
+				const color = colors[Object.keys(currentColors).length % (colors.length)];
 				const div = document.createElement("div");
 				div.textContent = point.message;
 				div.style.position = "absolute";
@@ -99,7 +99,7 @@ window.addEventListener("DOMContentLoaded", () => {
 				div.style.paddingLeft = "5px";
 				document.querySelector("#spacetime").appendChild(div);
 				const ctx = eventCanvas.getContext("2d");
-				let x = (point.time - pageStart) / (pageEnd - pageStart) * eventCanvas.width;
+				const x = (point.time - pageStart) / (pageEnd - pageStart) * eventCanvas.width;
 				drawLine(ctx, x, document.querySelector("#topUI").clientHeight + 4, x, eventCanvas.height, 5, color);
 			}
 		}
@@ -138,8 +138,8 @@ window.addEventListener("DOMContentLoaded", () => {
 				ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 				drawLine(ctx, e.clientX, 0, e.clientX, overlayCanvas.height, 2);
 
-				let click = (mouseStart / window.innerWidth) * (pageEnd - pageStart) + pageStart;
-				let unclick = (e.clientX / window.innerWidth) * (pageEnd - pageStart) + pageStart;
+				const click = (mouseStart / window.innerWidth) * (pageEnd - pageStart) + pageStart;
+				const unclick = (e.clientX / window.innerWidth) * (pageEnd - pageStart) + pageStart;
 
 				if (Math.abs(mouseStart - e.clientX) > 20) {
 					pageStart = e.clientX > mouseStart ? click : unclick;
@@ -285,7 +285,7 @@ async function loadMatch(match) {
 	dataSeriesNames = Array.from(new Set(dataSeriesNames));
 
 	document.querySelector("#seriesSelector").innerHTML = "";
-	for (let dataSeriesName of dataSeriesNames) {
+	for (const dataSeriesName of dataSeriesNames) {
 		const option = document.createElement("option");
 		option.setAttribute("value", dataSeriesName);
 		document.querySelector("#seriesSelector").appendChild(option);
@@ -294,7 +294,7 @@ async function loadMatch(match) {
 
 	// Determine the maximum timestamp present in the logs to set
 	// the time axis range for the page
-	let timestamps = logMessages.map(message => message.time);
+	const timestamps = logMessages.map(message => message.time);
 
 	maxEnd = Math.max(...timestamps, 5);
 	// Add 5% padding on to the end
@@ -386,7 +386,7 @@ function sortIntoTracks(spacetimeEvents) {
  * @returns the combined height of all of those events
  */
 function getHeightOfEvents(events, levels, currentLevel) {
-	let sortedTracks = sortIntoTracks(events);
+	const sortedTracks = sortIntoTracks(events);
 	let height = 0;
 	for (const track of sortedTracks) {
 		const eventHeights = track.map(event => getHeightOfEvent(event, levels, currentLevel + height));
@@ -466,9 +466,9 @@ function graphDataOnCanvas(dataSeries, canvas) {
 
 	drawLine(ctx, 5, verticalPadding, 5, canvas.height - verticalPadding);
 	for (let i = 0; i < 5; i++) {
-		let paddingHeight = (canvas.height - verticalPadding * 2);
-		let height = i * paddingHeight / 4 + verticalPadding;
-		let heightInUnits = (paddingHeight - height) / paddingHeight * (maxValue - minValue) + minValue;
+		const paddingHeight = (canvas.height - verticalPadding * 2);
+		const height = i * paddingHeight / 4 + verticalPadding;
+		const heightInUnits = (paddingHeight - height) / paddingHeight * (maxValue - minValue) + minValue;
 		drawLine(ctx, 5, height, 20, height);
 		drawText(ctx, Math.round(heightInUnits * 100) / 100, {x: 27, y: height + 5});
 		drawLine(ctx, 60, height, canvas.width, height, 1, "#aaa");
@@ -476,7 +476,7 @@ function graphDataOnCanvas(dataSeries, canvas) {
 }
 
 function setUpCanvas(query, width, height) {
-	let canvas = document.querySelector(query);
+	const canvas = document.querySelector(query);
 	canvas.setAttribute("width", width);
 	canvas.setAttribute("height", height);
 	return canvas;
@@ -495,13 +495,13 @@ function doEventsOverlap(event1, event2) {
  * Renders the horizontal axis at the top of the screen
  */
 function renderTopBar() {
-	let canvas = setUpCanvas("#topBarCanvas", document.body.clientWidth, 50);
-	let ctx = canvas.getContext("2d");
+	const canvas = setUpCanvas("#topBarCanvas", document.body.clientWidth, 50);
+	const ctx = canvas.getContext("2d");
 	drawLine(ctx, 0, 0, canvas.width, 0, 8);
-	let scale = Math.min(8, Math.round( Math.log(10 / (pageEnd - pageStart))));
+	const scale = Math.min(8, Math.round( Math.log(10 / (pageEnd - pageStart))));
 	for (let i = 0; i < 20; i++) {
-		let horizontalPos = i * canvas.width / 19;
-		let horizontalPosInUnits = horizontalPos / canvas.width * (pageEnd - pageStart) + pageStart;
+		const horizontalPos = i * canvas.width / 19;
+		const horizontalPosInUnits = horizontalPos / canvas.width * (pageEnd - pageStart) + pageStart;
 		drawLine(ctx, horizontalPos, 3, horizontalPos, 12);
 		drawText(ctx, horizontalPosInUnits.toFixed(scale), {x: horizontalPos - 12, y: 28});
 	}
@@ -512,7 +512,7 @@ function getCurrentMatch() {
 }
 
 function getMostParentID(event, logs) {
-	let parentID = event.parent ?? -1;
+	const parentID = event.parent ?? -1;
 	if (parentID === -1) return event.id;
 	
 	logs.forEach(log => {
