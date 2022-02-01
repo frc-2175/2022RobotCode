@@ -32,6 +32,20 @@ function sign(n)
 	return val
 end
 
+---@param value number
+---@param band number
+---@return number deadbandedNumber
+function Deadband(value, band)
+	local result = 0
+	if (value > band) then
+		result = (value - band) / (1 - band);
+	elseif (value < -band) then
+		result = (value + band) / (1 - band);
+	end
+	return result
+end
+
+--sets an upper/lower limit, if value is beyond that, it snaps it to that limit
 function clamp(value, min, max)
 	return math.min(math.max(value, min), max)
 end

@@ -1,3 +1,4 @@
+require("utils.math")
 local ffi = require("ffi")
 
 local constantMetatable = {
@@ -73,20 +74,8 @@ function Joystick:new(port)
 	return o
 end
 
+--deadband value
 local deadvalue = 0.1
-
----@param value number
----@param band number
----@return number deadbandedNumber
-function deadband(value, band)
-	local result = 0
-	if (value > band) then
-		result = (value - band) / (1 - band);
-	elseif (value < -band) then
-		result = (value + band) / (1 - band);
-	end
-	return result
-end
 
 ---@return number joyX
 function Joystick:getX()
