@@ -20,21 +20,25 @@ class Vector {
 }
 
 let img;
-const pixelToInchRatio = 1.37;
-const xImageCenter = 2987 / 5 / 2;
-const yImageCenter = 1757 / 5 / 2;
+let pixelToInchRatio = null;
 const pointList = [];
 const lineVectorList = [];
 let lineVectorHasChanged = false;
 const stepIncrement = 1;
 let pointFile;
+let xImageCenter = null;
+let yImageCenter = null;
 
 function preload() {
 	img = loadImage("https://firebasestorage.googleapis.com/v0/b/pathmakerviewer.appspot.com/o/rapidreactfield.png?alt=media&token=8cf9f0e0-b56f-49b6-941b-c9240db1a2d7");
 }
 
 function setup() {
-	createCanvas(2987 / 5, 1757 / 5);
+	//createCanvas(2987 / 3, 1757 / 3);
+	createCanvas(windowWidth, (windowWidth * 0.58))
+	xImageCenter = width / 2;
+	yImageCenter = height / 2;
+	pixelToInchRatio = 1.37 / (width /(2987/5));
 	textSize(15);
 }
 
@@ -56,13 +60,16 @@ function createNewPoint(vector) {
 }
 
 function removeLastLineVector() {
-	const previousPoint = lineVectorList[lineVectorList.length - 2];
-	const currentPoint = lineVectorList[lineVectorList.length - 1];
-	const length = ceil(previousPoint.distTo(currentPoint) / stepIncrement);
-	lineVectorList.pop();
-	for (let i = 0; i < length; i++) {
-		pointList.pop();
+	if (1 < lineVectorList.length) {
+		const previousPoint = lineVectorList[lineVectorList.length - 2];
+		const currentPoint = lineVectorList[lineVectorList.length - 1];
+		const length = ceil(previousPoint.distTo(currentPoint) / stepIncrement);
+		for (let i = 0; i < length; i++) {
+			pointList.pop();
+		}
 	}
+
+	lineVectorList.pop()
 }
 
 function mousePressed() {
@@ -120,6 +127,13 @@ function keyPressed() {
 	}
 }
 
+function windowResized() {
+	resizeCanvas(windowWidth, (windowWidth * 0.58))
+	xImageCenter = width / 2;
+	yImageCenter = height / 2;
+	pixelToInchRatio = 1.37 / (width /(2987/5));
+}
+
 function draw() {
 	const mouseVector = new Vector(mouseX, mouseY);
 	const xCoord = mouseVector.convToFieldCoords().x;
@@ -127,7 +141,7 @@ function draw() {
 
 	background(220);
 	strokeWeight(0);
-	image(img, 0, 0, 2987 / 5, 1757 / 5);
+	image(img, 0, 0, width, height);
 	text("Screen coordinates: " + String(round(mouseX) + ", " + round(mouseY)), 10, 20);
 	text("Field coordinates: " + xCoord + ", " + yCoord, 10, 40);
 	strokeWeight(1);
