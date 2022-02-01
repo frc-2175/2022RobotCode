@@ -21,7 +21,7 @@ function findClosestPoint(path, fieldPosition, previousClosestPoint)
 	local startIndex = previousClosestPoint - 36 -- 36 lookahead distance (in)
 	local endIndex = previousClosestPoint + 36
 	-- making sure indexes make sense
-	if startIndex < 1 then
+	if startIndex < 1 then   
 		startIndex = 1
 	end
 	if endIndex > path.numberOfActualPoints then
