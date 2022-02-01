@@ -28,7 +28,7 @@ public:
     }
 
     RunLuaFile(L, "robot.lua");
-    RunLuaString(L, "robot.robotInit()");
+    RunLuaString(L, "Robot.robotInit()");
 
     StartHTTPServer();
   }

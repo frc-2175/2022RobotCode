@@ -6,7 +6,7 @@ local path
 local file
 
 function initLogging()
-	path = GetDeployDirectory() .. "\\logs\\" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
+	path = getDeployDirectory() .. "\\logs\\" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
 	file = io.open(path, "w")
 	io.output(file)
 end

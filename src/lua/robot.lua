@@ -1,4 +1,5 @@
 require("subsystems.cargo")
+require("subsystems.drivetrain")
 require("utils.logger")
 
 function Robot.robotInit()
