@@ -14,7 +14,7 @@ Solenoid = {}
 
 function Solenoid:new(channel)
 	local o = {
-		solenoid = ffi.C.Solenoid_new(channel),
+		solenoid = ffi.C.Solenoid_new(0, channel),
 	}
 	setmetatable(o, self)
 	self.__index = self
@@ -35,7 +35,7 @@ DoubleSolenoid = {}
 
 function DoubleSolenoid:new(forwardChannel, reverseChannel)
 	local o = {
-		solenoid = ffi.C.DoubleSolenoid_new(forwardChannel, reverseChannel),
+		solenoid = ffi.C.DoubleSolenoid_new(0, forwardChannel, reverseChannel),
 	}
 	setmetatable(o, self)
 	self.__index = self
