@@ -282,7 +282,7 @@ mesh = SubResource( 14 )
 material/0 = null
 
 [node name="PressureReadout" parent="Chassis" instance=ExtResource( 13 )]
-transform = Transform( 0.592199, 0, 0, 0, 0.592199, 0, 0, 0, 0.592199, -0.00761703, 0.100071, -0.233095 )
+transform = Transform( 0.592199, 0, 0, 0, 0.592199, 0, 0, 0, 0.592199, -0.00761699, 0.100071, -0.233095 )
 
 [node name="AirTank" parent="Chassis" instance=ExtResource( 14 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0655189, 0.00644577, -0.253044 )
@@ -315,7 +315,7 @@ device_id = 3
 motor_shoot_when = 1
 
 [node name="NavX" type="Spatial" parent="Chassis"]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 1.8999e-07, 1.19209e-07, -8.34465e-07 )
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 2.23517e-07, 1.19209e-07, -8.19564e-07 )
 script = ExtResource( 15 )
 
 [node name="Wheels" type="Spatial" parent="."]
@@ -479,7 +479,7 @@ nodes/node_b = NodePath("../../../../Chassis")
 collision/exclude_nodes = false
 
 [node name="Intake" type="RigidBody" parent="Intake/BotFront/ArmPosition"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.03505e-05, -5.96046e-08, 0.292001 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.03356e-05, -5.96046e-08, 0.292001 )
 collision_layer = 20
 collision_mask = 5
 mass = 4.47897
@@ -488,13 +488,13 @@ can_sleep = false
 angular_damp = 1.0
 
 [node name="Motor" type="Spatial" parent="Intake/BotFront/ArmPosition/Intake"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00753739, 0, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00753741, 0, 0 )
 script = ExtResource( 3 )
 controller_type = 2
-motor_id = 3
+is_intake = true
 
 [node name="Axle" type="CollisionShape" parent="Intake/BotFront/ArmPosition/Intake"]
-transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 4.03505e-05, 0, 0 )
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 4.03356e-05, 0, 0 )
 shape = SubResource( 23 )
 script = ExtResource( 20 )
 material = "Steel"
@@ -579,7 +579,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0254, 0 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0254, 0 )
 
 [node name="RobotBox" type="CollisionShape" parent="Intake/BotFront/ArmPosition/Intake"]
-transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.00126025, 0, 0 )
+transform = Transform( -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.00126026, 0, 0 )
 shape = SubResource( 28 )
 script = ExtResource( 6 )
 width = 4.0
@@ -663,7 +663,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.066, -0.444 )
 transform = Transform( 1, 0, 0, 0, 0.329938, -0.944003, 0, 0.944003, 0.329938, 0.241, 0, 2.98023e-08 )
 script = ExtResource( 7 )
 length_inches = 6.0
-double_reverse_channel = 1
+solenoid_type = 1
+double_forward_channel = 1
+double_reverse_channel = 2
 is_intake = true
 
 [node name="Base" type="RigidBody" parent="Intake/BotFront/Pistons/Left"]
@@ -733,6 +735,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0889, 0 )
 transform = Transform( 1, 0, 0, 0, 0.329938, -0.944003, 0, 0.944003, 0.329938, -0.241, 0, 0 )
 script = ExtResource( 7 )
 length_inches = 6.0
+solenoid_type = 1
+double_forward_channel = 1
+double_reverse_channel = 2
 is_intake = true
 
 [node name="Base" type="RigidBody" parent="Intake/BotFront/Pistons/Right"]
