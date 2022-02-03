@@ -21,4 +21,12 @@ function Robot.teleopPeriodic()
 	elseif leftStick:getButton(2) then
 		retractIntake()
 	end
+
+	if gamepad:getButton(4) then
+		winchIn()
+	elseif gamepad:getButton(3) then
+		winchOut()
+	else 	
+		stop()
+	end
 end
