@@ -9,9 +9,9 @@ rightFollowerMotor:follow(rightMasterMotor)
 local dive = DifferentialDrive:new(leftMasterMotor, rightMasterMotor)
 
 function drive(speed, rotation)
-local leftSpeed, rightSpeed = getBlendedMotorValues(speed, rotation)
-leftMasterMotor:set(leftSpeed)
-rightMasterMotor:set(rightSpeed)
+    local leftSpeed, rightSpeed = getBlendedMotorValues(speed, rotation)
+    leftMasterMotor:set(leftSpeed)
+    rightMasterMotor:set(rightSpeed)
 end
 
 function stop()
