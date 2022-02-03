@@ -11,15 +11,15 @@ end
 
 function Robot.teleopPeriodic()
 	if rightStick:getButton(1) then
-		runIntakeIn()
+		Intake:runIn()
 	else
-		stopIntake()
+		Intake:stop()
 	end
 
 	if leftStick:getButton(1) then
-		extendIntake()
+		Intake:extend()
 	elseif leftStick:getButton(2) then
-		retractIntake()
+		Intake:retract()
 	end
 
 	if gamepad:getButton(4) then
