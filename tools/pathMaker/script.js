@@ -9,7 +9,7 @@ class Vector {
 	convToScreenCoords() {
 		return new Vector(xImageCenter + this.x / pixelToInchRatio, yImageCenter + this.y / pixelToInchRatio * -1);
 	}
-    
+
 	convToFieldCoords() {
 		return new Vector(round((xImageCenter - this.x) * pixelToInchRatio) * -1, round((yImageCenter - this.y) * pixelToInchRatio));
 	}
@@ -20,6 +20,7 @@ class Vector {
 }
 
 let img;
+let dataChangedSinceSave = true;
 let pixelToInchRatio = null;
 let pointList = [];
 let lineVectorList = [];
@@ -39,13 +40,15 @@ function setup() {
 	createCanvas(windowWidth, (windowWidth * 0.58));
 	xImageCenter = width / 2;
 	yImageCenter = height / 2;
-	pixelToInchRatio = 1.37 / (width /(2987/5));
+	pixelToInchRatio = 1.37 / (width / (2987 / 5));
 	textSize(15);
 }
 
 function createNewLineVector(vector) {
 	lineVectorList.push(vector);
 	lineVectorHasChanged = true;
+	dataChangedSinceSave = true;
+	updateTitle(pointFile)
 }
 
 function convXToScreen(x) {
@@ -58,6 +61,8 @@ function convYToScreen(y) {
 
 function createNewPoint(vector) {
 	pointList.push(vector);
+
+	updateTitle(pointFile)
 }
 
 function removeLastLineVector() {
@@ -69,8 +74,9 @@ function removeLastLineVector() {
 			pointList.pop();
 		}
 	}
-
+	dataChangedSinceSave = true;
 	lineVectorList.pop();
+	updateTitle(pointFile)
 }
 
 function mousePressed() {
@@ -78,7 +84,7 @@ function mousePressed() {
 	createNewLineVector(mouseVector.convToFieldCoords());
 }
 
-document.addEventListener("keydown", function(e) {
+document.addEventListener("keydown", function (e) {
 	if (e.key === "s") {
 		e.preventDefault();
 		savePoints();
@@ -88,6 +94,20 @@ document.addEventListener("keydown", function(e) {
 		openPoints();
 	}
 }, false);
+
+function updateTitle(handle) {
+	try {
+		if (dataChangedSinceSave) {
+			document.title = "*" + handle.name;
+		}
+		else {
+			document.title = handle.name;
+		}
+	}
+	catch {
+		console.error("File not selected yet.")
+	}
+}
 
 async function getNewFileHandle() {
 	const options = {
@@ -114,15 +134,18 @@ async function writeFileToDisk(fileHandle, contents) {
 }
 
 function savePoints() {
+	dataChangedSinceSave = false;
 	if (pointFile == null) {
 		getNewFileHandle().then(result => {
-			writeFileToDisk(result, JSON.stringify({points: pointList, lineVectors: lineVectorList}));
+			updateTitle(result)
+			writeFileToDisk(result, JSON.stringify({ points: pointList, lineVectors: lineVectorList }));
 			console.log(pointList);
 			pointFile = result;
 		});
 	}
 	else {
-		writeFileToDisk(pointFile, JSON.stringify({points: pointList, lineVectors: lineVectorList}));
+		updateTitle(pointFile)
+		writeFileToDisk(pointFile, JSON.stringify({ points: pointList, lineVectors: lineVectorList }));
 	}
 }
 
@@ -153,7 +176,7 @@ function windowResized() {
 	resizeCanvas(windowWidth, (windowWidth * 0.58));
 	xImageCenter = width / 2;
 	yImageCenter = height / 2;
-	pixelToInchRatio = 1.37 / (width /(2987/5));
+	pixelToInchRatio = 1.37 / (width / (2987 / 5));
 }
 
 
