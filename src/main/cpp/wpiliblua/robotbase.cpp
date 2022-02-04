@@ -4,6 +4,6 @@
 
 #include "luadef.h"
 
-LUAFUNC bool IsReal() {
+LUAFUNC bool RobotIsReal() {
     return frc::RobotBase::IsReal();
 }

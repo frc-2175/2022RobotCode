@@ -6,26 +6,26 @@
 
 #include "luadef.h"
 
-LUAFUNC void SmartDashboard_PutNumber(const char* keyName, double value) {
-   frc::SmartDashboard::PutNumber((std::string_view)keyName, value);
+LUAFUNC void PutNumber(const char * keyName, double value) {
+    frc::SmartDashboard::PutNumber((std::string_view)keyName, value);
 }
 
-LUAFUNC void SmartDashboard_PutNumberArray( const char* keyName,  double* value, size_t size) {
+LUAFUNC void PutNumberArray(const char * keyName, double * value, size_t size) {
     frc::SmartDashboard::PutNumberArray((std::string_view)keyName, wpi::span(value, size));
 }
 
-LUAFUNC void SmartDashboard_PutString(const char* keyName, const char* value) {
-   frc::SmartDashboard::PutString((std::string_view)keyName, (std::string_view)value);
+LUAFUNC void PutString(const char * keyName, const char* value) {
+    frc::SmartDashboard::PutString((std::string_view)keyName, (std::string_view)value);
 }
 
-LUAFUNC void SmartDashboard_PutStringArray( const char* keyName, const char * * value, size_t size) {
+LUAFUNC void PutStringArray(const char * keyName, const char ** value, size_t size) {
     frc::SmartDashboard::PutStringArray((std::string_view)keyName, wpi::span(std::vector<std::string>(value, value + size)));
 }
 
-LUAFUNC void SmartDashboard_PutBoolean(const char* keyName, bool value) {
-   frc::SmartDashboard::PutBoolean((std::string_view)keyName, value);
+LUAFUNC void PutBoolean(const char * keyName, bool value) {
+    frc::SmartDashboard::PutBoolean((std::string_view)keyName, value);
 }
 
-LUAFUNC void SmartDashboard_PutBooleanArray( const char* keyName,  int* value, size_t size) {
+LUAFUNC void PutBooleanArray(const char * keyName, int * value, size_t size) {
     frc::SmartDashboard::PutBooleanArray((std::string_view)keyName, wpi::span(value, size));
 }

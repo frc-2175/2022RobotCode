@@ -35,7 +35,7 @@ function preload() {
 
 function setup() {
 	//createCanvas(2987 / 3, 1757 / 3);
-	createCanvas(windowWidth, (windowWidth * 0.58))
+	createCanvas(windowWidth, (windowWidth * 0.58));
 	xImageCenter = width / 2;
 	yImageCenter = height / 2;
 	pixelToInchRatio = 1.37 / (width /(2987/5));
@@ -69,7 +69,7 @@ function removeLastLineVector() {
 		}
 	}
 
-	lineVectorList.pop()
+	lineVectorList.pop();
 }
 
 function mousePressed() {
@@ -128,7 +128,7 @@ function keyPressed() {
 }
 
 function windowResized() {
-	resizeCanvas(windowWidth, (windowWidth * 0.58))
+	resizeCanvas(windowWidth, (windowWidth * 0.58));
 	xImageCenter = width / 2;
 	yImageCenter = height / 2;
 	pixelToInchRatio = 1.37 / (width /(2987/5));

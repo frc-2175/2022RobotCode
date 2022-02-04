@@ -12,13 +12,13 @@ LUAFUNC void* AHRS_new(int value) {
 LUAFUNC float AHRS_GetPitch(void* _this) {
     auto _result = ((AHRS*)_this)
         ->GetPitch();
-    return _result;
+    return (float)_result;
 }
 
 LUAFUNC float AHRS_GetAngle(void* _this) {
     auto _result = ((AHRS*)_this)
         ->GetAngle();
-    return _result;
+    return (float)_result;
 }
 
 LUAFUNC void AHRS_Reset(void* _this) {

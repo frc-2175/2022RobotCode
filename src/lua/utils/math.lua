@@ -34,8 +34,8 @@ end
 
 ---@param value number
 ---@param band number
----@return number deadbandedNumber
-function Deadband(value, band)
+---@return number
+function deadband(value, band)
 	local result = 0
 	if (value > band) then
 		result = (value - band) / (1 - band);

@@ -61,19 +61,29 @@ MD_String8 ParseType(MD_Node* start, MD_Node* end) {
     for (MD_Node* it = start; !MD_NodeIsNil(it) && it != end; it = it->next) {
         MD_S8ListPush(a, &pieces, it->string);
     }
-    return MD_S8ListJoin(a, pieces, NULL);
+    if (pieces.node_count == 0) {
+        return MD_S8Lit("void");
+    } else {
+        return MD_S8ListJoin(a, pieces, &(MD_StringJoin) {
+            .mid = MD_S8Lit(" "),
+        });
+    }
 }
 
 typedef struct {
+    MD_String8 Doc;
     MD_String8 ReturnType;
-    MD_String8 Name;
-    MD_String8 CustomBody;
+    MD_String8 Name; // If there is an alias, this will be the alias name, to be used everywhere except the actual WPILib call.
+    MD_String8 WPILibName; // If there is an alias, this may be different from Name.
+
+    MD_String8 CustomCppBody;
 
     int NumArgs;
     MD_String8 ArgTypes[MAX_ARGS];
     MD_String8 ArgNames[MAX_ARGS];
     int ArgDerefs[MAX_ARGS];
     MD_String8 ArgCasts[MAX_ARGS];
+    MD_String8 ArgEnums[MAX_ARGS];
 
     MD_Node* After;
 
@@ -82,6 +92,10 @@ typedef struct {
 
 ParseFuncResult ParseFunc(MD_Node* n) {
     ParseFuncResult res = {0};
+
+    if (MD_NodeHasTag(n, MD_S8Lit("doc"), 0)) {
+        res.Doc = MD_TagFromString(n, MD_S8Lit("doc"), 0)->first_child->string;
+    }
 
     MD_Node* argsNode = NULL;
     MD_Node* terminator = NULL;
@@ -94,9 +108,9 @@ ParseFuncResult ParseFunc(MD_Node* n) {
             if (argsNode) {
                 return (ParseFuncResult) {
                     .Error = &(MD_Message) {
+                        .node = it,
                         .kind = MD_MessageKind_Error,
                         .string = MD_S8Lit("Found multiple sets of arguments for function (are you missing a semicolon?)"),
-                        .node = it,
                     },
                 };
             }
@@ -112,15 +126,19 @@ ParseFuncResult ParseFunc(MD_Node* n) {
     if (!argsNode) {
         return (ParseFuncResult) {
             .Error = &(MD_Message) {
+                .node = n,
                 .kind = MD_MessageKind_Error,
                 .string = MD_S8Lit("Did not find arguments for function"),
-                .node = n,
             },
         };
     }
 
     MD_Node* nameNode = argsNode->prev;
     res.Name = nameNode->string;
+    res.WPILibName = nameNode->string;
+    if (MD_NodeHasTag(n, MD_S8Lit("alias"), 0)) {
+        res.Name = MD_TagFromString(n, MD_S8Lit("alias"), 0)->first_child->string;
+    }
 
     // Everything before the name is the type
     res.ReturnType = ParseType(n, nameNode);
@@ -147,6 +165,11 @@ ParseFuncResult ParseFunc(MD_Node* n) {
                 res.ArgCasts[res.NumArgs] = castTag->first_child->string;
             }
 
+            MD_Node* enumTag = MD_TagFromString(argStart, MD_S8Lit("enum"), 0);
+            if (!MD_NodeIsNil(enumTag)) {
+                res.ArgEnums[res.NumArgs] = enumTag->first_child->string;
+            }
+
             res.NumArgs++;
             argStart = NULL;
         }
@@ -154,12 +177,12 @@ ParseFuncResult ParseFunc(MD_Node* n) {
 
     // Custom body
     if (argsNode != terminator) {
-        res.CustomBody = argsNode->next->string;
-        res.CustomBody = MD_S8ListJoin(a,
-            MD_S8Split(a, res.CustomBody, 1, (MD_String8[]) { MD_S8Lit("\r") }),
+        res.CustomCppBody = argsNode->next->string;
+        res.CustomCppBody = MD_S8ListJoin(a,
+            MD_S8Split(a, res.CustomCppBody, 1, (MD_String8[]) { MD_S8Lit("\r") }),
             NULL
         );
-        res.CustomBody = TrimNewlines(MD_S8ChopWhitespace(TrimNewlines(res.CustomBody))); // this could sure be a lot cleaner lol (if they fix some bugs in metadesk)
+        res.CustomCppBody = TrimNewlines(MD_S8ChopWhitespace(TrimNewlines(res.CustomCppBody))); // this could sure be a lot cleaner lol (if they fix some bugs in metadesk)
     }
 
     res.After = terminator->next;
@@ -168,186 +191,474 @@ ParseFuncResult ParseFunc(MD_Node* n) {
 }
 
 typedef struct {
-    MD_String8 LuaDef;
-    MD_String8 CppDef;
-} GenFuncResult;
+    MD_String8 Name;
 
-GenFuncResult GenFunc(
-    ParseFuncResult res,
-    MD_String8 customReturnType,
-    MD_String8 customName,
-    MD_String8 defaultBody,
-    MD_b32 isMethod
-) {
-    MD_String8 returnType = res.ReturnType;
-    MD_String8 name = res.Name;
-    MD_String8 body = defaultBody;
+    int NumValues;
+    MD_String8 ValueNames[MAX_ARGS];
+    int ValueNums[MAX_ARGS];
 
-    if (customReturnType.size > 0) {
-        returnType = customReturnType;
-    }
-    if (customName.size > 0) {
-        name = customName;
+    MD_Message* Error;
+} ParseEnumResult;
+
+ParseEnumResult ParseEnum(MD_Node* n) {
+    ParseEnumResult res = {0};
+    res.Name = n->string;
+
+    for (MD_EachNode(it, n->first_child)) {
+        res.ValueNames[res.NumValues] = it->string;
+        res.ValueNums[res.NumValues] = (int) MD_CStyleIntFromString(it->first_child->string);
+        res.NumValues++;
     }
 
-    if (returnType.size == 0) {
-        returnType = MD_S8Lit("void");
-    }
-    if (res.CustomBody.size > 0) {
-        body = res.CustomBody;
-    }
-
-    MD_String8List argsList = {0};
-    if (isMethod) {
-        MD_S8ListPush(a, &argsList, MD_S8Lit("void* _this"));
-    }
-    for (int i = 0; i < res.NumArgs; i++) {
-        MD_S8ListPushFmt(a, &argsList, "%S %S", res.ArgTypes[i], res.ArgNames[i]);
-    }
-    MD_String8 signature = MD_S8Fmt(a,
-        "%S %S(%S)",
-        returnType, name, MD_S8ListJoin(a, argsList, &commaJoin)
-    );
-
-    return (GenFuncResult) {
-        .LuaDef = MD_S8Fmt(a, "%S;", signature),
-        .CppDef = MD_S8Fmt(a,
-            "LUAFUNC %S {\n%S\n}\n",
-            signature, body
-        ),
-    };
+    return res;
 }
 
-// Returns an error message
-MD_Message* addClassFuncs(
-    MD_Node* klass,
-    MD_String8 cppName,
-    MD_String8 luaName,
-    MD_String8List* cppDefs,
-    MD_String8List* luaDefs
+MD_String8 CTypeToLuaType(MD_String8 cType) {
+    if (MD_S8Match(cType, MD_S8Lit("bool"), 0)) {
+        return MD_S8Lit("boolean");
+    }
+    if (MD_S8Match(cType, MD_S8Lit("int"), 0)) {
+        return MD_S8Lit("integer");
+    }
+    if (
+        MD_S8Match(cType, MD_S8Lit("float"), 0)
+        || MD_S8Match(cType, MD_S8Lit("double"), 0)
     ) {
-    MD_Node* fNode = klass->first_child;
+        return MD_S8Lit("number");
+    }
+
+    return MD_S8Lit("any");
+}
+
+MD_String8 GenMethodName(MD_String8 luaClassName, MD_String8 funcName) {
+    return MD_S8Fmt(a, "%S_%S", luaClassName, funcName);
+}
+
+MD_String8List GenCppSignatureArgs(ParseFuncResult parsedFunc, MD_b32 includeThis) {
+    MD_String8List args = {0};
+    if (includeThis) {
+        MD_S8ListPush(a, &args, MD_S8Lit("void* _this"));
+    }
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        MD_S8ListPushFmt(a, &args,
+            "%S %S",
+            parsedFunc.ArgTypes[i], parsedFunc.ArgNames[i]
+        );
+    }
+    return args;
+}
+
+MD_String8List GenCppCallArgs(ParseFuncResult parsedFunc) {
+    MD_String8List cppCallArgs = {0};
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        MD_String8 deref = MD_S8Lit("");
+        if (parsedFunc.ArgDerefs[i]) {
+            deref = MD_S8Lit("*");
+        }
+
+        MD_String8 cast = MD_S8Lit("");
+        if (parsedFunc.ArgCasts[i].size > 0) {
+            cast = MD_S8Fmt(a, "(%S)", parsedFunc.ArgCasts[i]);
+        }
+
+        MD_S8ListPushFmt(a, &cppCallArgs,
+            "%S%S%S",
+            deref, cast, parsedFunc.ArgNames[i]
+        );
+    }
+    return cppCallArgs;
+}
+
+MD_String8 GenLuaDocComment(ParseFuncResult parsedFunc) {
+    MD_String8List typeLines = {0};
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        MD_S8ListPushFmt(a, &typeLines,
+            "---@param %S %S",
+            parsedFunc.ArgNames[i], CTypeToLuaType(parsedFunc.ArgTypes[i])
+        );
+    }
+    if (parsedFunc.ReturnType.size > 0) {
+        MD_S8ListPushFmt(a, &typeLines,
+            "---@return %S",
+            CTypeToLuaType(parsedFunc.ReturnType)
+        );
+    }
+
+    MD_String8 doc = {0};
+    if (parsedFunc.Doc.size > 0) {
+        doc = MD_S8Fmt(a, "-- %S\n", parsedFunc.Doc);
+    }
+
+    MD_String8 types = MD_S8ListJoin(a, typeLines, &newlineJoin);
+    if (types.size > 0) {
+        types = MD_S8Fmt(a, "%S\n", types);
+    }
+
+    return MD_S8Fmt(a,
+        "%S"
+        "%S",
+        doc,
+        types
+    );
+}
+
+MD_String8List GenLuaSignatureArgs(ParseFuncResult parsedFunc) {
+    MD_String8List args = {0};
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        MD_S8ListPush(a, &args, parsedFunc.ArgNames[i]);
+    }
+    return args;
+}
+
+MD_String8List GenLuaArgModifiers(ParseFuncResult parsedFunc) {
+    MD_String8List mods = {0};
+
+    // process defaults
+    // TODO
+
+    // process enums
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        if (parsedFunc.ArgEnums[i].size > 0) {
+            MD_S8ListPushFmt(a, &mods,
+                "    %S = AssertEnumValue(%S, %S)",
+                parsedFunc.ArgNames[i], parsedFunc.ArgEnums[i], parsedFunc.ArgNames[i]
+            );
+        }
+    }
+
+    // assert types and stuff now that we have values for everything
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        if (MD_S8Match(parsedFunc.ArgTypes[i], MD_S8Lit("int"), 0)) {
+            MD_S8ListPushFmt(a, &mods,
+                "    %S = AssertInt(%S)",
+                parsedFunc.ArgNames[i], parsedFunc.ArgNames[i]
+            );
+        }
+        if (
+            MD_S8Match(parsedFunc.ArgTypes[i], MD_S8Lit("float"), 0)
+            || MD_S8Match(parsedFunc.ArgTypes[i], MD_S8Lit("double"), 0)
+        ) {
+            MD_S8ListPushFmt(a, &mods,
+                "    %S = AssertNumber(%S)",
+                parsedFunc.ArgNames[i], parsedFunc.ArgNames[i]
+            );
+        }
+    }
+
+    return mods;
+}
+
+MD_String8List GenLuaCallArgs(ParseFuncResult parsedFunc, MD_b32 isMethod) {
+    MD_String8List args = {0};
+    if (isMethod) {
+        MD_S8ListPush(a, &args, MD_S8Lit("self._this"));
+    }
+    for (int i = 0; i < parsedFunc.NumArgs; i++) {
+        MD_S8ListPush(a, &args, parsedFunc.ArgNames[i]);
+    }
+    return args;
+}
+
+typedef struct {
+    // Common data, types, args, etc.
+    ParseFuncResult ParsedFunction;
+
+    MD_String8 LuaClassName;
+    MD_String8 CppClassName;
+    MD_String8 FunctionName; // either function or method, depending on context
+    MD_b32 IsConstructor;
+    MD_b32 IsStatic;
+
+    // Various overrides of the default
+    MD_String8 CustomCppReturnType;
+    MD_String8 CustomCppBody;
+    MD_String8 CustomLuaBody;
+    MD_b32 SkipLuaWrapper;
+} GenOutputOptions;
+
+typedef struct {
+    MD_String8 CppFunction;
+    MD_String8 LuaBindingSignature;
+    MD_String8 LuaFunction;
+} GenOutputResult;
+
+/**
+ * Takes a pile of function data and produces the actual source code to write
+ * to our output files. Does not actually understand 
+ * 
+ * TODO??
+ */
+GenOutputResult GenOutput(GenOutputOptions opts) {
+    MD_b32 isMethod = opts.CppClassName.size > 0 && !opts.IsStatic;
+
+    MD_String8 cppWrapperName = {0};
+    if (isMethod) {
+        cppWrapperName = GenMethodName(opts.LuaClassName, opts.FunctionName);
+    } else {
+        cppWrapperName = opts.FunctionName;
+    }
+
+    MD_String8List cppSignatureArgs = GenCppSignatureArgs(opts.ParsedFunction, isMethod && !opts.IsConstructor);
+    MD_String8 luaDocComment = GenLuaDocComment(opts.ParsedFunction);
+    MD_String8List luaSignatureArgs = GenLuaSignatureArgs(opts.ParsedFunction);
+    MD_String8List luaArgModifiers = GenLuaArgModifiers(opts.ParsedFunction);
+    MD_String8List cppCallArgs = GenCppCallArgs(opts.ParsedFunction);
+    MD_String8List luaCallArgs = GenLuaCallArgs(opts.ParsedFunction, isMethod);
+
+    MD_String8 returnType = opts.CustomCppReturnType.size > 0 ? opts.CustomCppReturnType : opts.ParsedFunction.ReturnType;
+
+    MD_String8 cppDocs = opts.ParsedFunction.Doc.size > 0 ? MD_S8Fmt(a, "// %S\n", opts.ParsedFunction.Doc) : (MD_String8){0};
+    MD_String8 cppSignature = MD_S8Fmt(a,
+        "%S %S(%S)",
+        returnType, cppWrapperName, MD_S8ListJoin(a, cppSignatureArgs, &commaJoin)
+    );
+
+    MD_String8 luaArgModifiersStr = MD_S8ListJoin(a, luaArgModifiers, &(MD_StringJoin) {
+        .mid = MD_S8Lit("\n"),
+        .post = luaArgModifiers.node_count > 0 ? MD_S8Lit("\n") : MD_S8Lit(""),
+    });
+
+    // Generate both wrapper function bodies at once
+    MD_String8 cppBody = {0};
+    MD_String8 luaBody = {0};
+    MD_b32 isVoid = returnType.size == 0 || MD_S8Match(returnType, MD_S8Lit("void"), 0);
+    if (isMethod) {
+        if (isVoid) {
+            cppBody = MD_S8Fmt(a,
+                "    ((%S*)_this)\n"
+                "        ->%S(%S);",
+                opts.CppClassName,
+                opts.ParsedFunction.WPILibName, MD_S8ListJoin(a, cppCallArgs, &commaJoin)
+            );
+            luaBody = MD_S8Fmt(a,
+                "%S"
+                "    ffi.C.%S(%S)",
+                luaArgModifiersStr,
+                cppWrapperName, MD_S8ListJoin(a, luaCallArgs, &commaJoin)
+            );
+        } else {
+            cppBody = MD_S8Fmt(a,
+                "    auto _result = ((%S*)_this)\n"
+                "        ->%S(%S);\n"
+                "    return (%S)_result;",
+                opts.CppClassName,
+                opts.ParsedFunction.WPILibName, MD_S8ListJoin(a, cppCallArgs, &commaJoin),
+                returnType
+            );
+            luaBody = MD_S8Fmt(a,
+                "%S"
+                "    return ffi.C.%S(%S)",
+                luaArgModifiersStr,
+                cppWrapperName, MD_S8ListJoin(a, luaCallArgs, &commaJoin)
+            );
+        }
+    } else {
+        // Not a method, just a plain ol' function
+        if (isVoid) {
+            cppBody = MD_S8Fmt(a,
+                "    %S::%S(%S);",
+                opts.CppClassName, opts.ParsedFunction.WPILibName, MD_S8ListJoin(a, cppCallArgs, &commaJoin)
+            );
+            luaBody = MD_S8Fmt(a,
+                "%S"
+                "    ffi.C.%S(%S)",
+                luaArgModifiersStr,
+                cppWrapperName, MD_S8ListJoin(a, luaCallArgs, &commaJoin)
+            );
+        } else {
+            cppBody = MD_S8Fmt(a,
+                "    auto _result = %S::%S(%S);\n"
+                "    return (%S)_result;",
+                opts.CppClassName, opts.ParsedFunction.WPILibName, MD_S8ListJoin(a, cppCallArgs, &commaJoin),
+                returnType
+            );
+            luaBody = MD_S8Fmt(a,
+                "%S"
+                "    return ffi.C.%S(%S)",
+                luaArgModifiersStr,
+                cppWrapperName, MD_S8ListJoin(a, luaCallArgs, &commaJoin)
+            );
+        }
+    }
+
+    // Optionally override the generated bodies
+    if (opts.CustomCppBody.size > 0) {
+        cppBody = opts.CustomCppBody;
+    }
+    // NOTE(ben): This comes second right now because it works better for
+    // DifferentialDrive. Maybe this won't be the right choice in the future?
+    if (opts.ParsedFunction.CustomCppBody.size > 0) {
+        cppBody = opts.ParsedFunction.CustomCppBody;
+    }
+    if (opts.CustomLuaBody.size > 0) {
+        luaBody = MD_S8Fmt(a,
+            "%S"
+            "%S",
+            luaArgModifiersStr,
+            opts.CustomLuaBody
+        );
+    }
+
+    // Generate full C++ wrapper function
+    MD_String8 cppFunction = MD_S8Fmt(a,
+        "%S"
+        "LUAFUNC %S {\n"
+        "%S\n"
+        "}\n",
+        cppDocs,
+        cppSignature,
+        cppBody
+    );
+
+    // Generate full nice Lua function
+    MD_String8 methodReceiver = {0};
+    if (isMethod) {
+        methodReceiver = MD_S8Fmt(a, "%S:", opts.LuaClassName);
+    }
+
+    MD_String8 lowercasedName = MD_S8Copy(a, opts.ParsedFunction.Name);
+    lowercasedName.str[0] = MD_CharToLower(lowercasedName.str[0]);
+
+    MD_String8 luaFunction = MD_S8Fmt(a,
+        "%S"
+        "function %S%S(%S)\n"
+        "%S\n"
+        "end\n",
+        luaDocComment,
+        methodReceiver, lowercasedName, MD_S8ListJoin(a, luaSignatureArgs, &commaJoin),
+        luaBody
+    );
+
+    GenOutputResult result = {0};
+    result.CppFunction = cppFunction;
+    result.LuaBindingSignature = MD_S8Fmt(a, "%S;", cppSignature);
+    if (!opts.SkipLuaWrapper) {
+        result.LuaFunction = luaFunction;
+    }
+
+    return result;
+}
+
+/**
+ * Generate bindings for all functions within a single class, either a primary
+ * class or a base class.
+ * 
+ * This is the only function that handles class-method-specific tags like
+ * @constructor.
+ * 
+ * Returns an error message if there was a problem.
+ */
+MD_Message* addClassFuncs(
+    /**
+     * Can be either a normal class or base class. Can be used to look up all
+     * the functions to bind to, but NOT to get a name, because when generating
+     * functions using a base class, you still want to use the primary class's
+     * name.
+     */
+    MD_Node* classNode,
+    /**
+     * Always refers to the primary class being generated for. If you are
+     * calling this function without a base class, pass the primary class for
+     * both of these arguments.
+     */
+    MD_Node* primaryClassNode,
+
+    MD_String8List* cppDefs,
+    MD_String8List* luaSignatures,
+    MD_String8List* luaDefs
+) {
+    MD_Node* funcNode = classNode->first_child;
     while (1) {
-        if (MD_NodeIsNil(fNode)) {
+        if (MD_NodeIsNil(funcNode)) {
             break;
         }
 
-        ParseFuncResult res = ParseFunc(fNode);
+        ParseFuncResult res = ParseFunc(funcNode);
         if (res.Error) {
             return res.Error;
         }
 
-        MD_String8 returnType = res.ReturnType;
-        MD_String8 name = MD_S8Fmt(a, "%S_%S", luaName, res.Name);
-        MD_String8 body = {0};
-        MD_b32 isMethod = 0;
+        MD_String8 cppClassName = MD_TagFromString(primaryClassNode, MD_S8Lit("class"), 0)->first_child->string;
 
-        MD_String8List callArgs = {0};
-        for (int i = 0; i < res.NumArgs; i++) {
-            MD_String8 deref = MD_S8Lit("");
-            if (res.ArgDerefs[i]) {
-                deref = MD_S8Lit("*");
-            }
+        GenOutputOptions genOptions = (GenOutputOptions) {
+            .ParsedFunction = res, // TODO: better name
+            .LuaClassName = primaryClassNode->string,
+            .CppClassName = cppClassName,
+            .FunctionName = res.Name, // TODO: way better name please
+            .IsStatic = MD_NodeHasTag(funcNode, MD_S8Lit("static"), 0),
+            .SkipLuaWrapper = MD_NodeHasTag(funcNode, MD_S8Lit("nolua"), 0),
+        };
 
-            MD_String8 cast = MD_S8Lit("");
-            if (res.ArgCasts[i].size > 0) {
-                cast = MD_S8Fmt(a, "(%S)", res.ArgCasts[i]);
-            }
-
-            MD_S8ListPushFmt(a, &callArgs,
-                "%S%S%S",
-                deref, cast, res.ArgNames[i]
-            );
-        }
-
-        if (MD_NodeHasTag(fNode, MD_S8Lit("constructor"), 0)) {
-            returnType = MD_S8Lit("void*");
-
-            body = MD_S8Fmt(a,
+        if (MD_NodeHasTag(funcNode, MD_S8Lit("constructor"), 0)) {
+            genOptions.IsConstructor = 1;
+            genOptions.CustomCppReturnType = MD_S8Lit("void*");
+            genOptions.CustomCppBody = MD_S8Fmt(a,
                 "    return new %S(%S);",
-                cppName, MD_S8ListJoin(a, callArgs, &commaJoin)
+                cppClassName, MD_S8ListJoin(a, GenCppCallArgs(res), &commaJoin)
             );
-        } else if (MD_NodeHasTag(fNode, MD_S8Lit("converter"), 0)) {
-            returnType = MD_S8Lit("void*");
-            isMethod = 1;
+            genOptions.CustomLuaBody = MD_S8Fmt(a,
+                "    local instance = {\n"
+                "        _this = ffi.C.%S(%S),\n"
+                "    }\n"
+                "    setmetatable(instance, self)\n"
+                "    self.__index = self\n"
+                "    return instance",
+                GenMethodName(genOptions.LuaClassName, genOptions.FunctionName), MD_S8ListJoin(a, GenLuaCallArgs(res, 0), &commaJoin)
+            );
+        } else if (MD_NodeHasTag(funcNode, MD_S8Lit("converter"), 0)) {
+            genOptions.CustomCppReturnType = MD_S8Lit("void*");
 
-            MD_String8 convertTo = MD_TagFromString(fNode, MD_S8Lit("converter"), 0)->first_child->string;
-            body = MD_S8Fmt(a,
+            MD_String8 convertTo = MD_TagFromString(funcNode, MD_S8Lit("converter"), 0)->first_child->string;
+            genOptions.CustomCppBody = MD_S8Fmt(a,
                 "    %S* _converted = (%S*)_this;\n"
                 "    return _converted;",
-                convertTo, cppName
-            );
-        } else if (MD_NodeHasTag(fNode, MD_S8Lit("static"), 0)) {
-            isMethod = 0;
-            MD_String8 staticName = res.Name;
-
-            MD_Node* aliasTag = MD_TagFromString(fNode, MD_S8Lit("alias"), 0);
-            if (!MD_NodeIsNil(aliasTag)) {
-                staticName = aliasTag->first_child->string;
-            }
-
-            body = MD_S8Fmt(a,
-                "   %S::%S(%S);",
-                cppName, staticName, MD_S8ListJoin(a, callArgs, &commaJoin)
+                convertTo, cppClassName
             );
         } else {
             MD_String8 cppFunc = res.Name;
-            MD_Node* aliasTag = MD_TagFromString(fNode, MD_S8Lit("alias"), 0);
+            MD_Node* aliasTag = MD_TagFromString(funcNode, MD_S8Lit("alias"), 0);
             if (!MD_NodeIsNil(aliasTag)) {
                 cppFunc = aliasTag->first_child->string;
             }
-
-            isMethod = 1;
-
-            MD_b32 isVoid = returnType.size == 0 || MD_S8Match(returnType, MD_S8Lit("void"), 0);
-            if (isVoid) {
-                body = MD_S8Fmt(a,
-                    "    ((%S*)_this)\n"
-                    "        ->%S(%S);",
-                    cppName,
-                    cppFunc, MD_S8ListJoin(a, callArgs, &commaJoin)
-                );
-            } else {
-                MD_String8 returnCast = {0};
-                if (MD_NodeHasTag(fNode, MD_S8Lit("cast"), 0)) {
-                    returnCast = MD_S8Fmt(a, "(%S) ", returnType);
-                }
-
-                MD_Node* allocTag = MD_TagFromString(fNode, MD_S8Lit("alloc"), 0);
-                MD_b32 shouldAlloc = !MD_NodeIsNil(allocTag);
-
-                if (shouldAlloc) {
-                    MD_String8 allocType = allocTag->first_child->string;
-
-                    body = MD_S8Fmt(a,
-                        "    auto _result = (%S*) malloc(sizeof(%S));\n"
-                        "    *_result = ((%S*)_this)\n"
-                        "        ->%S(%S);\n"
-                        "    return %S_result;",
-                        allocType, allocType,
-                        cppName,
-                        cppFunc, MD_S8ListJoin(a, callArgs, &commaJoin),
-                        returnCast
-                    );
-                } else {
-                    body = MD_S8Fmt(a,
-                        "    auto _result = ((%S*)_this)\n"
-                        "        ->%S(%S);\n"
-                        "    return %S_result;",
-                        cppName,
-                        cppFunc, MD_S8ListJoin(a, callArgs, &commaJoin),
-                        returnCast
-                    );
-                }
-            }
         }
 
-        GenFuncResult genRes = GenFunc(res, returnType, name, body, isMethod);
-        MD_S8ListPush(a, cppDefs, genRes.CppDef);
-        MD_S8ListPush(a, luaDefs, genRes.LuaDef);
+        GenOutputResult genRes = GenOutput(genOptions);
+        MD_S8ListPush(a, cppDefs, genRes.CppFunction);
+        MD_S8ListPush(a, luaSignatures, genRes.LuaBindingSignature);
+        MD_S8ListPush(a, luaDefs, genRes.LuaFunction);
 
-        fNode = res.After;
+        funcNode = res.After;
     }
+
+    return NULL;
+}
+
+MD_Message* GenEnum(ParseEnumResult enm, MD_String8List* cppDefs, MD_String8List* luaDefs) {
+    MD_String8List values = {0};
+    MD_String8List valueTypes = {0};
+
+    for (int i = 0; i < enm.NumValues; i++) {
+        MD_S8ListPushFmt(a, &values,
+            "    %S = %d,",
+            enm.ValueNames[i], enm.ValueNums[i]
+        );
+        MD_S8ListPushFmt(a, &valueTypes,
+            "---@field %S integer",
+            enm.ValueNames[i]
+        );
+    }
+    
+    MD_S8ListPushFmt(a, luaDefs,
+        "---@class %S\n"
+        "%S\n"
+        "%S = BindingEnum:new('%S', {\n"
+        "%S\n"
+        "})\n",
+        enm.Name,
+        MD_S8ListJoin(a, valueTypes, &newlineJoin),
+        enm.Name, enm.Name,
+        MD_S8ListJoin(a, values, &newlineJoin)
+    );
 
     return NULL;
 }
@@ -388,7 +699,7 @@ int main(int argc, char** argv) {
     // DumpNode(parse.node);
 
     char filename_buf[128];
-    MD_String8List luaDefs = {0};
+    MD_String8List luaSignatures = {0};
 
     for (MD_EachNode(f, parse.node->first_child)) {
         fprintf(stderr, "Processing file \"%.*s\"...\n", MD_S8VArg(f->string));
@@ -396,17 +707,28 @@ int main(int argc, char** argv) {
         sprintf(filename_buf, "src/main/cpp/wpiliblua/%.*s.cpp", MD_S8VArg(f->string));
         FILE* cppfile = fopen(filename_buf, "w");
 
+        sprintf(filename_buf, "src/lua/wpilib/%.*s.lua", MD_S8VArg(f->string));
+        FILE* luafile = fopen(filename_buf, "w");
+
         fprintf(cppfile, "// Automatically generated by bindings.c. DO NOT EDIT.\n\n");
+
+        fprintf(luafile, "-- Automatically generated by bindings.c. DO NOT EDIT.\n");
+        fprintf(luafile, "\n");
+        fprintf(luafile, "local ffi = require(\"ffi\")\n");
+        fprintf(luafile, "require(\"wpilib.bindings.asserts\")\n");
+        fprintf(luafile, "require(\"wpilib.bindings.enum\")\n");
+        fprintf(luafile, "\n");
 
         for (MD_EachNode(tag, f->first_tag)) {
             if (MD_S8Match(tag->string, MD_S8Lit("include"), 0)) {
                 fprintf(cppfile, "#include %.*s\n", MD_S8VArg(tag->first_child->string));
             } else {
                 fclose(cppfile);
+                fclose(luafile);
                 PrintMessage(stderr, &(MD_Message) {
+                    .node = tag,
                     .kind = MD_MessageKind_Error,
                     .string = MD_S8Fmt(a, "Unrecognized tag \"%S\" on file", tag->string),
-                    .node = tag,
                 });
                 return 1;
             }
@@ -419,6 +741,7 @@ int main(int argc, char** argv) {
         MD_Node* baseClasses[MAX_BASE_CLASSES] = {0};
 
         MD_String8List cppDefs = {0};
+        MD_String8List luaDefs = {0};
 
         MD_Node* fentry = f->first_child;
         while (1) {
@@ -437,6 +760,9 @@ int main(int argc, char** argv) {
                 MD_String8 cppName = MD_TagFromString(fentry, MD_S8Lit("class"), 0)->first_child->string;
                 MD_String8 luaName = fentry->string;
 
+                fprintf(luafile, "%.*s = {}\n", MD_S8VArg(luaName));
+                fprintf(luafile, "\n");
+
                 for (MD_EachNode(tag, fentry->first_tag)) {
                     if (!MD_S8Match(tag->string, MD_S8Lit("extends"), 0)) {
                         continue;
@@ -453,6 +779,7 @@ int main(int argc, char** argv) {
                     }
                     if (!baseClass) {
                         fclose(cppfile);
+                        fclose(luafile);
                         MD_PrintMessageFmt(stderr, MD_CodeLocFromNode(tag), MD_MessageKind_Error,
                             "Couldn't find base class \"%S\"",
                             baseClassName
@@ -460,30 +787,52 @@ int main(int argc, char** argv) {
                         return 1;
                     }
 
-                    MD_Message* error = addClassFuncs(baseClass, cppName, luaName, &cppDefs, &luaDefs);
+                    MD_Message* error = addClassFuncs(baseClass, fentry, &cppDefs, &luaSignatures, &luaDefs);
                     if (error) {
                         fclose(cppfile);
+                        fclose(luafile);
                         MD_Message* msg = &(MD_Message) {
+                            .next = error,
+                            .node = tag,
                             .kind = MD_MessageKind_Error,
                             .string = MD_S8Fmt(a, "Failed to add functions from base class \"%S\"", baseClassName),
-                            .node = tag,
-                            .next = error,
                         };
                         PrintMessages(stderr, msg);
                         return 1;
                     }
                 }
 
-                MD_Message* error = addClassFuncs(fentry, cppName, luaName, &cppDefs, &luaDefs);
+                MD_Message* error = addClassFuncs(fentry, fentry, &cppDefs, &luaSignatures, &luaDefs);
                 if (error) {
                     fclose(cppfile);
+                    fclose(luafile);
                     MD_Message* msg = &(MD_Message) {
+                        .next = error,
+                        .node = fentry,
                         .kind = MD_MessageKind_Error,
                         .string = MD_S8Fmt(a, "Failed to add functions for class \"%S\"", luaName),
-                        .node = fentry,
-                        .next = error,
                     };
                     PrintMessages(stderr, msg);
+                    return 1;
+                }
+
+                fentry = fentry->next;
+            } else if (MD_NodeHasTag(fentry, MD_S8Lit("enum"), 0)) {
+                // Enum definition
+
+                ParseEnumResult res = ParseEnum(fentry);
+                if (res.Error) {
+                    fclose(cppfile);
+                    fclose(luafile);
+                    PrintMessage(stderr, res.Error);
+                    return 1;
+                }
+
+                MD_Message* error = GenEnum(res, &cppDefs, &luaDefs);
+                if (error) {
+                    fclose(cppfile);
+                    fclose(luafile);
+                    PrintMessage(stderr, error);
                     return 1;
                 }
 
@@ -494,13 +843,24 @@ int main(int argc, char** argv) {
                 ParseFuncResult res = ParseFunc(fentry);
                 if (res.Error) {
                     fclose(cppfile);
+                    fclose(luafile);
                     PrintMessage(stderr, res.Error);
                     return 1;
                 }
 
-                GenFuncResult genRes = GenFunc(res, MD_S8Lit(""), MD_S8Lit(""), MD_S8Lit(""), 0);
-                MD_S8ListPush(a, &cppDefs, genRes.CppDef);
-                MD_S8ListPush(a, &luaDefs, genRes.LuaDef);
+                // TODO: actually support these
+                // GenFuncResult genRes = GenFunc(res, MD_S8Lit(""), MD_S8Lit(""), MD_S8Lit(""), MD_S8Lit(""), 0);
+                // MD_S8ListPush(a, &cppDefs, genRes.CppDef);
+                // MD_S8ListPush(a, &luaSignatures, genRes.LuaDef);
+
+                GenOutputResult genRes = GenOutput((GenOutputOptions) {
+                    .ParsedFunction = res,
+                    .FunctionName = res.Name,
+                    // .IsStatic = true,
+                });
+                MD_S8ListPush(a, &cppDefs, genRes.CppFunction);
+                MD_S8ListPush(a, &luaSignatures, genRes.LuaBindingSignature);
+                MD_S8ListPush(a, &luaDefs, genRes.LuaFunction);
 
                 fentry = res.After;
             }
@@ -508,9 +868,12 @@ int main(int argc, char** argv) {
 
         fprintf(cppfile, "%.*s", MD_S8VArg(MD_S8ListJoin(a, cppDefs, &newlineJoin)));
         fclose(cppfile);
+
+        fprintf(luafile, "%.*s", MD_S8VArg(MD_S8ListJoin(a, luaDefs, &newlineJoin)));
+        fclose(luafile);
     }
 
-    // Output Lua definitions
+    // Output Lua FFI bindings
     FILE* luafile = fopen("src/lua/wpilib/bindings/init.lua", "w");
     fprintf(luafile,
         "-- Automatically generated by bindings.c. DO NOT EDIT.\n"
@@ -519,7 +882,7 @@ int main(int argc, char** argv) {
         "ffi.cdef[[\n"
         "%.*s\n"
         "]]\n",
-        MD_S8VArg(MD_S8ListJoin(a, luaDefs, &newlineJoin))
+        MD_S8VArg(MD_S8ListJoin(a, luaSignatures, &newlineJoin))
     );
     fclose(luafile);
 
