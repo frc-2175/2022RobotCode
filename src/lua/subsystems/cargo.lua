@@ -20,18 +20,18 @@ function Intake:stop()
 	elevator:set(0)
 end
 
-function shootCargo()
-	shooter:set(0.5)
-end
-
-function stopShooter()
-	shooter:set(0)
-end
-
 function Intake:extend()
 	intakeExtender:set(DoubleSolenoidValue.Forward)
 end
 
 function Intake:retract()
 	intakeExtender:set(DoubleSolenoidValue.Reverse)
+end
+
+function shootCargo()
+	shooter:set(0.5)
+end
+
+function stopShooter()
+	shooter:set(0)
 end

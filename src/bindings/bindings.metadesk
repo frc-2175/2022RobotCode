@@ -320,6 +320,7 @@ motors: {
       return new frc::DifferentialDrive(*l, *r);
     """;
     ArcadeDrive(double xSpeed, double zRotation, bool squareInputs);
+	TankDrive(double leftSpeed, double rightSpeed, bool squareInputs);
   }
 }
 

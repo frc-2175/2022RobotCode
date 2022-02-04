@@ -26,7 +26,7 @@ function Robot.teleopPeriodic()
 		winchIn()
 	elseif gamepad:getButtonHeld(3) then
 		winchOut()
-	else 	
+	else
 		stop()
 	end
 end

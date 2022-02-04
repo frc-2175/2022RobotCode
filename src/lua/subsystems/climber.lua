@@ -1,13 +1,15 @@
-local winchMootor = VictorSPX:new(1) --TODO: not a real device ID
+local winchMotor = VictorSPX:new(1) -- TODO: not a real device ID
 
-function winchIn()
-    winchMootor:set(0.5)
+Winch = {}
+
+function Winch:runIn()
+	winchMotor:set(0.5)
 end
 
-function winchOut()
-    winchMootor:set(-0.5)
+function Winch:runOut()
+	winchMotor:set(-0.5)
 end
 
-function stop()
-    winchMootor:set(0)
+function Winch:stop()
+	winchMotor:set(0)
 end

@@ -1679,3 +1679,8 @@ LUAFUNC void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zR
     ((frc::DifferentialDrive*)_this)
         ->ArcadeDrive(xSpeed, zRotation, squareInputs);
 }
+
+LUAFUNC void DifferentialDrive_TankDrive(void* _this, double leftSpeed, double rightSpeed, bool squareInputs) {
+    ((frc::DifferentialDrive*)_this)
+        ->TankDrive(leftSpeed, rightSpeed, squareInputs);
+}

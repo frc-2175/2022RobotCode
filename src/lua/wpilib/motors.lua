@@ -2252,3 +2252,13 @@ function DifferentialDrive:arcadeDrive(xSpeed, zRotation, squareInputs)
     zRotation = AssertNumber(zRotation)
     ffi.C.DifferentialDrive_ArcadeDrive(self._this, xSpeed, zRotation, squareInputs)
 end
+
+---@param leftSpeed number
+---@param rightSpeed number
+---@param squareInputs boolean
+---@return any
+function DifferentialDrive:tankDrive(leftSpeed, rightSpeed, squareInputs)
+    leftSpeed = AssertNumber(leftSpeed)
+    rightSpeed = AssertNumber(rightSpeed)
+    ffi.C.DifferentialDrive_TankDrive(self._this, leftSpeed, rightSpeed, squareInputs)
+end

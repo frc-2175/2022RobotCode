@@ -134,8 +134,6 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 	return x
 end
 
----@param path table - the path we want to drive
----@param isBackwards boolean
 ---@return table result
 function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)

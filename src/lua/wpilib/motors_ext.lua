@@ -44,3 +44,8 @@ function DifferentialDrive:new(leftMotor, rightMotor)
     self.__index = self
     return instance
 end
+
+function DifferentialDrive:blendedDrive(desiredSpeed, rotation, inputThreshold)
+	local left, right = getBlendedMotorValues(desiredSpeed, rotation, inputThreshold);
+	self:tankDrive(left, right)
+end
