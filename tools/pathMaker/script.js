@@ -21,13 +21,14 @@ class Vector {
 
 let img;
 let pixelToInchRatio = null;
-const pointList = [];
-const lineVectorList = [];
+let pointList = [];
+let lineVectorList = [];
 let lineVectorHasChanged = false;
 const stepIncrement = 1;
 let pointFile;
 let xImageCenter = null;
 let yImageCenter = null;
+const visualizeNPoints = 16;
 
 function preload() {
 	img = loadImage("https://firebasestorage.googleapis.com/v0/b/pathmakerviewer.appspot.com/o/rapidreactfield.png?alt=media&token=8cf9f0e0-b56f-49b6-941b-c9240db1a2d7");
@@ -82,6 +83,10 @@ document.addEventListener("keydown", function(e) {
 		e.preventDefault();
 		savePoints();
 	}
+	if (e.key === "o") {
+		e.preventDefault();
+		openPoints();
+	}
 }, false);
 
 async function getNewFileHandle() {
@@ -111,14 +116,31 @@ async function writeFileToDisk(fileHandle, contents) {
 function savePoints() {
 	if (pointFile == null) {
 		getNewFileHandle().then(result => {
-			writeFileToDisk(result, JSON.stringify(pointList));
+			writeFileToDisk(result, JSON.stringify({points: pointList, lineVectors: lineVectorList}));
 			console.log(pointList);
 			pointFile = result;
 		});
 	}
 	else {
-		writeFileToDisk(pointFile, JSON.stringify(pointList));
+		writeFileToDisk(pointFile, JSON.stringify({points: pointList, lineVectors: lineVectorList}));
 	}
+}
+
+async function openPoints() {
+	let fileHandle;
+	[fileHandle] = await window.showOpenFilePicker();
+	const file = await fileHandle.getFile();
+	const contents = JSON.parse(await file.text());
+	console.log(contents)
+	lineVectorList = []
+	pointList = []
+	contents["lineVectors"].forEach((item) => {
+		console.log(item)
+		lineVectorList.push(new Vector(item["x"], item["y"]))
+	})
+	contents["points"].forEach((item) => {
+		pointList.push(new Vector(item["x"], item["y"]))
+	})
 }
 
 function keyPressed() {
@@ -133,6 +155,7 @@ function windowResized() {
 	yImageCenter = height / 2;
 	pixelToInchRatio = 1.37 / (width /(2987/5));
 }
+
 
 function draw() {
 	const mouseVector = new Vector(mouseX, mouseY);
@@ -158,7 +181,7 @@ function draw() {
 				let pointDrawCount = 0;
 
 				pointList.forEach((item) => {
-					if (pointDrawCount % 12 === 0) {
+					if (pointDrawCount % visualizeNPoints === 0) {
 						strokeWeight(5);
 						point(item.convToScreenCoords().x, item.convToScreenCoords().y);
 					}
