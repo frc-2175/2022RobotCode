@@ -1,27 +1,23 @@
+    --Curvature drive is a drive mode that doesn't let you turn in place, like driving a car,
+    --but is better at driving curves at high speeds.
+    --Arcade drive is a drive that can turn in place, but the turning becomes wonky at higher speeds
+    --Blended drive sorta mashes the two together to have a more smooth way of turning and driving,
+    --both at high, low, and stopped speeds.
+    --(to speak technically it linearly interpolates between the two speed curves to have it 
+    --blend in a more intuitive(?) way.)
+
 require("utils.math")
 
--- public static double[] getBlendedMotorValues(double moveValue, double turnValue, double inputThreshold) {
---     virtualRobotDrive.arcadeDrive(moveValue, turnValue, false);
---     double leftArcadeValue = leftVirtualSpeedController.get() * 0.8;
---     double rightArcadeValue = rightVirtualSpeedController.get()* 0.8;
+local inputThreshold = 0.1
 
---     virtualRobotDrive.curvatureDrive(moveValue, turnValue, false);
---     double leftCurvatureValue = leftVirtualSpeedController.get();
---     double rightCurvatureValue = rightVirtualSpeedController.get();
+function getBlendedMotorValues(moveValue, turnValue)
+    local arcadeLeft, arcadeRight = DifferentialDrive:curvatureDriveIK(moveValue,turnValue,true)
+    local curvatureLeft, curvatureRight = DifferentialDrive:curvatureDriveIK(moveValue,turnValue,false)
 
---     double lerpT = Math.abs(MathUtility.deadband(moveValue, RobotDriveBase.kDefaultDeadband)) / inputThreshold;
---     lerpT = MathUtility.clamp(lerpT, 0, 1);
---     double leftBlend = MathUtility.lerp(leftArcadeValue, leftCurvatureValue, lerpT);
---     double rightBlend = MathUtility.lerp(rightArcadeValue, rightCurvatureValue, lerpT);
-
---     double[] blends = { leftBlend, rightBlend };
---     return blends;
--- }
-function getBlendedMotorValues(moveValue, turnValue, inputThreshold)
-    lerpT = math.abs(deadband(moveValue, .01)) / inputThreshold;
+    lerpT = math.abs(moveValue) / inputThreshold;
     lerpT = clamp(lerpT, 0, 1)
-    leftBlend = lerp(leftArcadeValue, leftCurvatureValue, lerpT)
-    rightBlend = lerp(rightArcadeValue, rightCurvatureValue, lerpT)
+    leftBlend = lerp(arcadeLeft, curvatureLeft, lerpT)
+    rightBlend = lerp(arcadeRight, curvatureRight, lerpT)
 
     return leftBlend, rightBlend
 end
