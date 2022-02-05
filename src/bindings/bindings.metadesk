@@ -79,6 +79,15 @@ motors: {
   }
 
   @baseclass
+  "frc::Servo": {
+    @constructor new(int channel);
+    double get();
+    double getAngle();
+    set();
+    setAngle();
+  }
+
+  @baseclass
   "frc::MotorController": {
     @converter("frc::MotorController") ToSpeedController();
     Set(double value);

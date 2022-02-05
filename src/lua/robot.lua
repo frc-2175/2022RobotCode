@@ -9,6 +9,7 @@ function Robot.robotInit()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
+	-- serbo = Servo:new(1111)
 	chooser = SendableChooser:new()
 	chooser:putChooser({
 		{name = "Test 1", value = "they're selecting test 1"},
