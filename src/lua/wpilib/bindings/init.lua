@@ -329,6 +329,10 @@ void PutString(const char * keyName, const char* value);
 void PutStringArray(const char * keyName, const char ** value, size_t size);
 void PutBoolean(const char * keyName, bool value);
 void PutBooleanArray(const char * keyName, int * value, size_t size);
+void PutIntChooser(void * data);
+void* SendableChooser_new();
+void SendableChooser_AddOption(void* _this, const char * name, int object);
+int SendableChooser_GetSelected(void* _this);
 const char* GetDeployDirectory();
 void liberate(void* ptr);
 ]]

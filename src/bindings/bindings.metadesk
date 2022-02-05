@@ -384,6 +384,7 @@ robotbase: {
 @include("<string_view>")
 @include("<wpi/span.h>")
 @include("<frc/smartdashboard/SmartDashboard.h>")
+@include("<frc/smartdashboard/SendableChooser.h>")
 dashboard: {
   @class("frc::SmartDashboard")
   SmartDashboard: {
@@ -393,6 +394,14 @@ dashboard: {
     @static PutStringArray(const char* keyName, const char** value, size_t size) """    frc::SmartDashboard::PutStringArray((std::string_view)keyName, wpi::span(std::vector<std::string>(value, value + size)));""";
     @static PutBoolean(@cast("std::string_view") const char* keyName, bool value);
     @static PutBooleanArray(const char* keyName, int* value, size_t size) """    frc::SmartDashboard::PutBooleanArray((std::string_view)keyName, wpi::span(value, size));""";
+	@static @nolua @alias(PutIntChooser) PutData(@cast("frc::SendableChooser<int>*") void* data);
+  }
+
+  @class("frc::SendableChooser<int>")
+  SendableChooser: {
+	@constructor new();
+	AddOption(@cast("std::string_view") const char * name, int object);
+	@nolua int GetSelected();
   }
 }
 
