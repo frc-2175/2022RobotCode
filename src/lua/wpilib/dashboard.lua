@@ -59,7 +59,6 @@ end
 function SendableChooser:new()
     local instance = {
         _this = ffi.C.SendableChooser_new(),
-		options = {},
     }
     setmetatable(instance, self)
     self.__index = self

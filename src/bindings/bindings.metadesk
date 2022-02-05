@@ -329,7 +329,12 @@ motors: {
       return new frc::DifferentialDrive(*l, *r);
     """;
     ArcadeDrive(double xSpeed, double zRotation, bool squareInputs);
-	TankDrive(double leftSpeed, double rightSpeed, bool squareInputs);
+	  TankDrive(double leftSpeed, double rightSpeed, bool squareInputs);
+    @nolua @static CurvatureDriveIK(double xSpeed, double zRotation, bool allowTurnInPlace, double* leftSpeed, double* rightSpeed) """
+      auto speeds = frc::DifferentialDrive::CurvatureDriveIK(xSpeed, zRotation, allowTurnInPlace);
+      *leftSpeed = speeds.left;
+      *rightSpeed = speeds.right;
+    """;
   }
 }
 

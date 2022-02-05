@@ -1684,3 +1684,9 @@ LUAFUNC void DifferentialDrive_TankDrive(void* _this, double leftSpeed, double r
     ((frc::DifferentialDrive*)_this)
         ->TankDrive(leftSpeed, rightSpeed, squareInputs);
 }
+
+LUAFUNC void CurvatureDriveIK(double xSpeed, double zRotation, bool allowTurnInPlace, double * leftSpeed, double * rightSpeed) {
+      auto speeds = frc::DifferentialDrive::CurvatureDriveIK(xSpeed, zRotation, allowTurnInPlace);
+      *leftSpeed = speeds.left;
+      *rightSpeed = speeds.right;
+}

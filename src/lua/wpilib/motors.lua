@@ -2262,3 +2262,4 @@ function DifferentialDrive:tankDrive(leftSpeed, rightSpeed, squareInputs)
     rightSpeed = AssertNumber(rightSpeed)
     ffi.C.DifferentialDrive_TankDrive(self._this, leftSpeed, rightSpeed, squareInputs)
 end
+

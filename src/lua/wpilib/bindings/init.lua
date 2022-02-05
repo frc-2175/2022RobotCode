@@ -310,6 +310,7 @@ double TalonFX_GetExpiration(void* _this);
 void* DifferentialDrive_new(void * leftMotor, void * rightMotor);
 void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zRotation, bool squareInputs);
 void DifferentialDrive_TankDrive(void* _this, double leftSpeed, double rightSpeed, bool squareInputs);
+void CurvatureDriveIK(double xSpeed, double zRotation, bool allowTurnInPlace, double * leftSpeed, double * rightSpeed);
 void* Solenoid_new(int moduleType, int channel);
 void Solenoid_Set(void* _this, bool on);
 bool Solenoid_Get(void* _this);

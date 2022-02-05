@@ -45,6 +45,15 @@ function DifferentialDrive:new(leftMotor, rightMotor)
     return instance
 end
 
+function DifferentialDrive:curvatureDriveIK(xSpeed, zRotation, allowTurnInPlace)
+    xSpeed = AssertNumber(xSpeed)
+    zRotation = AssertNumber(zRotation)
+    local left = ffi.new('int')
+    local right = ffi.new('int')
+    ffi.C.CurvatureDriveIK(xSpeed, zRotation, allowTurnInPlace, left, right)
+    return left, right
+end
+
 function DifferentialDrive:blendedDrive(desiredSpeed, rotation, inputThreshold)
 	local left, right = getBlendedMotorValues(desiredSpeed, rotation, inputThreshold);
 	self:tankDrive(left, right)
