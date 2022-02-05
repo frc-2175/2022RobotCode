@@ -10,13 +10,13 @@ function Timer:new()
 end
 
 function Timer:start()
-	self.startTime = getTimeSeconds()
+	self.startTime = getFPGATimestamp()
 end
 
 function Timer:getElapsedTimeSeconds()
 	local elapsed = 0
 	if self.startTime then
-		elapsed = getTimeSeconds() - self.startTime
+		elapsed = getFPGATimestamp() - self.startTime
 	end
 	return elapsed
 end

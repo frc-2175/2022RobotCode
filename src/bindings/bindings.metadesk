@@ -79,6 +79,15 @@ motors: {
   }
 
   @baseclass
+  "frc::Servo": {
+    @constructor new(int channel);
+    double get();
+    double getAngle();
+    set();
+    setAngle();
+  }
+
+  @baseclass
   "frc::MotorController": {
     @converter("frc::MotorController") ToSpeedController();
     Set(double value);
@@ -320,7 +329,12 @@ motors: {
       return new frc::DifferentialDrive(*l, *r);
     """;
     ArcadeDrive(double xSpeed, double zRotation, bool squareInputs);
-	TankDrive(double leftSpeed, double rightSpeed, bool squareInputs);
+	  TankDrive(double leftSpeed, double rightSpeed, bool squareInputs);
+    @nolua @static CurvatureDriveIK(double xSpeed, double zRotation, bool allowTurnInPlace, double* leftSpeed, double* rightSpeed) """
+      auto speeds = frc::DifferentialDrive::CurvatureDriveIK(xSpeed, zRotation, allowTurnInPlace);
+      *leftSpeed = speeds.left;
+      *rightSpeed = speeds.right;
+    """;
   }
 }
 
@@ -384,6 +398,7 @@ robotbase: {
 @include("<string_view>")
 @include("<wpi/span.h>")
 @include("<frc/smartdashboard/SmartDashboard.h>")
+@include("<frc/smartdashboard/SendableChooser.h>")
 dashboard: {
   @class("frc::SmartDashboard")
   SmartDashboard: {
@@ -393,6 +408,14 @@ dashboard: {
     @static PutStringArray(const char* keyName, const char** value, size_t size) """    frc::SmartDashboard::PutStringArray((std::string_view)keyName, wpi::span(std::vector<std::string>(value, value + size)));""";
     @static PutBoolean(@cast("std::string_view") const char* keyName, bool value);
     @static PutBooleanArray(const char* keyName, int* value, size_t size) """    frc::SmartDashboard::PutBooleanArray((std::string_view)keyName, wpi::span(value, size));""";
+	@static @nolua @alias(PutIntChooser) PutData(@cast("frc::SendableChooser<int>*") void* data);
+  }
+
+  @class("frc::SendableChooser<int>")
+  SendableChooser: {
+	@constructor new();
+	AddOption(@cast("std::string_view") const char * name, int object);
+	@nolua int GetSelected();
   }
 }
 

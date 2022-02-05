@@ -6,6 +6,8 @@ require("wpilib.bindings.enum")
 
 SmartDashboard = {}
 
+SendableChooser = {}
+
 ---@param keyName any
 ---@param value number
 ---@return any
@@ -51,3 +53,23 @@ end
 function putBooleanArray(keyName, value, size)
     ffi.C.PutBooleanArray(keyName, value, size)
 end
+
+
+---@return any
+function SendableChooser:new()
+    local instance = {
+        _this = ffi.C.SendableChooser_new(),
+    }
+    setmetatable(instance, self)
+    self.__index = self
+    return instance
+end
+
+---@param name any
+---@param object integer
+---@return any
+function SendableChooser:addOption(name, object)
+    object = AssertInt(object)
+    ffi.C.SendableChooser_AddOption(self._this, name, object)
+end
+

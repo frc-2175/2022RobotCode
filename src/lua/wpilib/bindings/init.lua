@@ -310,6 +310,7 @@ double TalonFX_GetExpiration(void* _this);
 void* DifferentialDrive_new(void * leftMotor, void * rightMotor);
 void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zRotation, bool squareInputs);
 void DifferentialDrive_TankDrive(void* _this, double leftSpeed, double rightSpeed, bool squareInputs);
+void CurvatureDriveIK(double xSpeed, double zRotation, bool allowTurnInPlace, double * leftSpeed, double * rightSpeed);
 void* Solenoid_new(int moduleType, int channel);
 void Solenoid_Set(void* _this, bool on);
 bool Solenoid_Get(void* _this);
@@ -329,6 +330,10 @@ void PutString(const char * keyName, const char* value);
 void PutStringArray(const char * keyName, const char ** value, size_t size);
 void PutBoolean(const char * keyName, bool value);
 void PutBooleanArray(const char * keyName, int * value, size_t size);
+void PutIntChooser(void * data);
+void* SendableChooser_new();
+void SendableChooser_AddOption(void* _this, const char * name, int object);
+int SendableChooser_GetSelected(void* _this);
 const char* GetDeployDirectory();
 void liberate(void* ptr);
 ]]

@@ -1,0 +1,6 @@
+*.c text eol=LF
+*.cpp text eol=LF
+*.h text eol=LF
+*.hpp text eol=LF
+
+*.lua text eol=LF
