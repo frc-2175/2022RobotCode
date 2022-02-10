@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+
 class Vector {
 	constructor(x, y) {
 		this.x = x;
@@ -33,7 +34,41 @@ const visualizeNPoints = 16;
 let currentSegment = 1;
 let closestPoint;
 let mouseVector;
-let triggerPointList = [];
+const triggerPointList = [];
+const colorList = [
+	{
+		"name": "gray",
+		"value": "2f4f4f"
+	},
+	{
+		"name": "maroon",
+		"value": "7f0000"
+	},
+	{
+		"name": "green",
+		"value": "008000"
+	},
+	{
+		"name": "blue",
+		"value": "000080"
+	},
+	{
+		"name": "orange",
+		"value": "ff8c00"
+	},
+	{
+		"name": "yellow",
+		"value": "ffff00"
+	},
+	{
+		"name": "lime",
+		"value": "00ff00"
+	},
+	{
+		"name": "aqua",
+		"value": "00ffff"
+	}
+];
 
 function preload() {
 	img = loadImage("https://firebasestorage.googleapis.com/v0/b/pathmakerviewer.appspot.com/o/rapidreactfield.png?alt=media&token=8cf9f0e0-b56f-49b6-941b-c9240db1a2d7");
@@ -113,6 +148,10 @@ function updateTitle(handle) {
 	}
 }
 
+function randomColor() {
+	return colorList[Math.floor(Math.random() * colorList.length)];
+}
+
 async function getNewFileHandle() {
 	const options = {
 		types: [
@@ -154,8 +193,7 @@ function savePoints() {
 }
 
 async function openPoints() {
-	let fileHandle;
-	[fileHandle] = await window.showOpenFilePicker();
+	const [fileHandle] = await window.showOpenFilePicker();
 	const file = await fileHandle.getFile();
 	const contents = JSON.parse(await file.text());
 	console.log(contents);
@@ -242,10 +280,12 @@ function getClosestPointOnLines(pXy, aXys) {
 }
 
 function createTriggerPoint(point, name, code, color) {
-	let dist = 0;
+	const dist = 0;
+	let previousPoint = lineVectorList[0];
 	lineVectorList.forEach((item, index) => {
-		if (index != lineVectorList.length - 1) {
-			dist += lineVectorList[index - 1].distTo(item);
+		if (0 < index) {
+			console.log(previousPoint.distTo(item));
+			previousPoint = item;
 		}
 	});
 	if (closestPoint.distTo(mouseVector.convToFieldCoords()) < 50) {
@@ -259,7 +299,7 @@ function keyPressed() {
 		removeLastLineVector(closestPoint);
 	}
 	if (keyCode === 32) {
-		createTriggerPoint(closestPoint);
+		createTriggerPoint(closestPoint, null, null, randomColor()["value"]);
 	}
 }
 
@@ -270,6 +310,9 @@ function windowResized() {
 	pixelToInchRatio = 1.37 / (width / (2987 / 5));
 }
 
+function updateHTML() {
+	alert(triggerPointList);
+}
 
 function draw() {
 	mouseVector = new Vector(mouseX, mouseY);
@@ -303,13 +346,6 @@ function draw() {
 		const currentLine = null;
 	}
 
-	stroke(0);
-	strokeWeight(10);
-
-	triggerPointList.forEach((item) => {
-		point(item["vector"].convToScreenCoords().x, item["vector"].convToScreenCoords().y);
-	});
-
 	strokeWeight(1);
 
 	if (lineVectorList.length === 1) {
@@ -340,6 +376,18 @@ function draw() {
 				line(convXToScreen(lineVectorList[lineVectorList.length - 1].x), convYToScreen(lineVectorList[lineVectorList.length - 1].y), mouseX, mouseY);
 			}
 		});
+
+		stroke(0);
+		strokeWeight(10);
+		triggerPointList.forEach((item) => {
+			stroke(0);
+			strokeWeight(18);
+			point(item["vector"].convToScreenCoords().x, item["vector"].convToScreenCoords().y);
+			strokeWeight(10);
+			stroke("#" + item["color"]);
+			point(item["vector"].convToScreenCoords().x, item["vector"].convToScreenCoords().y);
+		});
+		stroke(0);
 
 		const previousPoint = lineVectorList[lineVectorList.length - 2];
 		const currentPoint = lineVectorList[lineVectorList.length - 1];
