@@ -5,7 +5,7 @@ require("wpilib.ahrs")
 require("wpilib.motors")
 
 local TICKS_TO_INCHES = 138 / 30711
-local navx = AHRS:new()
+local navx = AHRS:new(4)
 local position = Vector:new(0, 0)
 
 ---@param path table - a pure pursuit path
@@ -129,7 +129,7 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 		previousClosestPoint = 0,
 		purePursuitPID = PIDController:new(p, i, d),
 	}
-	setmetatable(p, PurePursuit)
+	setmetatable(x, PurePursuit)
 
 	return x
 end
