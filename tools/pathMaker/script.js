@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
 
 class Vector {
 	constructor(x, y) {
@@ -32,6 +31,7 @@ let xImageCenter = null;
 let yImageCenter = null;
 const visualizeNPoints = 16;
 let currentSegment = 1;
+let closestLineIndex;
 let closestPoint;
 let mouseVector;
 const triggerPointList = [];
@@ -70,6 +70,7 @@ const colorList = [
 	}
 ];
 
+// eslint-disable-next-line no-unused-vars
 function preload() {
 	img = loadImage("https://firebasestorage.googleapis.com/v0/b/pathmakerviewer.appspot.com/o/rapidreactfield.png?alt=media&token=8cf9f0e0-b56f-49b6-941b-c9240db1a2d7");
 }
@@ -99,7 +100,6 @@ function convYToScreen(y) {
 
 function createNewPoint(vector) {
 	pointList.push(vector);
-
 	updateTitle(pointFile);
 }
 
@@ -118,6 +118,7 @@ function removeLastLineVector() {
 	updateTitle(pointFile);
 }
 
+// eslint-disable-next-line no-unused-vars
 function mousePressed() {
 	const mouseVector = new Vector(mouseX, mouseY);
 	createNewLineVector(mouseVector.convToFieldCoords());
@@ -128,9 +129,15 @@ document.addEventListener("keydown", function (e) {
 		e.preventDefault();
 		savePoints();
 	}
+
 	if (e.key === "o") {
 		e.preventDefault();
 		openPoints();
+	}
+
+	if (e.key === " ") {
+		e.preventDefault();
+		createTriggerPoint(closestPoint, null, null, randomColor()["value"]);
 	}
 }, false);
 
@@ -207,26 +214,28 @@ async function openPoints() {
 	});
 }
 
+
+// vector 1, vector 2, mouse vector
+function getDistanceToLine(v1, v2, m) {
+	const numer = ((v2.x - v1.x) * (v1.y - m.y)) - ((v1.x - m.x) * (v2.y - v1.y));
+	const denom = Math.sqrt(((v2.x - v1.x) ** 2) + ((v2.y - v1.y) ** 2));
+	
+	return Math.abs(numer) / denom;
+}
+
+
 function getClosestPointOnLines(pXy, aXys) {
-	let minDist;
-	let fTo;
-	let fFrom;
-	let x;
-	let y;
-	let i;
-	let dist;
+	let minDist, fTo, fFrom, x, y, i, dist;
 
 	if (aXys.length > 1) {
-
 		for (let n = 1; n < aXys.length; n++) {
-
 			if (aXys[n].x !== aXys[n - 1].x) {
 				const a = (aXys[n].y - aXys[n - 1].y) / (aXys[n].x - aXys[n - 1].x);
 				const b = aXys[n].y - a * aXys[n].x;
 				dist = Math.abs(a * pXy.x + b - pXy.y) / Math.sqrt(a * a + 1);
-			}
-			else
+			} else {
 				dist = Math.abs(pXy.x - aXys[n].x);
+			}
 
 			// length^2 of line segment 
 			const rl2 = Math.pow(aXys[n].y - aXys[n - 1].y, 2) + Math.pow(aXys[n].x - aXys[n - 1].x, 2);
@@ -294,15 +303,14 @@ function createTriggerPoint(point, name, code, color) {
 	console.log(dist);
 }
 
+// eslint-disable-next-line no-unused-vars
 function keyPressed() {
 	if (keyCode === 8) {
 		removeLastLineVector(closestPoint);
 	}
-	if (keyCode === 32) {
-		createTriggerPoint(closestPoint, null, null, randomColor()["value"]);
-	}
 }
 
+// eslint-disable-next-line no-unused-vars
 function windowResized() {
 	resizeCanvas(windowWidth, (windowWidth * 0.58));
 	xImageCenter = width / 2;
@@ -310,14 +318,28 @@ function windowResized() {
 	pixelToInchRatio = 1.37 / (width / (2987 / 5));
 }
 
+
 function updateHTML() {
-	alert(triggerPointList);
+	if (document.readyState === "ready" || document.readyState === "complete") {
+		const triggerPointDiv = document.getElementById("triggerPointDiv");
+		triggerPointDiv.innerHTML = "";
+		triggerPointList.forEach((item, index) => {
+			const triggerPointElement = document.createElement("div");
+			const triggerPointTitle = document.createElement("h4");
+			triggerPointTitle.innerHTML = `Trigger point ${index}:`;
+			triggerPointTitle.style.color = "#" + item["color"];
+			triggerPointElement.appendChild(triggerPointTitle);
+			triggerPointDiv.appendChild(triggerPointElement);
+		}); 
+	}
 }
 
 function draw() {
+	updateHTML();
 	mouseVector = new Vector(mouseX, mouseY);
 	const xCoord = mouseVector.convToFieldCoords().x;
 	const yCoord = mouseVector.convToFieldCoords().y;
+	let closestLineDist = Number.MAX_SAFE_INTEGER;
 
 	background(220);
 	strokeWeight(0);
@@ -325,21 +347,34 @@ function draw() {
 	text("Screen coordinates: " + String(round(mouseX) + ", " + round(mouseY)), 10, 20);
 	text("Field coordinates: " + xCoord + ", " + yCoord, 10, 40);
 
-	if (1 < lineVectorList.length) {
+	if (lineVectorList.length > 1) {
 		const currentLine = [lineVectorList[currentSegment - 1], lineVectorList[currentSegment]];
-		if (getClosestPointOnLines(mouseVector.convToFieldCoords(), currentLine).fFrom === 1 && currentSegment !== 1) {
-			currentSegment -= 1;
-		}
-		if (getClosestPointOnLines(mouseVector.convToFieldCoords(), currentLine).fFrom === 0 && lineVectorList.length >= currentSegment + 2) {
-			currentSegment += 1;
-		}
-		closestPoint = new Vector(getClosestPointOnLines(mouseVector.convToFieldCoords(), currentLine).x, getClosestPointOnLines(mouseVector.convToFieldCoords(), currentLine).y);
-		if (closestPoint.distTo(mouseVector.convToFieldCoords()) < 50) {
-			strokeWeight(12);
-			stroke(200);
-			point(closestPoint.convToScreenCoords().x, closestPoint.convToScreenCoords().y);
-			stroke(0);
-		}
+		
+				
+		lineVectorList.forEach((value, index) => {
+			if (index > 0) {
+				const prev = lineVectorList[index - 1];
+				const curr = value;
+				const lineDist = getDistanceToLine(curr, prev, mouseVector.convToFieldCoords());
+				if (lineDist < closestLineDist) {
+					console.log("changed closest!");
+					closestLineDist = lineDist;
+					closestLineIndex = index;
+				}
+			}
+		});
+
+		currentSegment = closestLineIndex;
+		console.log(closestLineIndex);
+
+		closestPoint = new Vector(
+			getClosestPointOnLines(mouseVector.convToFieldCoords(), currentLine).x, 
+			getClosestPointOnLines(mouseVector.convToFieldCoords(), currentLine).y
+		);
+		strokeWeight(12);
+		stroke(200);
+		point(closestPoint.convToScreenCoords().x, closestPoint.convToScreenCoords().y);
+		stroke(0);
 	}
 
 	else {
@@ -351,8 +386,7 @@ function draw() {
 	if (lineVectorList.length === 1) {
 		stroke(200);
 		line(convXToScreen(lineVectorList[0].x), convYToScreen(lineVectorList[0].y), mouseX, mouseY);
-	}
-	else if (0 < lineVectorList.length) {
+	} else if (lineVectorList.length > 0) {
 		lineVectorList.forEach((item, index) => {
 			if (index !== 0) {
 				const previousPoint = lineVectorList[index - 1];
