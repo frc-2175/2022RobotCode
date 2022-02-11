@@ -3,6 +3,9 @@ require("subsystems.climber")
 require("subsystems.drivetrain")
 require("wpilib.dashboard")
 require("utils.logger")
+require("utils.blendeddrive")
+require("utils.purepursuit")
+require("utils.path")
 
 function Robot.robotInit()
 	--initLogging()
@@ -15,6 +18,13 @@ function Robot.robotInit()
 		{name = "Test 1", value = "they're selecting test 1"},
 		{name = "Test 2", value = "they're selecting test 2"},
 	})
+	pathy = makePath(false, 0, Vector:new(0,0), {makeLinePathSegment(10)})
+	purepursuity = PurePursuit:new(pathy, 0, 0, 0)
+end
+
+function Robot.autonomousPeriodic()
+	turnvalue = purepursuity:run()
+	getBlendedMotorValues(.5,turnvalue)
 end
 
 function Robot.teleopPeriodic()
