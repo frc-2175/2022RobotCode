@@ -19,7 +19,7 @@ end
 
 function Robot.teleopPeriodic()
 	-- joystick driving
-	drive(-leftStick:getY(), rightStick:getX())
+	Drivetrain:drive(-leftStick:getY(), rightStick:getX())
 
 
 	if rightStick:getTriggerHeld() then

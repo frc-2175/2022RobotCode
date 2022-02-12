@@ -11,12 +11,14 @@ rightFollower = TalonFX:new(23)
 rightFollower:follow(rightMotor)
 rightFollower:setInverted(CTREInvertType.FollowMaster)
 
-function drive(speed, rotation)
+Drivetrain = {}
+
+function Drivetrain:drive(speed, rotation)
     local leftSpeed, rightSpeed = getBlendedMotorValues(speed, rotation)
     leftMotor:set(leftSpeed)
     rightMotor:set(rightSpeed)
 end
 
-function stop()
-    drive(0, 0)
+function Drivetrain:stop()
+    Drivetrain:drive(0, 0)
 end

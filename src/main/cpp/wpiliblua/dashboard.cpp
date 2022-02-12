@@ -32,7 +32,7 @@ LUAFUNC void PutBooleanArray(const char * keyName, int * value, size_t size) {
 }
 
 LUAFUNC void PutIntChooser(void * data) {
-    frc::SmartDashboard::PutData((frc::SendableChooser<int>*)data);
+
 }
 
 LUAFUNC void* SendableChooser_new() {
