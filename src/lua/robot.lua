@@ -12,18 +12,6 @@ function Robot.robotInit()
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	-- serbo = Servo:new(1111)
-
-	leftMotor = TalonFX:new(0)
-	rightMotor = TalonFX:new(1)
-	
-	leftFollower = TalonFX:new(2)
-	leftFollower:follow(leftMotor)
-	leftFollower:setInverted(CTRETalonFXInvertType.FollowMaster)
-	rightFollower = TalonFX:new(3)
-	rightFollower:follow(rightMotor)
-	rightFollower:setInverted(CTRETalonFXInvertType.FollowMaster)
-
-	robotDrive = DifferentialDrive:new(leftMotor, rightMotor)
 end
 
 function Robot.autonomousPeriodic()
@@ -31,11 +19,7 @@ end
 
 function Robot.teleopPeriodic()
 	-- joystick driving
-	robotDrive:arcadeDrive(
-        leftStick:getY(),
-        rightStick:getX(),
-		false
-    )
+	drive(-leftStick:getY(), rightStick:getX())
 
 
 	if rightStick:getTriggerHeld() then
