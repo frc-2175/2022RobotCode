@@ -4,7 +4,3 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
----@return any
-function getDeployDirectory()
-    return ffi.C.GetDeployDirectory()
-end
