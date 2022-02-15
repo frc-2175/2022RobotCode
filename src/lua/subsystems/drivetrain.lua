@@ -1,19 +1,24 @@
-local leftMasterMotor = TalonFX:new(1) --TODO: not a real device id
-local leftFollowerMotor = TalonFX:new(1) --TODO: not a real device id
-local rightMasterMotor = TalonFX:new(1) --TODO: not a real device id
-local rightFollowerMotor = TalonFX:new(1) --TODO: not a real device id
+leftMotor = TalonFX:new(20)
 
-leftFollowerMotor:follow(leftMasterMotor)
-rightFollowerMotor:follow(rightMasterMotor)
+rightMotor = TalonFX:new(21)
+rightMotor:setInverted(CTREInvertType.InvertMotorOutput)
+	
+leftFollower = TalonFX:new(22)
+leftFollower:follow(leftMotor)
+leftFollower:setInverted(CTREInvertType.FollowMaster)
 
-local dive = DifferentialDrive:new(leftMasterMotor, rightMasterMotor)
+rightFollower = TalonFX:new(23)
+rightFollower:follow(rightMotor)
+rightFollower:setInverted(CTREInvertType.FollowMaster)
 
-function drive(speed, rotation)
+Drivetrain = {}
+
+function Drivetrain:drive(speed, rotation)
     local leftSpeed, rightSpeed = getBlendedMotorValues(speed, rotation)
-    leftMasterMotor:set(leftSpeed)
-    rightMasterMotor:set(rightSpeed)
+    leftMotor:set(leftSpeed)
+    rightMotor:set(rightSpeed)
 end
 
-function stop()
-    drive(0, 0)
+function Drivetrain:stop()
+    Drivetrain:drive(0, 0)
 end

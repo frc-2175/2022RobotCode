@@ -421,7 +421,7 @@ dashboard: {
 
 @include("<frc/Filesystem.h>")
 filesystem: {
-  "const char*" GetDeployDirectory() """  return stdStringForLua(frc::filesystem::GetDeployDirectory());""";
+  @nolua "const char*" GetDeployDirectory() """  return stdStringForLua(frc::filesystem::GetDeployDirectory());""";
 }
 
 @include("<stdlib.h>")

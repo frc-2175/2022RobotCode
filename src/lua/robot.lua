@@ -1,7 +1,6 @@
 require("subsystems.cargo")
 require("subsystems.climber")
 require("subsystems.drivetrain")
-require("wpilib.dashboard")
 require("utils.logger")
 require("utils.blendeddrive")
 require("utils.purepursuit")
@@ -13,21 +12,16 @@ function Robot.robotInit()
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	-- serbo = Servo:new(1111)
-	chooser = SendableChooser:new()
-	chooser:putChooser({
-		{name = "Test 1", value = "they're selecting test 1"},
-		{name = "Test 2", value = "they're selecting test 2"},
-	})
-	pathy = makePath(false, 0, Vector:new(0,0), {makeLinePathSegment(10)})
-	purepursuity = PurePursuit:new(pathy, 0, 0, 0)
 end
 
 function Robot.autonomousPeriodic()
-	turnvalue = purepursuity:run()
-	getBlendedMotorValues(.5,turnvalue)
 end
 
 function Robot.teleopPeriodic()
+	-- joystick driving
+	Drivetrain:drive(-leftStick:getY(), rightStick:getX())
+
+
 	if rightStick:getTriggerHeld() then
 		Intake:runIn()
 	else

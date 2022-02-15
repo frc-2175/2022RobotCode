@@ -8,9 +8,10 @@
 
 require("utils.math")
 
-local inputThreshold = 0.1
+function getBlendedMotorValues(moveValue, turnValue, inputThreshold)
+	-- default value
+	inputThreshold = inputThreshold or 0.1
 
-function getBlendedMotorValues(moveValue, turnValue)
     local arcadeLeft, arcadeRight = DifferentialDrive:curvatureDriveIK(moveValue,turnValue,true)
     local curvatureLeft, curvatureRight = DifferentialDrive:curvatureDriveIK(moveValue,turnValue,false)
 
