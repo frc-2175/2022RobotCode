@@ -318,18 +318,30 @@ function windowResized() {
 
 function updateHTML() {
 	if (document.readyState === "ready" || document.readyState === "complete") {
+		if (triggerPointList.length > 0) {
+			document.getElementById("triggerPointTitle").style.visibility = "visible";
+		}
+		else {
+			document.getElementById("triggerPointTitle").style.visibility = "hidden";
+		}
 		const triggerPointDiv = document.getElementById("triggerPointDiv");
 		triggerPointDiv.innerHTML = "";
 		triggerPointList.forEach((item, index) => {
 			const triggerPointElement = document.createElement("div");
 			const triggerPointTitle = document.createElement("h4");
+			const triggerPointNameInput = document.createElement("input");
 			triggerPointTitle.innerHTML = `Trigger point ${index}:`;
 			triggerPointTitle.style.color = "#" + item["color"];
+			triggerPointNameInput.id = `${index}nameInput`;
+			triggerPointNameInput.style.zIndex = 999;
+			triggerPointElement.style.display = "inline-block";
 			triggerPointElement.appendChild(triggerPointTitle);
+			triggerPointElement.appendChild(triggerPointNameInput);
 			triggerPointDiv.appendChild(triggerPointElement);
 		}); 
 	}
 }
+// "sus" - Serena, 2022
 
 // eslint-disable-next-line no-unused-vars
 function draw() {
