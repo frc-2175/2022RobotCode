@@ -21,6 +21,7 @@
 		"*.inc": "cpp",
 		"*.metadesk": "csharp",
 		"*.tcc": "cpp",
+		"*.path": "json",
 		"algorithm": "cpp",
 		"array": "cpp",
 		"atomic": "cpp",

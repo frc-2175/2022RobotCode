@@ -1,6 +1,7 @@
 require("utils.vector")
 require("utils.math")
-
+local json = require("utils.json")
+local dir = getDeployDirectory() .. "\\paths\\"
 -- Oh boyo, here we go!
 
 --- A way of moving a robot from a starting speed to a middle speed and then to an ending speed, ramping inbetween. 
@@ -188,4 +189,15 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	local pathResult = newPath(finalPath, #finalPath - #endingPoints.path)
 
 	return pathResult
+end
+
+function readPath(fileName)
+	local fileContents = json.decode(
+		io.open(dir .. "\\" .. fileName .. ".path"):read("a")
+	).points
+	local resultPath = {path = {}, numberOfActualPoints = #fileContents - 36}
+
+	for index, value in ipairs(fileContents) do
+		table.insert(resultPath, Vector:new(value.x, value.y))
+	end
 end
