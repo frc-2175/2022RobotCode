@@ -3,6 +3,7 @@ require("subsystems.climber")
 require("subsystems.drivetrain")
 require("utils.logger")
 require("utils.blendeddrive")
+require("utils.slideshow")
 require("utils.purepursuit")
 require("utils.path")
 
@@ -12,6 +13,7 @@ function Robot.robotInit()
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	-- serbo = Servo:new(1111)
+	testSlides = Slideshow:new({"lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO"})
 end
 
 function Robot.autonomousPeriodic()
@@ -34,6 +36,12 @@ function Robot.teleopPeriodic()
 		Intake:retract()
 	end
 
+	if gamepad:getButtonPressed(XboxButton.RightBumper) then
+		testSlides:next()
+	elseif gamepad:getButtonPressed(XboxButton.LeftBumper) then
+		testSlides:prev()
+	end
+
 	if gamepad:getButtonHeld(XboxButton.Y) then
 		Winch:runIn()
 	elseif gamepad:getButtonHeld(XboxButton.X) then
@@ -41,4 +49,6 @@ function Robot.teleopPeriodic()
 	else
 		Winch:stop()
 	end
+
+	testSlides:display()
 end

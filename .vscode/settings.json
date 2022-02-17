@@ -138,5 +138,8 @@
 	"luahelper.format.use_tab": true,
 	"workbench.editor.enablePreview": false,
 	"workbench.editor.highlightModifiedTabs": true,
-	"wpilib.selectDefaultSimulateExtension": false
+	"wpilib.selectDefaultSimulateExtension": true,
+	"Lua.diagnostics.disable": [
+		"lowercase-global"
+	],
 }
