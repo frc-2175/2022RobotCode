@@ -62,9 +62,11 @@ let pointFile;
 let imageCenter = null;
 const visualizeNPoints = 10;
 let closestPoint;
+let closestSegment;
 let mouseVector;
 let fieldMouse;
 const triggerPointList = [];
+let previousTriggerPointCount;
 
 const colorList = [
 	{
@@ -114,6 +116,15 @@ function setup() {
 	textSize(15);
 }
 
+function canvasFocused() {
+	if (mouseY > 0 && mouseY < (windowWidth * 0.58) && mouseX > 0 && mouseX < windowWidth) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 function createNewLineVector(vector) {
 	lineVectors.push(vector);
 	lineVectorHasChanged = true;
@@ -142,23 +153,30 @@ function removeLastLineVector() {
 
 // eslint-disable-next-line no-unused-vars
 function mouseClicked() {
-	createNewLineVector((new Vector(mouseX, mouseY)).toField());
+	if (canvasFocused()) {
+		createNewLineVector((new Vector(mouseX, mouseY)).toField());
+	}
 }
 
 document.addEventListener("keydown", function (e) {
-	if (e.key === "s") {
-		e.preventDefault();
-		savePoints();
-	}
-
-	if (e.key === "o") {
-		e.preventDefault();
-		openPoints();
-	}
-
-	if (e.key === " ") {
-		e.preventDefault();
-		createTriggerPoint(closestPoint, null, null, randomColor()["value"]);
+	if (canvasFocused()) {
+		if (e.key === "s") {
+			e.preventDefault();
+			savePoints();
+		}
+	
+		if (e.key === "o") {
+			e.preventDefault();
+			openPoints();
+		}
+	
+		if (e.key === " ") {
+			e.preventDefault();
+			createTriggerPoint(closestPoint, null, null, randomColor()["value"], closestSegment);
+		}
+		if (e.key === "Backspace") {
+			removeLastLineVector(closestPoint);
+		}
 	}
 }, false);
 
@@ -289,23 +307,15 @@ function getClosestPointOnLines(pXy, aXys) {
 	return { "vector": new Vector(x, y), "i": i, "fTo": fTo, "fFrom": fFrom };
 }
 
-function createTriggerPoint(point, name, code, color) {
+function createTriggerPoint(point, name, code, color, segment) {
 	let previousPoint = lineVectors[0];
 	lineVectors.forEach((item, index) => {
 		if (index > 0) {
-			console.log(previousPoint.distTo(item));
 			previousPoint = item;
 		}
 	});
 	if (closestPoint.distTo(mouseVector.toField()) < 50) {
-		triggerPointList.push({"vector": point, "name": name, "code": code, "color": color});
-	}
-}
-
-// eslint-disable-next-line no-unused-vars
-function keyPressed() {
-	if (keyCode === 8) {
-		removeLastLineVector(closestPoint);
+		triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment});
 	}
 }
 
@@ -317,7 +327,7 @@ function windowResized() {
 }
 
 function updateHTML() {
-	if (document.readyState === "ready" || document.readyState === "complete") {
+	if (document.readyState === "ready" || document.readyState === "complete" && previousTriggerPointCount != triggerPointList.length) {
 		if (triggerPointList.length > 0) {
 			document.getElementById("triggerPointTitle").style.visibility = "visible";
 		}
@@ -339,10 +349,9 @@ function updateHTML() {
 			triggerPointElement.appendChild(triggerPointNameInput);
 			triggerPointDiv.appendChild(triggerPointElement);
 		}); 
+		previousTriggerPointCount = triggerPointList.length;
 	}
 }
-// "sus" - Serena, 2022
-
 // eslint-disable-next-line no-unused-vars
 function draw() {
 	updateHTML();
@@ -352,7 +361,7 @@ function draw() {
 	background(220);
 	strokeWeight(0);
 	image(img, 0, 0, width, height);
-	fill(255);
+	fill(0);
 	text("Screen coordinates: " + String(round(mouseX) + ", " + round(mouseY)), 10, 20);
 	text("Field coordinates: " + fieldMouse.x + ", " + fieldMouse.y, 10, 40);
 
@@ -371,6 +380,7 @@ function draw() {
 		
 		if (lineVectors.length > 1) {
 			closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
+			closestSegment = getClosestPointOnLines(fieldMouse, lineVectors).i - 1;
 
 			strokeWeight(12);
 			stroke(150);
@@ -379,9 +389,8 @@ function draw() {
 			if (lineVectorHasChanged) {
 				for (let dotCount = 0; dotCount < targetDots; dotCount++) {
 					const newPoint = previousPoint.add(stepSize.mul(stepIncrement * dotCount));
-
 					stroke(0);
-					strokeWeight(8	);
+					strokeWeight(8);
 					createNewPoint(newPoint);
 				}
 			}
@@ -411,7 +420,7 @@ function draw() {
 					pointList[j].toScreen().y
 				);
 			}
-		}
+		} 
 
 		for (const item of triggerPointList) {
 			stroke(0);
