@@ -22,6 +22,7 @@ function Robot.robotInit()
 end
 
 function Robot.autonomousPeriodic()
+	trackLocation(leftMotor, rightMotor)
 	print(testPursuit:run())
 end
 

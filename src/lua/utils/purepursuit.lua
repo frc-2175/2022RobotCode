@@ -87,21 +87,6 @@ function trackLocation(leftMotor, rightMotor)
 	lastEncoderDistanceRight = rightMotor:getSelectedSensorPosition() * TICKS_TO_INCHES
 end
 
--- public void trackLocation() {
--- 	double distanceLeft = getLeftDistance() - lastEncoderDistanceLeft; 
--- 	double distanceRight = getRightDistance() - lastEncoderDistanceRight; 
--- 	double distance = (distanceLeft + distanceRight) / 2; 
--- 	double angle = Math.toRadians(navx.getAngle()); 
-
--- 	double x = Math.sin(angle) * distance; 
--- 	double y = Math.cos(angle) * distance; 
-
--- 	Vector changeInPosition = new Vector(x, y); 
--- 	position = position.add(changeInPosition); 
-
--- 	lastEncoderDistanceLeft = getLeftDistance(); 
--- 	lastEncoderDistanceRight = getRightDistance();
--- }
 function resetTracking()
 	lastEncoderDistanceLeft = 0
 	lastEncoderDistanceRight = 0
@@ -110,14 +95,6 @@ function resetTracking()
 	position = Vector:new(0, 0)
 	navx:reset();
 end
--- public void resetTracking() {
--- 	lastEncoderDistanceLeft = 0;
--- 	lastEncoderDistanceRight = 0;
--- 	zeroEncoderLeft = leftMaster.getSelectedSensorPosition(0);
--- 	zeroEncoderRight = rightMaster.getSelectedSensorPosition(0);
--- 	position = new Vector(0, 0);
--- 	navx.reset();
--- }
 
 PurePursuit = {}
 PurePursuit.__index = PurePursuit
@@ -134,7 +111,7 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 	return x
 end
 
----@return number turnValue
+---@return number turnValue, number speed
 function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
 	local indexOfGoalPoint = findGoalPoint(self.path, position, 25, indexOfClosestPoint)
@@ -154,5 +131,5 @@ function PurePursuit:run()
 	end
 	self.previousClosestPoint = indexOfClosestPoint
 
-	return turnValue
+	return turnValue, speed
 end
