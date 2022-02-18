@@ -6,8 +6,10 @@ local path
 local file
 
 function initLogging()
-	path = getDeployDirectory() .. "\\logs\\" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
-	file = io.open(path, "w")
+	os.execute("mkdir -p /home/lvuser/logs")
+	path = "/home/lvuser/logs/" .. os.date():gsub(":", "."):gsub(" ", "-") .. ".log"
+	print(path)
+	file, errorMessage = io.open(path, "w")
 	io.output(file)
 end
 

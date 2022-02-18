@@ -8,14 +8,15 @@ require("utils.purepursuit")
 require("utils.path")
 
 function Robot.robotInit()
-	--initLogging()
+	initLogging()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
+	resetTracking()
 	-- serbo = Servo:new(1111)
 	testSlides = Slideshow:new({"lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO"})
 	testPursuit = PurePursuit:new(
-		makePath(false, 0, Vector:new(0, 0), {makeLinePathSegment(36), makeLeftArcPathSegment(12, 90)}),
+		makePath(false, 0, Vector:new(0, 0), {makeLinePathSegment(24), makeLeftArcPathSegment(12, 90)}),
 		false,
 		0.02, 0, 0.002
 	)
@@ -23,16 +24,28 @@ end
 
 function Robot.autonomousPeriodic()
 	trackLocation(leftMotor, rightMotor)
-	print(testPursuit:run())
+	logData("Position X", position.x)
+	logData("Position Y", position.y)
+	local rotation = testPursuit:run()
+	logData("Rotation", rotation)
+	Drivetrain:drive(0.25, rotation)
 end
 
 function Robot.teleopPeriodic()
 	-- joystick driving
-	Drivetrain:drive(-leftStick:getY(), rightStick:getX())
+	trackLocation(leftMotor, rightMotor)
+	logData("Position X", position.x)
+	logData("Position Y", position.y)
+	logData("Encode left", leftMotor:getSelectedSensorPosition())
+	logData("Encode right", rightMotor:getSelectedSensorPosition())
+	logData("heading", navx:getAngle())
+	Drivetrain:drive(leftStick:getY(), rightStick:getX())
+
 
 
 	if rightStick:getTriggerHeld() then
-		Intake:runIn()
+		-- Intake:runIn()
+		navx:reset()
 	else
 		Intake:stop()
 	end

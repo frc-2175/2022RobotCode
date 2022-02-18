@@ -5,8 +5,8 @@ require("wpilib.ahrs")
 require("wpilib.motors")
 
 local TICKS_TO_INCHES = 138 / 30711
-local navx = AHRS:new(4)
-local position = Vector:new(0, 0)
+navx = AHRS:new(4)
+position = Vector:new(0, 0)
 
 ---@param path table - a pure pursuit path
 ---@param fieldPosition any - the robot's current position on the field
@@ -90,10 +90,10 @@ end
 function resetTracking()
 	lastEncoderDistanceLeft = 0
 	lastEncoderDistanceRight = 0
-	-- zeroEncoderLeft = leftMotor:getSelectedSensorPosition(0)
-	-- zeroEncoderRight = rightMotor:getSelectedSensorPosition(0)
+	zeroEncoderLeft = leftMotor:setSelectedSensorPosition(0)
+	zeroEncoderRight = rightMotor:setSelectedSensorPosition(0)
 	position = Vector:new(0, 0)
-	navx:reset();
+	navx:reset()
 end
 
 PurePursuit = {}

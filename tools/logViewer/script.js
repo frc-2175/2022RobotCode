@@ -251,13 +251,13 @@ function refresh() {
 }
 
 async function loadMatches() {
-	const response = await fetch("http://localhost:2175/logs");
+	const response = await fetch("/logs");
 	if (!response.ok) {
 		console.error("The response wasn't okay", response);
 		return;
 	}
 
-	return (await response.text()).split("\\n").map(text => text);
+	return (await response.text()).split("\\n").filter(name => name).sort();
 }
 
 /**
@@ -267,7 +267,7 @@ async function loadMatches() {
  * @returns a list of log messages in JSON
  */
 async function loadMatch(match) {
-	const response = await fetch(`http://localhost:2175/logs/${match}`);
+	const response = await fetch(`/logs/${match}`);
 	if (!response.ok) {
 		console.error("The response wasn't okay", response);
 		return;
@@ -280,7 +280,7 @@ async function loadMatch(match) {
 
 	let dataSeriesNames = [];
 	for (const logMessage of logMessages.filter(message => message.type === "data")) {
-		dataSeriesNames.push(...Object.keys(logMessage.value));
+		dataSeriesNames.push(logMessage.name);
 	}
 	dataSeriesNames = Array.from(new Set(dataSeriesNames));
 
@@ -424,13 +424,11 @@ function getLevels(events) {
 function getDataSeries(logs) {
 	const dataSeries = {};
 	for (const log of logs.filter(log => log.type === "data")) {
-		for (const dataName in log.value) {
-			if (dataSeries[dataName] === undefined) {
-				dataSeries[dataName] = { points: [] };
-			}
-
-			dataSeries[dataName].points.push({ time: log.time, value: log.value[dataName] });
+		if (dataSeries[log.name] === undefined) {
+			dataSeries[log.name] = { points: [] };
 		}
+
+		dataSeries[log.name].points.push({ time: log.time, value: log.value });
 	}
 
 	return dataSeries;
@@ -503,7 +501,7 @@ function renderTopBar() {
 		const horizontalPos = i * canvas.width / 19;
 		const horizontalPosInUnits = horizontalPos / canvas.width * (pageEnd - pageStart) + pageStart;
 		drawLine(ctx, horizontalPos, 3, horizontalPos, 12);
-		drawText(ctx, horizontalPosInUnits.toFixed(scale), {x: horizontalPos - 12, y: 28});
+		drawText(ctx, horizontalPosInUnits.toFixed(Math.max(scale, 1)), {x: horizontalPos - 12, y: 28});
 	}
 }
 

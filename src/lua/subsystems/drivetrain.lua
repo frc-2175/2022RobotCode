@@ -1,7 +1,7 @@
 leftMotor = TalonFX:new(20)
+leftMotor:setInverted(CTREInvertType.InvertMotorOutput)
 
 rightMotor = TalonFX:new(21)
-rightMotor:setInverted(CTREInvertType.InvertMotorOutput)
 	
 leftFollower = TalonFX:new(22)
 leftFollower:follow(leftMotor)
