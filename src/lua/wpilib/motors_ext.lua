@@ -58,3 +58,14 @@ function DifferentialDrive:blendedDrive(desiredSpeed, rotation, inputThreshold)
 	local left, right = getBlendedMotorValues(desiredSpeed, rotation, inputThreshold);
 	self:tankDrive(left, right)
 end
+
+DummyMotor = {}
+
+function DummyMotor:new(...)
+	local t = {}
+	setmetatable(t, self)
+	self.__index = self
+	return t
+end
+
+function DummyMotor:set(...) end

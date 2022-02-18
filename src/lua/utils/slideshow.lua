@@ -11,15 +11,17 @@ function Slideshow:new(slides)
 end
 
 function Slideshow:next()
-	print("next!")
 	self.index = (self.index) % #self.slides + 1
 end
 
 function Slideshow:prev()
-	print("back")
 	self.index = (self.index - 2) % #self.slides + 1
 end
 
-function Slideshow:display()
+function Slideshow:draw()
 	putString("Slide", self.slides[self.index])
+end
+
+function Slideshow:move(slides)
+	self.index = (self.index + slides - 1) % #self.slides + 1
 end

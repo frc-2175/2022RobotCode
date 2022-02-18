@@ -1,7 +1,7 @@
--- local rollerBar = VictorSPX:new(1) -- TODO: not a real device ID
--- local elevator = VictorSPX:new(2) -- TODO: not a real device ID
--- local shooter = VictorSPX:new(3) -- TODO: not a real device ID
--- local intakeExtender = DoubleSolenoid:new(1, 2) -- TODO: not a real device ID
+local rollerBar = DummyMotor:new(1) -- TODO: not a real device ID
+local elevator = DummyMotor:new(2) -- TODO: not a real device ID
+local shooter = DummyMotor:new(3) -- TODO: not a real device ID
+local intakeExtender = DummyMotor:new(1, 2) -- TODO: not a real device ID
 
 Intake = {}
 

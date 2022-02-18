@@ -1,4 +1,4 @@
---- local winchMotor = VictorSPX:new(1) -- TODO: not a real device ID
+local winchMotor = DummyMotor:new(1) -- TODO: not a real device ID
 
 Winch = {}
 

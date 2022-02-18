@@ -14,9 +14,15 @@ function Robot.robotInit()
 	gamepad = Joystick:new(2)
 	-- serbo = Servo:new(1111)
 	testSlides = Slideshow:new({"lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO"})
+	testPursuit = PurePursuit:new(
+		makePath(false, 0, Vector:new(0, 0), {makeLinePathSegment(36), makeLeftArcPathSegment(12, 90)}),
+		false,
+		0.02, 0, 0.002
+	)
 end
 
 function Robot.autonomousPeriodic()
+	print(testPursuit:run())
 end
 
 function Robot.teleopPeriodic()
@@ -50,5 +56,5 @@ function Robot.teleopPeriodic()
 		Winch:stop()
 	end
 
-	testSlides:display()
+	testSlides:draw()
 end
