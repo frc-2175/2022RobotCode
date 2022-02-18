@@ -84,6 +84,7 @@ typedef struct {
 	int ArgDerefs[MAX_ARGS];
 	MD_String8 ArgCasts[MAX_ARGS];
 	MD_String8 ArgEnums[MAX_ARGS];
+	MD_String8 ArgDefaults[MAX_ARGS];
 
 	MD_Node* After;
 
@@ -168,6 +169,11 @@ ParseFuncResult ParseFunc(MD_Node* n) {
 			MD_Node* enumTag = MD_TagFromString(argStart, MD_S8Lit("enum"), 0);
 			if (!MD_NodeIsNil(enumTag)) {
 				res.ArgEnums[res.NumArgs] = enumTag->first_child->string;
+			}
+
+			MD_Node* defaultTag = MD_TagFromString(argStart, MD_S8Lit("default"), 0);
+			if (!MD_NodeIsNil(defaultTag)) {
+				res.ArgDefaults[res.NumArgs] = defaultTag->first_child->string;
 			}
 
 			res.NumArgs++;
@@ -272,9 +278,14 @@ MD_String8List GenCppCallArgs(ParseFuncResult parsedFunc) {
 MD_String8 GenLuaDocComment(ParseFuncResult parsedFunc) {
 	MD_String8List typeLines = {0};
 	for (int i = 0; i < parsedFunc.NumArgs; i++) {
+		MD_String8 maybeQuestionMark = {0};
+		if (parsedFunc.ArgDefaults[i].size > 0) {
+			maybeQuestionMark = MD_S8Lit("?");
+		}
+
 		MD_S8ListPushFmt(a, &typeLines,
-			"---@param %S %S",
-			parsedFunc.ArgNames[i], CTypeToLuaType(parsedFunc.ArgTypes[i])
+			"---@param %S%S %S",
+			parsedFunc.ArgNames[i], maybeQuestionMark, CTypeToLuaType(parsedFunc.ArgTypes[i])
 		);
 	}
 	if (parsedFunc.ReturnType.size > 0) {
@@ -314,7 +325,14 @@ MD_String8List GenLuaArgModifiers(ParseFuncResult parsedFunc) {
 	MD_String8List mods = {0};
 
 	// process defaults
-	// TODO
+	for (int i = 0; i < parsedFunc.NumArgs; i++) {
+		if (parsedFunc.ArgDefaults[i].size > 0) {
+			MD_S8ListPushFmt(a, &mods,
+				"    %S = %S or %S",
+				parsedFunc.ArgNames[i], parsedFunc.ArgNames[i], parsedFunc.ArgDefaults[i]
+			);
+		}
+	}
 
 	// process enums
 	for (int i = 0; i < parsedFunc.NumArgs; i++) {
