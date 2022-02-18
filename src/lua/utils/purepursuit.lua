@@ -94,7 +94,7 @@ function resetTracking()
 	zeroEncoderLeft = leftMotor:setSelectedSensorPosition(0)
 	zeroEncoderRight = rightMotor:setSelectedSensorPosition(0)
 	position = Vector:new(0, 0)
-	angleOffset = angleOffset + navx:getAngle()
+	angleOffset = navx:getAngle()
 end
 
 PurePursuit = {}
