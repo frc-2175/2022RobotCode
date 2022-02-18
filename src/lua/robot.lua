@@ -44,8 +44,7 @@ function Robot.teleopPeriodic()
 
 
 	if rightStick:getTriggerHeld() then
-		-- Intake:runIn()
-		navx:reset()
+		Intake:runIn()
 	else
 		Intake:stop()
 	end

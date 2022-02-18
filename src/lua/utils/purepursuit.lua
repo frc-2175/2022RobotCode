@@ -7,6 +7,7 @@ require("wpilib.motors")
 local TICKS_TO_INCHES = 138 / 30711
 navx = AHRS:new(4)
 position = Vector:new(0, 0)
+local angleOffset = navx:getAngle()
 
 ---@param path table - a pure pursuit path
 ---@param fieldPosition any - the robot's current position on the field
@@ -73,7 +74,7 @@ function trackLocation(leftMotor, rightMotor)
 	-- calculates avg distance traveled
 	distance = (distanceLeft + distanceRight) / 2
 	-- get our heading in radians
-	angle = math.rad(navx:getAngle())
+	angle = math.rad(navx:getAngle() - angleOffset)
 
 	-- make a vector representing our change in position since last time
 	x = math.sin(angle) * distance
@@ -93,7 +94,7 @@ function resetTracking()
 	zeroEncoderLeft = leftMotor:setSelectedSensorPosition(0)
 	zeroEncoderRight = rightMotor:setSelectedSensorPosition(0)
 	position = Vector:new(0, 0)
-	navx:reset()
+	angleOffset = angleOffset + navx:getAngle()
 end
 
 PurePursuit = {}
