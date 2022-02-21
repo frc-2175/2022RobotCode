@@ -4,7 +4,7 @@ require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
 
-local TICKS_TO_INCHES = 138 / 30711
+local TICKS_TO_INCHES = (6 * math.pi) / (2048 * 10)
 navx = AHRS:new(4)
 position = Vector:new(0, 0)
 local angleOffset = navx:getAngle()
