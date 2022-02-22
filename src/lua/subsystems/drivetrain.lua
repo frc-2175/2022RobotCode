@@ -11,6 +11,9 @@ rightFollower = TalonFX:new(23)
 rightFollower:follow(rightMotor)
 rightFollower:setInverted(CTREInvertType.FollowMaster)
 
+leftMotor:setNeutralMode(2)
+rightMotor:setNeutralMode(2)
+
 Drivetrain = {}
 
 function Drivetrain:drive(speed, rotation)

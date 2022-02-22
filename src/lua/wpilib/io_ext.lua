@@ -1,7 +1,7 @@
 local ffi = require("ffi")
 require("utils.math")
 
-local deadvalue = 0.1
+local deadvalue = 0.04
 
 ---@return number
 function Joystick:getX()

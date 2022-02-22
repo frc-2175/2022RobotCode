@@ -162,7 +162,7 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	local previousAng = 0
 	local previousPos = Vector:new(0, 0)
 	-- add 25 points to the end so the robot knows where to look ahead
-	local endingPoints = makeLinePathSegment(25)
+	local endingPoints = makeLinePathSegment(24)
 
 	-- create table with all the pathSegments elements and add a new element for endingPoints
 	local pathSegmentsList = pathSegments
