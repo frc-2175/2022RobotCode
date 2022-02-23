@@ -67,7 +67,7 @@ end
 
 ---@class PathSegment
 ---@field endAng number
----@field path table<number, Vector>
+---@field path Vector[]
 PathSegment = {}
 
 --- Creates a new path segment, given an ending angle
@@ -80,13 +80,16 @@ PathSegment = {}
 --- sets the path of the new segment you made.
 ---  - `mySegment.path[1]` returns `Vector:new(0, 0)`.
 ---@param endAng number
----@param path table<number, Vector>
+---@param path Vector[]
 ---@return PathSegment
 function PathSegment:new(endAng, path)
 	local p = {
 		endAng = endAng,
 		path = path,
 	}
+	setmetatable(p, self)
+	self.__index = self
+
 	return p
 end
 
@@ -97,7 +100,7 @@ end
 
 ---@param startpoint Vector
 ---@param endpoint Vector
----@return table<number, Vector> path
+---@return Vector[] path
 function makePathLine(startpoint, endpoint)
 	local numPoints = math.floor((endpoint - startpoint):length() + 0.5)
 	local pathVector = (endpoint - startpoint):normalized()
@@ -150,11 +153,11 @@ function makeLeftArcPathSegment(radius, deg)
 end
 
 ---@class Path
----@field path table<number, Vector>
+---@field path Vector[]
 ---@field numberOfActualPoints integer
 Path ={}
 
----@param path table<number, Vector>
+---@param path Vector[]
 ---@param numberOfActualPoints integer
 ---@return Path path
 function Path:new(path, numberOfActualPoints)
@@ -168,7 +171,7 @@ end
 ---@param isBackwards boolean
 ---@param startingAng number
 ---@param startingPos Vector
----@param pathSegments table<number, table<number, Vector>>
+---@param pathSegments PathSegment[]
 ---@return Path path
 function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	local finalPath = {}

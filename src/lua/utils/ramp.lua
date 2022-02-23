@@ -5,7 +5,6 @@ require("utils.math")
 ---@field maxAccel number
 ---@field maxDecel number
 Ramp = {}
-Ramp.__index = Ramp
 
 --- Creates a new ramp, with a time in seconds to accelerate, `timeToMax`,
 --- and a time in seconds to stop, `timeToStop`.
@@ -23,6 +22,7 @@ function Ramp:new(timeToMax, timeToStop)
 		maxDecel = 1 / (50 * timeToStop),
 	}
 	setmetatable(r, self)
+	self.__index = self
 
 	return r
 end

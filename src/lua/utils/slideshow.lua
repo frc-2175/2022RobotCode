@@ -1,9 +1,9 @@
 ---@class Slideshow
----@field slides table<number, string>
+---@field slides string[]
 ---@field index integer
 Slideshow = {}
 
----@param slides table<number, string>
+---@param slides string[]
 ---@return Slideshow
 function Slideshow:new(slides)
 	local t = {
@@ -12,6 +12,7 @@ function Slideshow:new(slides)
 	}
 	setmetatable(t, self)
 	self.__index = self
+	
 	return t
 end
 

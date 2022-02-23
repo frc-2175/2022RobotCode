@@ -106,21 +106,21 @@ test(
 	"makePath", function(t)
 		local path = makePath(
 			false, 0, Vector:new(0, 0), {
-				Path:new(
+				PathSegment:new(
 					-90, {
 						Vector:new(0, 0),
 						Vector:new(0, 1),
 						Vector:new(0, 2),
 					}
 				),
-				Path:new(
+				PathSegment:new(
 					90, {
 						Vector:new(0, 0),
 						Vector:new(0, 1),
 						Vector:new(0, 2),
 					}
 				),
-				Path:new(
+				PathSegment:new(
 					-90, {
 						Vector:new(0, 0),
 						Vector:new(0, 1),

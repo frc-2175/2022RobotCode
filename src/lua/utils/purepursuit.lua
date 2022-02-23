@@ -11,14 +11,14 @@ local angleOffset = navx:getAngle()
 
 ---@param path Path - a pure pursuit path
 ---@param fieldPosition Vector - the robot's current position on the field
----@param previousClosestPoint number
+---@param previousClosestPoint integer
 ---@return integer indexOfClosestPoint
 --[[
     looks through all points on the list, finds & returns the point
     closest to current robot position 
 --]]
 function findClosestPoint(path, fieldPosition, previousClosestPoint)
-	local indexOfClosestPoint = 0
+	local indexOfClosestPoint = 1
 	local startIndex = previousClosestPoint - 36 -- 36 lookahead distance (in)
 	local endIndex = previousClosestPoint + 36
 	-- making sure indexes make sense
@@ -40,7 +40,7 @@ end
 
 ---@param path Path
 ---@param lookAhead number
----@param closestPoint number
+---@param closestPoint integer
 ---@return integer goalPoint
 function findGoalPoint(path, lookAhead, closestPoint)
 	closestPoint = closestPoint or 0 -- default 0
@@ -100,7 +100,6 @@ end
 ---@field previousClosestPoint number
 ---@field purePursuitPID number
 PurePursuit = {}
-PurePursuit.__index = PurePursuit
 
 ---@param path Path
 ---@param isBackwards boolean
@@ -116,6 +115,7 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 		purePursuitPID = PIDController:new(p, i, d),
 	}
 	setmetatable(x, PurePursuit)
+	self.__index = self
 
 	return x
 end
