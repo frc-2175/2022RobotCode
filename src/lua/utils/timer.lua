@@ -1,7 +1,10 @@
 require("wpilib.time")
 
+---@class Timer
+---@field startTime number
 Timer = {}
 
+---@return Timer
 function Timer:new()
 	local o = {}
 	setmetatable(o, self)
@@ -13,6 +16,7 @@ function Timer:start()
 	self.startTime = getFPGATimestamp()
 end
 
+---@return number
 function Timer:getElapsedTimeSeconds()
 	local elapsed = 0
 	if self.startTime then

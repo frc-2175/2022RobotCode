@@ -4,8 +4,12 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@class SmartDashboard
+---@field _this SmartDashboard
 SmartDashboard = {}
 
+---@class SendableChooser
+---@field _this SendableChooser
 SendableChooser = {}
 
 ---@param keyName any

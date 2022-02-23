@@ -1,5 +1,6 @@
 local winchMotor = DummyMotor:new(1) -- TODO: not a real device ID
 
+---@class Winch
 Winch = {}
 
 function Winch:runIn()

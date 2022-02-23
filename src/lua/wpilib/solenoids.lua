@@ -4,8 +4,12 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@class Solenoid
+---@field _this Solenoid
 Solenoid = {}
 
+---@class DoubleSolenoid
+---@field _this DoubleSolenoid
 DoubleSolenoid = {}
 
 ---@class DoubleSolenoidValue

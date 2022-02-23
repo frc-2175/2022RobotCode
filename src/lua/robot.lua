@@ -29,35 +29,24 @@ end
 
 function Robot.autonomousPeriodic()
 	trackLocation(leftMotor, rightMotor)
-	logData("Position X", position.x)
-	logData("Position Y", position.y)
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
-	local rotation, speed, done = testPursuit:run()
-	logData("Rotation", rotation)
+	local rotation, speed = testPursuit:run()
 	putNumber("Rotation", rotation)
-	if not done then
-		Drivetrain:drive(0.33 * speed, rotation)
-	else
-		Drivetrain:stop()
-	end
+	Drivetrain:drive(0.33 * speed, rotation)
 end
 
 function Robot.teleopInit()
 	navx:reset()
+	resetTracking()
 end
 
 function Robot.teleopPeriodic()
 	-- joystick driving
 	trackLocation(leftMotor, rightMotor)
-	logData("Position X", position.x)
 	putNumber("X", position.x)
-	logData("Position Y", position.y)
 	putNumber("Y", position.y)
-	logData("Encode left", leftMotor:getSelectedSensorPosition())
-	logData("Encode right", rightMotor:getSelectedSensorPosition())
-	logData("heading", navx:getAngle())
-	putNumber("heading", navx:getAngle())
+	putNumber("Rotation", navx:getAngle())
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
 

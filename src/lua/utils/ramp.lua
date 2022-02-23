@@ -1,6 +1,11 @@
 require("utils.math")
 
+---@class Ramp
+---@field currentSpeed number
+---@field maxAccel number
+---@field maxDecel number
 Ramp = {}
+Ramp.__index = Ramp
 
 --- Creates a new ramp, with a time in seconds to accelerate, `timeToMax`,
 --- and a time in seconds to stop, `timeToStop`.
@@ -10,7 +15,7 @@ Ramp = {}
 ---&nbsp;0.5 seconds to accelerate to max and 1 second to decelerate to stop.
 ---@param timeToMax number
 ---@param timeToStop number
----@return table Ramp
+---@return Ramp
 function Ramp:new(timeToMax, timeToStop)
 	local r = {
 		currentSpeed = 0,
@@ -18,7 +23,7 @@ function Ramp:new(timeToMax, timeToStop)
 		maxDecel = 1 / (50 * timeToStop),
 	}
 	setmetatable(r, self)
-	self.__index = self
+
 	return r
 end
 

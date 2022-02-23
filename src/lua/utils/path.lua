@@ -65,6 +65,11 @@ function getTrapezoidSpeed(
 	end
 end
 
+---@class PathSegment
+---@field endAng number
+---@field path table<number, Vector>
+PathSegment = {}
+
 --- Creates a new path segment, given an ending angle
 --- in degrees, `endAng`, and a list of vectors, `path`.
 ---
@@ -75,22 +80,24 @@ end
 --- sets the path of the new segment you made.
 ---  - `mySegment.path[1]` returns `Vector:new(0, 0)`.
 ---@param endAng number
----@param path table
----@return table PathSegment
-function newPathSegment(endAng, path)
+---@param path table<number, Vector>
+---@return PathSegment
+function PathSegment:new(endAng, path)
 	local p = {
 		endAng = endAng,
 		path = path,
-		getEndPoint = function(self)
-			return self.path[#self.path]
-		end,
 	}
 	return p
 end
 
----@param startpoint any
----@param endpoint any
----@return table path
+---@return Vector
+function PathSegment:getEndPoint()
+	return self.path[#self.path]
+end
+
+---@param startpoint Vector
+---@param endpoint Vector
+---@return table<number, Vector> path
 function makePathLine(startpoint, endpoint)
 	local numPoints = math.floor((endpoint - startpoint):length() + 0.5)
 	local pathVector = (endpoint - startpoint):normalized()
@@ -103,14 +110,14 @@ function makePathLine(startpoint, endpoint)
 end
 
 ---@param dist number
----@return table PathSegment
+---@return PathSegment
 function makeLinePathSegment(dist)
-	return newPathSegment(0, makePathLine(Vector:new(0, 0), Vector:new(0, dist)))
+	return PathSegment:new(0, makePathLine(Vector:new(0, 0), Vector:new(0, dist)))
 end
 
 ---@param radius number
 ---@param deg number
----@return table PathSegment
+---@return PathSegment PathSegment
 function makeRightArcPathSegment(radius, deg)
 	local circumfrence = 2 * math.pi * radius
 	local distanceOfPath = circumfrence * (deg / 360)
@@ -126,25 +133,31 @@ function makeRightArcPathSegment(radius, deg)
 		path[i] = Vector:new(xPosition, yPosition)
 	end
 	path[numPoints] = Vector:new(xEndpoint, yEndpoint)
-	return newPathSegment(-deg, path)
+
+	return PathSegment:new(-deg, path)
 end
 
 ---@param radius number
 ---@param deg number
----@return table PathSegment
+---@return PathSegment
 function makeLeftArcPathSegment(radius, deg)
 	local rightPath = makeRightArcPathSegment(radius, deg).path
 	local leftPath = {}
 	for i = 1, #rightPath do
 		leftPath[i] = Vector:new(-rightPath[i].x, rightPath[i].y)
 	end
-	return newPathSegment(deg, leftPath)
+	return PathSegment:new(deg, leftPath)
 end
 
----@param path table
----@param numberOfActualPoints number
----@return table path
-function newPath(path, numberOfActualPoints)
+---@class Path
+---@field path table<number, Vector>
+---@field numberOfActualPoints integer
+Path ={}
+
+---@param path table<number, Vector>
+---@param numberOfActualPoints integer
+---@return Path path
+function Path:new(path, numberOfActualPoints)
 	local p = {
 		path = path,
 		numberOfActualPoints = numberOfActualPoints,
@@ -154,9 +167,9 @@ end
 
 ---@param isBackwards boolean
 ---@param startingAng number
----@param startingPos any
----@param pathSegments table
----@return table path
+---@param startingPos Vector
+---@param pathSegments table<number, table<number, Vector>>
+---@return Path path
 function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	local finalPath = {}
 	local previousAng = 0
@@ -186,7 +199,7 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 		finalPath[i] = finalPath[i]:rotate(math.rad(startingAng)) + startingPos
 	end
 
-	local pathResult = newPath(finalPath, #finalPath - #endingPoints.path)
+	local pathResult = Path:new(finalPath, #finalPath - #endingPoints.path)
 
 	return pathResult
 end

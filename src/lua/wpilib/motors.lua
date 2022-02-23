@@ -4,12 +4,20 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@class VictorSPX
+---@field _this VictorSPX
 VictorSPX = {}
 
+---@class TalonSRX
+---@field _this TalonSRX
 TalonSRX = {}
 
+---@class TalonFX
+---@field _this TalonFX
 TalonFX = {}
 
+---@class DifferentialDrive
+---@field _this DifferentialDrive
 DifferentialDrive = {}
 
 ---@class CTREInvertType

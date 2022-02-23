@@ -3,6 +3,7 @@ local elevator = DummyMotor:new(2) -- TODO: not a real device ID
 local shooter = DummyMotor:new(3) -- TODO: not a real device ID
 local intakeExtender = DummyMotor:new(1, 2) -- TODO: not a real device ID
 
+---@class Intake
 Intake = {}
 
 function Intake:runIn()

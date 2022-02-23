@@ -1,5 +1,10 @@
+---@class Slideshow
+---@field slides table<number, string>
+---@field index integer
 Slideshow = {}
 
+---@param slides table<number, string>
+---@return Slideshow
 function Slideshow:new(slides)
 	local t = {
 		slides = slides,

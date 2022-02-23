@@ -1,3 +1,6 @@
+---@class Vector
+---@field x number
+---@field y number
 Vector = {
 	__add = function(a, b)
 		if type(b) == "number" then
@@ -50,7 +53,7 @@ Vector = {
 ---  - `myVector.y` is `4`.
 ---@param x number
 ---@param y number
----@return table Vector
+---@return Vector
 function Vector:new(x, y)
 	local v = {
 		x = x,
@@ -77,7 +80,7 @@ end
 ---  - `myVector = Vector:new(3, 4)` creates a new vector, `(3, 4)`.
 ---  - `myVector:normalized()` returns a new vector, `(0.6, 0.8)`.
 ---  - `myVector:normalized():length()` will always be 1.
----@return table NormalizedVector
+---@return Vector
 function Vector:normalized()
 	return self / self:length()
 end
@@ -86,7 +89,8 @@ end
 --- Examples: 
 ---  - `myVector = Vector:new(3, 4)` creates a new vector, `(3, 4)`.
 ---  - `myVector:rotate(math.rad(180))` returns a new vector, `(-3, -4)`.
----@return table RotatedVector
+---@param radAng number
+---@return Vector
 function Vector:rotate(radAng)
 	return Vector:new(
 		(self.x * math.cos(radAng)) - (self.y * math.sin(radAng)),

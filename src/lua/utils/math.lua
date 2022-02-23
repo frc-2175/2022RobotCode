@@ -46,6 +46,10 @@ function deadband(value, band)
 end
 
 -- sets an upper/lower limit, if value is beyond that, it snaps it to that limit
+---@param value number
+---@param min number
+---@param max number
+---@return number
 function clamp(value, min, max)
 	return math.min(math.max(value, min), max)
 end

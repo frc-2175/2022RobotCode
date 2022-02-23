@@ -4,6 +4,8 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@class AHRS
+---@field _this AHRS
 AHRS = {}
 
 ---@param value integer

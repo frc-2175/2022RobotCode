@@ -9,10 +9,10 @@ navx = AHRS:new(4)
 position = Vector:new(0, 0)
 local angleOffset = navx:getAngle()
 
----@param path table - a pure pursuit path
----@param fieldPosition any - the robot's current position on the field
+---@param path Path - a pure pursuit path
+---@param fieldPosition Vector - the robot's current position on the field
 ---@param previousClosestPoint number
----@return number indexOfClosestPoint
+---@return integer indexOfClosestPoint
 --[[
     looks through all points on the list, finds & returns the point
     closest to current robot position 
@@ -22,9 +22,8 @@ function findClosestPoint(path, fieldPosition, previousClosestPoint)
 	local startIndex = previousClosestPoint - 36 -- 36 lookahead distance (in)
 	local endIndex = previousClosestPoint + 36
 	-- making sure indexes make sense
-	if startIndex < 1 then   
-		startIndex = 1
-	end
+	startIndex = math.max(startIndex, 1)
+
 	if endIndex > path.numberOfActualPoints then
 		endIndex = path.numberOfActualPoints
 	end
@@ -39,19 +38,17 @@ function findClosestPoint(path, fieldPosition, previousClosestPoint)
 	return indexOfClosestPoint
 end
 
----@param path table - a pure pursuit path
----@param fieldPosition any - current robot position
----@param lookAhead number - number of indexes to look ahead in path
----@param closestPoint number - INDEX OF closest point in path to current position, basically where we are, ish
----@return number goalPoint - returns the index we should be aiming for
-
-function findGoalPoint(path, fieldPosition, lookAhead, closestPoint)
+---@param path Path
+---@param lookAhead number
+---@param closestPoint number
+---@return integer goalPoint
+function findGoalPoint(path, lookAhead, closestPoint)
 	closestPoint = closestPoint or 0 -- default 0
 	return math.min(closestPoint + lookAhead, #path.path) -- # is length operator
 	-- in case we are aiming PAST the end of the path, just aim at the end instead
 end
 
----@param point any
+---@param point Vector
 ---@return number degAngle
 function getAngleToPoint(point)
 	if point:length() == 0 then
@@ -97,9 +94,20 @@ function resetTracking()
 	angleOffset = navx:getAngle()
 end
 
+---@class PurePursuit
+---@field path Path
+---@field isBackwards boolean
+---@field previousClosestPoint number
+---@field purePursuitPID number
 PurePursuit = {}
 PurePursuit.__index = PurePursuit
 
+---@param path Path
+---@param isBackwards boolean
+---@param p number
+---@param i number
+---@param d number
+---@return PurePursuit
 function PurePursuit:new(path, isBackwards, p, i, d)
 	local x = {
 		path = path,
@@ -112,10 +120,11 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 	return x
 end
 
+
 ---@return number turnValue, number speed
 function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
-	local indexOfGoalPoint = findGoalPoint(self.path, position, 12, indexOfClosestPoint)
+	local indexOfGoalPoint = findGoalPoint(self.path, 12, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
 	local angle
 	if self.isBackwards then
@@ -132,7 +141,10 @@ function PurePursuit:run()
 	end
 	self.previousClosestPoint = indexOfClosestPoint
 
-	local done = indexOfClosestPoint >= self.path.numberOfActualPoints
+	-- without this the bot will relentlessly target the last point and that's no good
+	if indexOfClosestPoint >= self.path.numberOfActualPoints then
+		speed = 0
+	end
 
-	return turnValue, speed, done
+	return turnValue, speed
 end

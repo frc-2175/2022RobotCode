@@ -1,5 +1,18 @@
+---@class PIDController
+---@field kp number
+---@field ki number
+---@field kd number
+---@field integral number
+---@field previousError number
+---@field previousTime number
+---@field dt number
+---@field shouldRunIntegral boolean
 PIDController = {}
 
+---@param p number
+---@param i number
+---@param d number
+---@return PIDController
 function PIDController:new(p, i, d)
 	local p = {
 		kp = p,
@@ -17,6 +30,7 @@ function PIDController:new(p, i, d)
 	return p
 end
 
+---@param time number
 function PIDController:clear(time)
 	self.dt = 0
 	self.previousTime = time
@@ -25,6 +39,10 @@ function PIDController:clear(time)
 	self.shouldRunIntegral = false
 end
 
+---@param input number
+---@param setpoint number
+---@param thresh number
+---@return number
 function PIDController:pid(input, setpoint, thresh)
 	local threshold = thresh or 0
 	local error = setpoint - input
@@ -49,6 +67,7 @@ function PIDController:pid(input, setpoint, thresh)
 	return p + i + d
 end
 
+---@param time number
 function PIDController:updateTime(time)
 	self.dt = time - self.previousTime
 	self.previousTime = time

@@ -778,6 +778,8 @@ int main(int argc, char** argv) {
 				MD_String8 cppName = MD_TagFromString(fentry, MD_S8Lit("class"), 0)->first_child->string;
 				MD_String8 luaName = fentry->string;
 
+				fprintf(luafile, "---@class %.*s\n", MD_S8VArg(luaName));
+				fprintf(luafile, "---@field _this %.*s\n", MD_S8VArg(luaName));
 				fprintf(luafile, "%.*s = {}\n", MD_S8VArg(luaName));
 				fprintf(luafile, "\n");
 
