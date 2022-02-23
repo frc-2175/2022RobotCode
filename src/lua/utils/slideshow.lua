@@ -12,7 +12,7 @@ function Slideshow:new(slides)
 	}
 	setmetatable(t, self)
 	self.__index = self
-	
+
 	return t
 end
 

@@ -4,13 +4,13 @@ local json = require("utils.json")
 local dir = getDeployDirectory() .. "\\paths\\"
 -- Oh boyo, here we go!
 
---- A way of moving a robot from a starting speed to a middle speed and then to an ending speed, ramping inbetween. 
+--- A way of moving a robot from a starting speed to a middle speed and then to an ending speed, ramping inbetween.
 --- A graph of velocity over time would look like \_|/‾\\\_ with the `|` symbol representing time = 0.
 ---
 --- This function takes 7 arguments:
---- - `startSpeed`, `middleSpeed`, and `endSpeed` are pretty self-explanatory. 
+--- - `startSpeed`, `middleSpeed`, and `endSpeed` are pretty self-explanatory.
 --- - `totalDistance` is the total distance you want the 'trapezoid' shape to occur over.
---- - `rampUpDistance` and `rampDownDistance` are the distances along the 'trapezoid' 
+--- - `rampUpDistance` and `rampDownDistance` are the distances along the 'trapezoid'
 --- that the robot will start accelerating or decelerating.
 --- - `currentDistance` is how far along the 'trapezoid' the robot already is.
 ---
@@ -33,13 +33,13 @@ local dir = getDeployDirectory() .. "\\paths\\"
 ---@param currentDistance number
 ---@return number speed
 function getTrapezoidSpeed(
-	startSpeed,
-	middleSpeed,
-	endSpeed,
-	totalDistance,
-	rampUpDistance,
-	rampDownDistance,
-	currentDistance
+    startSpeed,
+    middleSpeed,
+    endSpeed,
+    totalDistance,
+    rampUpDistance,
+    rampDownDistance,
+    currentDistance
 )
 	if rampDownDistance + rampUpDistance > totalDistance then
 		if currentDistance < 0 then
@@ -155,7 +155,7 @@ end
 ---@class Path
 ---@field path Vector[]
 ---@field numberOfActualPoints integer
-Path ={}
+Path = {}
 
 ---@param path Vector[]
 ---@param numberOfActualPoints integer
@@ -165,7 +165,16 @@ function Path:new(path, numberOfActualPoints)
 		path = path,
 		numberOfActualPoints = numberOfActualPoints,
 	}
+	setmetatable(p, self)
+	self.__index = self
+
 	return p
+end
+
+function Path:print()
+	for index, value in ipairs(self.path) do
+		print(value)
+	end
 end
 
 ---@param isBackwards boolean
@@ -194,11 +203,11 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	end
 
 	if isBackwards then
-		for i = 1, #finalPath, 1 do
+		for i = 1, #finalPath do
 			finalPath[i] = finalPath[i] * -1
 		end
 	end
-	for i = 1, #finalPath, 1 do
+	for i = 1, #finalPath do
 		finalPath[i] = finalPath[i]:rotate(math.rad(startingAng)) + startingPos
 	end
 
@@ -207,13 +216,19 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	return pathResult
 end
 
+---@param fileName string
+---@return Path
 function readPath(fileName)
-	local fileContents = json.decode(
-		io.open(dir .. "\\" .. fileName .. ".path"):read("a")
-	).points
-	local resultPath = {path = {}, numberOfActualPoints = #fileContents - 36}
+	---@type Vector[]
+	local fileContents = json.decode(io.open(dir .. "\\" .. fileName .. ".path"):read("a")).points
+	local resultPath = {}
 
-	for index, value in ipairs(fileContents) do
-		table.insert(resultPath, Vector:new(value.x, value.y))
+	local start = Vector:new(fileContents[1].x, fileContents[1].y)
+	local angleOffset = math.atan2(start.y, start.x)
+
+	for i, value in ipairs(fileContents) do
+		resultPath[i] = (Vector:new(value.x, value.y) - start):rotate(angleOffset)
 	end
+
+	return Path:new(resultPath, #fileContents - 36)
 end

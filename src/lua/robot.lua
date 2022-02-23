@@ -14,9 +14,9 @@ function Robot.robotInit()
 	gamepad = Joystick:new(2)
 	resetTracking()
 	-- serbo = Servo:new(1111)
-	testSlides = Slideshow:new({"lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO"})
+	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
 	testPursuit = PurePursuit:new(
-		makePath(false, 0, Vector:new(0, 0), {makeLinePathSegment(60)}),
+		makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }),
 		false,
 		0.02, 0, 0.002
 	)

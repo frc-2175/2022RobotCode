@@ -120,7 +120,6 @@ function PurePursuit:new(path, isBackwards, p, i, d)
 	return x
 end
 
-
 ---@return number turnValue, number speed
 function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)

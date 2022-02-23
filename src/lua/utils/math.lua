@@ -54,6 +54,6 @@ function clamp(value, min, max)
 	return math.min(math.max(value, min), max)
 end
 
-function squareInput(num) 
-	return num*math.abs(num)
+function squareInput(num)
+	return num * math.abs(num)
 end

@@ -67,16 +67,17 @@ end
 
 --- Returns the length of the vector.
 ---
---- Examples: 
+--- Examples:
 ---  - `myVector = Vector:new(3, 4)` creates a new vector, `(3, 4)`.
 ---  - `myVector:length()` is `5.0`.
 ---@return number Length
 function Vector:length()
 	return math.sqrt(self.x * self.x + self.y * self.y)
 end
+
 --- Returns the vector, except scaled so that its length is 1
 ---
---- Examples: 
+--- Examples:
 ---  - `myVector = Vector:new(3, 4)` creates a new vector, `(3, 4)`.
 ---  - `myVector:normalized()` returns a new vector, `(0.6, 0.8)`.
 ---  - `myVector:normalized():length()` will always be 1.
@@ -84,16 +85,23 @@ end
 function Vector:normalized()
 	return self / self:length()
 end
+
 --- Returns the vector rotated `radAng` radians
 ---
---- Examples: 
+--- Examples:
 ---  - `myVector = Vector:new(3, 4)` creates a new vector, `(3, 4)`.
 ---  - `myVector:rotate(math.rad(180))` returns a new vector, `(-3, -4)`.
 ---@param radAng number
 ---@return Vector
 function Vector:rotate(radAng)
 	return Vector:new(
-		(self.x * math.cos(radAng)) - (self.y * math.sin(radAng)),
-		(self.x * math.sin(radAng)) + (self.y * math.cos(radAng))
+	    (self.x * math.cos(radAng)) - (self.y * math.sin(radAng)),
+	    (self.x * math.sin(radAng)) + (self.y * math.cos(radAng))
 	)
+end
+
+---@param vec Vector
+---@return number
+function Vector:dot(vec)
+	return self.x * vec.x + self.y * vec.y
 end
