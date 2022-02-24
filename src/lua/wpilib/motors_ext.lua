@@ -69,3 +69,7 @@ function DummyMotor:new(...)
 end
 
 function DummyMotor:set(...) end
+
+function DummyMotor:follow(...) end
+
+function DummyMotor:setInverted(...) end

@@ -101,7 +101,6 @@
 		"**/.svn": true,
 		"**/CVS": true
 	},
-	"gitlens.currentLine.enabled": false,
 	"java.configuration.updateBuildConfiguration": "disabled",
 	"java.import.gradle.enabled": false,
 	"workbench.editor.enablePreview": false,
