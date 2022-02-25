@@ -7,6 +7,7 @@
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/motorcontrol/MotorController.h>
 #include <units/time.h>
+#include "rev/CANSparkMax.h"
 
 #include "luadef.h"
 
@@ -1016,7 +1017,7 @@ LUAFUNC double TalonSRX_GetSupplyCurrent(void* _this) {
 
 LUAFUNC int TalonSRX_ConfigVelocityMeasurementPeriod(void* _this, int period, int timeoutMs) {
     auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->ConfigVelocityMeasurementPeriod((ctre::phoenix::motorcontrol::VelocityMeasPeriod)period, timeoutMs);
+        ->ConfigVelocityMeasurementPeriod((ctre::phoenix::sensors::SensorVelocityMeasPeriod)period, timeoutMs);
     return (int)_result;
 }
 
@@ -1602,7 +1603,7 @@ LUAFUNC double TalonFX_GetSupplyCurrent(void* _this) {
 
 LUAFUNC int TalonFX_ConfigVelocityMeasurementPeriod(void* _this, int period, int timeoutMs) {
     auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->ConfigVelocityMeasurementPeriod((ctre::phoenix::motorcontrol::VelocityMeasPeriod)period, timeoutMs);
+        ->ConfigVelocityMeasurementPeriod((ctre::phoenix::sensors::SensorVelocityMeasPeriod)period, timeoutMs);
     return (int)_result;
 }
 
@@ -1665,6 +1666,52 @@ LUAFUNC double TalonFX_GetExpiration(void* _this) {
 auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
         ->GetExpiration();
         return (double)_result;
+}
+
+LUAFUNC void* CANSparkMax_new(int deviceID, int type) {
+    return new rev::CANSparkMax(deviceID, (rev::CANSparkMaxLowLevel::MotorType)type);
+}
+
+LUAFUNC void CANSparkMax_Set(void* _this, double speed) {
+    ((rev::CANSparkMax*)_this)
+        ->Set(speed);
+}
+
+LUAFUNC void CANSparkMax_SetVoltage(void* _this, double output) {
+    ((rev::CANSparkMax*)_this)
+        ->SetVoltage((units::volt_t)output);
+}
+
+LUAFUNC double CANSparkMax_Get(void* _this) {
+    auto _result = ((rev::CANSparkMax*)_this)
+        ->Get();
+    return (double)_result;
+}
+
+LUAFUNC void CANSparkMax_SetInverted(void* _this, bool isInverted) {
+    ((rev::CANSparkMax*)_this)
+        ->SetInverted(isInverted);
+}
+
+LUAFUNC bool CANSparkMax_GetInverted(void* _this) {
+    auto _result = ((rev::CANSparkMax*)_this)
+        ->GetInverted();
+    return (bool)_result;
+}
+
+LUAFUNC void CANSparkMax_Disable(void* _this) {
+    ((rev::CANSparkMax*)_this)
+        ->Disable();
+}
+
+LUAFUNC void CANSparkMax_StopMotor(void* _this) {
+    ((rev::CANSparkMax*)_this)
+        ->StopMotor();
+}
+
+LUAFUNC void CANSparkMax_Follow(void* _this, void * leader, bool invert) {
+    ((rev::CANSparkMax*)_this)
+        ->Follow(*(rev::CANSparkMax*)leader, invert);
 }
 
 LUAFUNC void* DifferentialDrive_new(void * leftMotor, void * rightMotor) {

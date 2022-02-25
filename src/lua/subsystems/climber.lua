@@ -1,7 +1,7 @@
-local winchMotor = DummyMotor:new(1) -- TODO: not a real device ID
-local winchFollower = DummyMotor:new(2) -- TODO: not a real device id
+local winchMotor = CANSparkMax:new(24, SparkMaxMotorType.kBrushless)
+local winchFollower = CANSparkMax:new(25, SparkMaxMotorType.kBrushless)
 winchFollower:follow(winchMotor)
-winchFollower:setInverted(CTREInvertType.FollowMaster)
+winchFollower:setInverted(false)
 
 ---@class Winch
 Winch = {}

@@ -73,3 +73,10 @@ function DummyMotor:set(...) end
 function DummyMotor:follow(...) end
 
 function DummyMotor:setInverted(...) end
+
+---@param leader CANSparkMax
+---@param invert boolean
+function CANSparkMax:follow(leader, invert)
+	invert = invert or false
+	ffi.C.CANSparkMax_Follow(self._this, leader._this, invert)
+end

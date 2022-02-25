@@ -16,6 +16,10 @@ TalonSRX = {}
 ---@field _this TalonFX
 TalonFX = {}
 
+---@class CANSparkMax
+---@field _this CANSparkMax
+CANSparkMax = {}
+
 ---@class DifferentialDrive
 ---@field _this DifferentialDrive
 DifferentialDrive = {}
@@ -42,6 +46,14 @@ CTRETalonFXInvertType = BindingEnum:new('CTRETalonFXInvertType', {
     Clockwise = 1,
     FollowMaster = 2,
     OpposeMaster = 3,
+})
+
+---@class SparkMaxMotorType
+---@field kBrushed integer
+---@field kBrushless integer
+SparkMaxMotorType = BindingEnum:new('SparkMaxMotorType', {
+    kBrushed = 0,
+    kBrushless = 1,
 })
 
 ---@return any
@@ -2405,6 +2417,62 @@ end
 function TalonFX:getExpiration()
     return ffi.C.TalonFX_GetExpiration(self._this)
 end
+
+---@param deviceID integer
+---@param type integer
+---@return any
+function CANSparkMax:new(deviceID, type)
+    type = AssertEnumValue(SparkMaxMotorType, type)
+    deviceID = AssertInt(deviceID)
+    type = AssertInt(type)
+    local instance = {
+        _this = ffi.C.CANSparkMax_new(deviceID, type),
+    }
+    setmetatable(instance, self)
+    self.__index = self
+    return instance
+end
+
+---@param speed number
+---@return any
+function CANSparkMax:set(speed)
+    speed = AssertNumber(speed)
+    ffi.C.CANSparkMax_Set(self._this, speed)
+end
+
+---@param output number
+---@return any
+function CANSparkMax:setVoltage(output)
+    output = AssertNumber(output)
+    ffi.C.CANSparkMax_SetVoltage(self._this, output)
+end
+
+---@return number
+function CANSparkMax:get()
+    return ffi.C.CANSparkMax_Get(self._this)
+end
+
+---@param isInverted boolean
+---@return any
+function CANSparkMax:setInverted(isInverted)
+    ffi.C.CANSparkMax_SetInverted(self._this, isInverted)
+end
+
+---@return boolean
+function CANSparkMax:getInverted()
+    return ffi.C.CANSparkMax_GetInverted(self._this)
+end
+
+---@return any
+function CANSparkMax:disable()
+    ffi.C.CANSparkMax_Disable(self._this)
+end
+
+---@return any
+function CANSparkMax:stopMotor()
+    ffi.C.CANSparkMax_StopMotor(self._this)
+end
+
 
 
 ---@param xSpeed number

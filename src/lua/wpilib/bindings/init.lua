@@ -307,6 +307,15 @@ void TalonFX_SetWithTalonFXControlModeAndDemands(void* _this, int mode, double d
 void TalonFX_SetInvertedTalonFX(void* _this, int invertType);
 int TalonFX_ConfigSelectedFeedbackSensor(void* _this, int feedbackDevice, int pidIdx, int timeoutMs);
 double TalonFX_GetExpiration(void* _this);
+void* CANSparkMax_new(int deviceID, int type);
+void CANSparkMax_Set(void* _this, double speed);
+void CANSparkMax_SetVoltage(void* _this, double output);
+double CANSparkMax_Get(void* _this);
+void CANSparkMax_SetInverted(void* _this, bool isInverted);
+bool CANSparkMax_GetInverted(void* _this);
+void CANSparkMax_Disable(void* _this);
+void CANSparkMax_StopMotor(void* _this);
+void CANSparkMax_Follow(void* _this, void * leader, bool invert);
 void* DifferentialDrive_new(void * leftMotor, void * rightMotor);
 void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zRotation, bool squareInputs);
 void DifferentialDrive_TankDrive(void* _this, double leftSpeed, double rightSpeed, bool squareInputs);

@@ -60,7 +60,7 @@ io: {
 @include("<frc/drive/DifferentialDrive.h>")
 @include("<frc/motorcontrol/MotorController.h>")
 @include("<units/time.h>")
-//@include('"rev/CANSparkMax.h"')
+@include('"rev/CANSparkMax.h"')
 motors: {
   @enum
   CTREInvertType: {
@@ -76,6 +76,12 @@ motors: {
     Clockwise: 1,
     FollowMaster: 2,
     OpposeMaster: 3,
+  }
+
+  @enum
+  SparkMaxMotorType: {
+	kBrushed: 0,
+	kBrushless: 1,
   }
 
   @baseclass
@@ -188,7 +194,7 @@ motors: {
     double GetOutputCurrent();
     double GetStatorCurrent();
     double GetSupplyCurrent();
-    int ConfigVelocityMeasurementPeriod(@cast("ctre::phoenix::motorcontrol::VelocityMeasPeriod") int period, @default(0) int timeoutMs);
+    int ConfigVelocityMeasurementPeriod(@cast("ctre::phoenix::sensors::SensorVelocityMeasPeriod") int period, @default(0) int timeoutMs);
     int ConfigVelocityMeasurementWindow(int windowSize, @default(0) int timeoutMs);
     int ConfigForwardLimitSwitchSource(@cast("ctre::phoenix::motorcontrol::LimitSwitchSource") int limitSwitchSource, @cast("ctre::phoenix::motorcontrol::LimitSwitchNormal") int normalOpenOrClose, @default(0) int timeoutMs);
     int ConfigReverseLimitSwitchSource(@cast("ctre::phoenix::motorcontrol::LimitSwitchSource") int limitSwitchSource, @cast("ctre::phoenix::motorcontrol::LimitSwitchNormal") int normalOpenOrClose, @default(0) int timeoutMs);
@@ -265,60 +271,21 @@ motors: {
         ->GetExpiration();
         return (double)_result;""";
   }
-
-  /*
-  @class("rev::CANSparkMax")
-  @extends("frc::MotorController")
-  SparkMax: {
-    @constructor new(int deviceID, @cast("rev::CANSparkMax::MotorType") int type);
-
-    @alloc("rev::CANEncoder") @cast void* GetEncoder();
-    // not bothering with alternate encoder
-    // current limit stuff seems to be good by default, not binding it right now
-    @cast int SetIdleMode(@cast("rev::CANSparkMax::IdleMode") int mode);
-    @cast int GetIdleMode();
-    @cast int EnableVoltageCompensation(double nominalVoltage);
-    @cast int DisableVoltageCompensation();
-    double GetVoltageCompensationNominalVoltage();
-    @cast int SetOpenLoopRampRate(double rate);
-    @cast int SetClosedLoopRampRate(double rate);
-    @cast int Follow(@cast("rev::CANSparkMax&") void* leader, bool invert);
-    // don't need the other follow mode
-    bool IsFollower();
-    // skipping faults
-    double GetBusVoltage();
-    double GetAppliedOutput();
-    double GetOutputCurrent();
-    double GetMotorTemperature();
-    // faults? flash?
-    @cast int SetCANTimeout(int milliseconds);
-    @cast int EnableSoftLimit(@cast("rev::CANSparkMax::SoftLimitDirection") int direction, bool enable);
-    bool IsSoftLimitEnabled(@cast("rev::CANSparkMax::SoftLimitDirection") int direction);
-    @cast int SetSoftLimit(@cast("rev::CANSparkMax::SoftLimitDirection") int direction, double limit);
-    double GetSoftLimit(@cast("rev::CANSparkMax::SoftLimitDirection") int direction);
-    @cast int GetLastError();
-
-    int GetFirmwareVersion();
-    // uh oh, strings
-    int GetDeviceId();
-    // we don't expose the ability to set motor types here - use the GUI
-    @cast int RestoreFactoryDefaults(bool persist);
-  }
-
-  @class("rev::CANEncoder")
-  SparkMaxEncoder: {
-    double GetPosition();
-    double GetVelocity();
-    @cast int SetPosition(double position);
-    @cast int SetPositionConversionFactor(double factor);
-    @cast int SetVelocityConversionFactor(double factor);
-    double GetPositionConversionFactor();
-    double GetVelocityConversionFactor();
-    @cast int SetInverted(bool inverted);
-    bool GetInverted();
-  }
-  */
   
+  @class("rev::CANSparkMax")
+  CANSparkMax: {
+    @constructor new(int deviceID, @enum("SparkMaxMotorType") @cast("rev::CANSparkMaxLowLevel::MotorType") int type);
+
+    Set(double speed);
+	SetVoltage(@cast("units::volt_t") double output);
+	double Get();
+	SetInverted(bool isInverted);
+	bool GetInverted();
+	Disable();
+	StopMotor();
+	@nolua Follow(@deref @cast("rev::CANSparkMax*") void* leader, @default(false) bool invert);
+  }
+
   @class("frc::DifferentialDrive")
   DifferentialDrive: {
     @nolua @constructor new(void* leftMotor, void* rightMotor) """
