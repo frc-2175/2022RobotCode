@@ -260,11 +260,10 @@ motors: {
     @alias("SetWithTalonFXControlModeAndDemands") Set(@cast("ctre::phoenix::motorcontrol::TalonFXControlMode") int mode, double demand0, @cast("ctre::phoenix::motorcontrol::DemandType") int demand1Type, double demand1);
     // TODO: The generation for this is strange and unpleasant.
     @alias("SetInvertedTalonFX") SetInverted(@enum(CTRETalonFXInvertType) @cast("ctre::phoenix::motorcontrol::TalonFXInvertType") int invertType);
-    // NOTE(ben): This changed for 2022, and now it's super gross, and I don't want to think about it.
-    // ConfigStatorCurrentLimit(bool enable, double currentLimit) """
-    // ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-    //     ->ConfigStatorCurrentLimit(ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration(enable, currentLimit, 0, 0));
-    // """;
+    ConfigStatorCurrentLimit(bool enable, double currentLimit) """
+    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
+        ->ConfigStatorCurrentLimit(ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration(enable, currentLimit, 0, 0));
+    """;
     int ConfigSelectedFeedbackSensor(@cast("ctre::phoenix::motorcontrol::FeedbackDevice") int feedbackDevice, @default(0) int pidIdx, @default(0) int timeoutMs);
     // @alias("ConfigSelectedFeedbackSensor") int ConfigSelectedFeedbackSensorTalonFX(@cast("ctre::phoenix::motorcontrol::TalonFXFeedbackDevice") int feedbackDevice, @default(0) int pidIdx, int timeoutMs);
     double GetExpiration() """auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)

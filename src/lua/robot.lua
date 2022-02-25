@@ -20,6 +20,9 @@ function Robot.robotInit()
 		false,
 		0.02, 0, 0.002
 	)
+
+	leftMotor:configStatorCurrentLimit(true, 50)
+	rightMotor:configStatorCurrentLimit(true, 50)
 end
 
 function Robot.autonomousInit()

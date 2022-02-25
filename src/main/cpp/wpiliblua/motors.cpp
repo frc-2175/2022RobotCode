@@ -1656,6 +1656,11 @@ LUAFUNC void TalonFX_SetInvertedTalonFX(void* _this, int invertType) {
         ->SetInverted((ctre::phoenix::motorcontrol::TalonFXInvertType)invertType);
 }
 
+LUAFUNC void TalonFX_ConfigStatorCurrentLimit(void* _this, bool enable, double currentLimit) {
+    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
+        ->ConfigStatorCurrentLimit(ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration(enable, currentLimit, 0, 0));
+}
+
 LUAFUNC int TalonFX_ConfigSelectedFeedbackSensor(void* _this, int feedbackDevice, int pidIdx, int timeoutMs) {
     auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
         ->ConfigSelectedFeedbackSensor((ctre::phoenix::motorcontrol::FeedbackDevice)feedbackDevice, pidIdx, timeoutMs);
