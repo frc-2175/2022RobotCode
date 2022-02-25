@@ -2388,6 +2388,14 @@ function TalonFX:setInvertedTalonFX(invertType)
     ffi.C.TalonFX_SetInvertedTalonFX(self._this, invertType)
 end
 
+---@param enable boolean
+---@param currentLimit number
+---@return any
+function TalonFX:configStatorCurrentLimit(enable, currentLimit)
+    currentLimit = AssertNumber(currentLimit)
+    ffi.C.TalonFX_ConfigStatorCurrentLimit(self._this, enable, currentLimit)
+end
+
 ---@param feedbackDevice integer
 ---@param pidIdx? integer
 ---@param timeoutMs? integer
