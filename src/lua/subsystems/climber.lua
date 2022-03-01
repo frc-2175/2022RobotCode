@@ -1,19 +1,27 @@
-local winchMotor = CANSparkMax:new(24, SparkMaxMotorType.kBrushless)
-local winchFollower = CANSparkMax:new(25, SparkMaxMotorType.kBrushless)
-winchFollower:follow(winchMotor)
-winchFollower:setInverted(false)
+local winchMotor = CANSparkMax:new(14, SparkMaxMotorType.kBrushless)
+local winchFollower = CANSparkMax:new(15, SparkMaxMotorType.kBrushless)
+winchFollower:setInverted(true)
 
 ---@class Winch
 Winch = {}
 
 function Winch:runIn()
-	winchMotor:set(0.5)
+	print("running in")
+	winchMotor:set(1)
+	winchFollower:set(1)
 end
 
 function Winch:runOut()
-	winchMotor:set(-0.5)
+	print("running out")
+	winchMotor:set(-1)
+	winchFollower:set(-1)
 end
 
 function Winch:stop()
 	winchMotor:set(0)
+	winchFollower:set(0)
+end
+
+function Winch:get()
+	return winchMotor:get()
 end
