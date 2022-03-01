@@ -273,8 +273,9 @@ motors: {
   
   @class("rev::CANSparkMax")
   CANSparkMax: {
-    @constructor new(int deviceID, @enum("SparkMaxMotorType") @cast("rev::CANSparkMaxLowLevel::MotorType") int type);
+    @constructor new(int deviceID, @enum("SparkMaxMotorType") @cast("rev::CANSparkMax::MotorType") int type);
 
+	RestoreFactoryDefaults();
     Set(double speed);
 	SetVoltage(@cast("units::volt_t") double output);
 	double Get();

@@ -1674,7 +1674,12 @@ auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
 }
 
 LUAFUNC void* CANSparkMax_new(int deviceID, int type) {
-    return new rev::CANSparkMax(deviceID, (rev::CANSparkMaxLowLevel::MotorType)type);
+    return new rev::CANSparkMax(deviceID, (rev::CANSparkMax::MotorType)type);
+}
+
+LUAFUNC void CANSparkMax_RestoreFactoryDefaults(void* _this) {
+    ((rev::CANSparkMax*)_this)
+        ->RestoreFactoryDefaults();
 }
 
 LUAFUNC void CANSparkMax_Set(void* _this, double speed) {

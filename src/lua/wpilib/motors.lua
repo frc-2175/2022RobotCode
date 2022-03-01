@@ -2441,6 +2441,11 @@ function CANSparkMax:new(deviceID, type)
     return instance
 end
 
+---@return any
+function CANSparkMax:restoreFactoryDefaults()
+    ffi.C.CANSparkMax_RestoreFactoryDefaults(self._this)
+end
+
 ---@param speed number
 ---@return any
 function CANSparkMax:set(speed)
