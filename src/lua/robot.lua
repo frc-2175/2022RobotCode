@@ -54,22 +54,10 @@ function Robot.teleopPeriodic()
 
 
 
-	if rightStick:getTriggerHeld() then
-		Intake:runIn()
-	else
-		Intake:stop()
-	end
-
-	if leftStick:getTriggerHeld() then
-		Intake:extend()
-	elseif leftStick:getTopHeld() then
-		Intake:retract()
-	end
-
 	if gamepad:getButtonPressed(XboxButton.RightBumper) then
-		testSlides:next()
+		Intake:extend()
 	elseif gamepad:getButtonPressed(XboxButton.LeftBumper) then
-		testSlides:prev()
+		Intake:retract()
 	end
 
 	if gamepad:getButtonHeld(XboxButton.Y) then
@@ -79,13 +67,4 @@ function Robot.teleopPeriodic()
 	else
 		Winch:stop()
 	end
-	if gamepad:getButtonHeld(XboxButton.A) then
-		Winch:runIn2()
-	elseif gamepad:getButtonHeld(XboxButton.B) then
-		Winch:runOut2()
-	else
-		Winch:stop2()
-	end
-
-	testSlides:draw()
 end

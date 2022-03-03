@@ -8,18 +8,22 @@ winchFollower:setInverted(true)
 winchMotor:setIdleMode(IdleMode.kBrake)
 winchFollower:setIdleMode(IdleMode.kBrake)
 
-
 ---@class Winch
 Winch = {}
 
 function Winch:runIn()
 	print("running in")
 	winchMotor:set(1)
-	
+	winchFollower:set(1)
 end
+
+function Winch:runIn1()
+	print("running in")
+	winchMotor:set(1)
+end
+
 function Winch:runIn2()
 	print("running in")
-	
 	winchFollower:set(1)
 end
 
@@ -30,18 +34,27 @@ function Winch:runOut()
 	winchMotor:set(-1)
 	
 end
+
+function Winch:runOut1()
+	winchMotor:set(-1)
+end
+
 function Winch:runOut2()
-	print("running out")
-	
 	winchFollower:set(-1)
 end
 
+
+
 function Winch:stop()
 	winchMotor:set(0)
-	
+	winchFollower:set(0)
 end
+
+function Winch:stop1()
+	winchMotor:set(0)
+end
+
 function Winch:stop2()
-	
 	winchFollower:set(0)
 end
 
