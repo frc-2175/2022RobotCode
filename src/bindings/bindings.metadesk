@@ -84,6 +84,12 @@ motors: {
 	kBrushless: 1,
   }
 
+  @enum
+  IdleMode: {
+	  kCoast: 0,
+	  kBrake: 1,
+  }
+
   @baseclass
   "frc::Servo": {
     @constructor new(int channel);
@@ -275,6 +281,7 @@ motors: {
   CANSparkMax: {
     @constructor new(int deviceID, @enum("SparkMaxMotorType") @cast("rev::CANSparkMax::MotorType") int type);
 
+	SetIdleMode(@enum("IdleMode") @cast("rev::CANSparkMax::IdleMode") int type);
 	RestoreFactoryDefaults();
     Set(double speed);
 	SetVoltage(@cast("units::volt_t") double output);

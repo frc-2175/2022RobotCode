@@ -309,6 +309,7 @@ void TalonFX_ConfigStatorCurrentLimit(void* _this, bool enable, double currentLi
 int TalonFX_ConfigSelectedFeedbackSensor(void* _this, int feedbackDevice, int pidIdx, int timeoutMs);
 double TalonFX_GetExpiration(void* _this);
 void* CANSparkMax_new(int deviceID, int type);
+void CANSparkMax_SetIdleMode(void* _this, int type);
 void CANSparkMax_RestoreFactoryDefaults(void* _this);
 void CANSparkMax_Set(void* _this, double speed);
 void CANSparkMax_SetVoltage(void* _this, double output);

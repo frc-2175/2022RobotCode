@@ -14,6 +14,9 @@ function Robot.robotInit()
 	gamepad = Joystick:new(2)
 	resetTracking()
 	-- serbo = Servo:new(1111)
+
+	
+
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
 	testPursuit = PurePursuit:new(
 		makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }),
@@ -75,6 +78,13 @@ function Robot.teleopPeriodic()
 		Winch:runOut()
 	else
 		Winch:stop()
+	end
+	if gamepad:getButtonHeld(XboxButton.A) then
+		Winch:runIn2()
+	elseif gamepad:getButtonHeld(XboxButton.B) then
+		Winch:runOut2()
+	else
+		Winch:stop2()
 	end
 
 	testSlides:draw()

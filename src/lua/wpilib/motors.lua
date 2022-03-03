@@ -56,6 +56,14 @@ SparkMaxMotorType = BindingEnum:new('SparkMaxMotorType', {
     kBrushless = 1,
 })
 
+---@class IdleMode
+---@field kCoast integer
+---@field kBrake integer
+IdleMode = BindingEnum:new('IdleMode', {
+    kCoast = 0,
+    kBrake = 1,
+})
+
 ---@return any
 function VictorSPX:toSpeedController()
     return ffi.C.VictorSPX_ToSpeedController(self._this)
@@ -2439,6 +2447,14 @@ function CANSparkMax:new(deviceID, type)
     setmetatable(instance, self)
     self.__index = self
     return instance
+end
+
+---@param type integer
+---@return any
+function CANSparkMax:setIdleMode(type)
+    type = AssertEnumValue(IdleMode, type)
+    type = AssertInt(type)
+    ffi.C.CANSparkMax_SetIdleMode(self._this, type)
 end
 
 ---@return any

@@ -1677,6 +1677,11 @@ LUAFUNC void* CANSparkMax_new(int deviceID, int type) {
     return new rev::CANSparkMax(deviceID, (rev::CANSparkMax::MotorType)type);
 }
 
+LUAFUNC void CANSparkMax_SetIdleMode(void* _this, int type) {
+    ((rev::CANSparkMax*)_this)
+        ->SetIdleMode((rev::CANSparkMax::IdleMode)type);
+}
+
 LUAFUNC void CANSparkMax_RestoreFactoryDefaults(void* _this) {
     ((rev::CANSparkMax*)_this)
         ->RestoreFactoryDefaults();
