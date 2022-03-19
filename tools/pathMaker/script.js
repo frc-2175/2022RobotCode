@@ -7,7 +7,13 @@
 // eslint-disable-next-line no-undef
 disableFriendlyErrors = true;
 
+/** Class representing a vector. */
 class Vector {
+	/**
+	 * Create a Vector
+	 * @param {number} x 
+	 * @param {number} y 
+	 */
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
@@ -60,17 +66,24 @@ class Vector {
 let img;
 let dataChangedSinceSave = true;
 let pixelToInchRatio = null;
+/** @type {Vector[]} */
 let pointList = [];
+/** @type {Vector[]} */
 let lineVectors = [];
 let lineVectorHasChanged = false;
 const stepIncrement = 1;
 let pointFile;
+/** @type {Vector} */
 let imageCenter = null;
 const visualizeNPoints = 10;
+/** @type {Vector} */
 let closestPoint;
 let closestSegment;
+/** @type {Vector} */
 let mouseVector;
+/** @type {Vector} */
 let fieldMouse;
+/** @type {{vector: Vector, name: string, code: string, color: Object, segment: number}[]} */
 const triggerPointList = [];
 let previousTriggerPointCount;
 
@@ -109,14 +122,14 @@ const colorList = [
 	}
 ];
 
-// eslint-disable-next-line no-unused-vars
 //sets up field image as background
+// eslint-disable-next-line no-unused-vars
 function preload() {
 	img = loadImage("rapidreactfield.png");
 }
 
-// eslint-disable-next-line no-unused-vars
 // sets up coordinates of cursor & displays them
+// eslint-disable-next-line no-unused-vars
 function setup() {
 	createCanvas(windowWidth, (windowWidth * 0.58));
 	imageCenter = new Vector(width / 2, height / 2);
@@ -159,12 +172,12 @@ function removeLastLineVector() {
 		//deleting all related trigger points to the line vector being deleted
 		// triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment});
 		for (let i = 0; i < triggerPointList.length; i++) { //
-			triggerPoint = triggerPointList[i];
+			const triggerPoint = triggerPointList[i];
 			console.log("tpl, clv");
-			console.log(triggerPointList[i].segment);
+			console.log(triggerPoint.segment);
 			console.log(lineVectors.length-2);
-			console.log(triggerPointList[i].segment == (lineVectors.length-2))
-			if(triggerPointList[i].segment == (lineVectors.length-2)) {
+			console.log(triggerPoint.segment === (lineVectors.length-2));
+			if (triggerPoint.segment === (lineVectors.length-2)) {
 				console.log("deleted a thing");
 				triggerPointList.splice(i,1);
 				i--;
@@ -276,32 +289,41 @@ async function openPoints() {
 	console.log(contents);
 	lineVectors = [];
 	pointList = [];	
-	contents["lineVectors"].forEach((item) => {
-		lineVectors.push(new Vector(item["x"], item["y"]));
-	});
-	contents["points"].forEach((item) => {
-		pointList.push(new Vector(item["x"], item["y"]));
-	});
+	for (const lineVector of contents["lineVectors"]) {
+		lineVectors.push(new Vector(lineVector["x"], lineVector["y"]));
+	}
+	for (const point of contents["points"]) {
+		pointList.push(new Vector(point["x"], point["y"]));
+	}
 }
 
-function getClosestPointOnLines(pXy, aXys) {
+/**
+ * 
+ * @param {Vector} point 
+ * @param {Vector[]} lines list of points representing a line
+ * @returns {Vector} vector Vector of closesst point
+ * @returns {number} index Index of closest point along lines
+ * @returns {number} fTo Relative distance on line to start point
+ * @returns {number} fFrom Relative distance on line to end point
+ */
+function getClosestPointOnLines(point, lines) {
 	let fFrom, fTo, i, dist, minDist, x, y;
 
-	for (let n = 1; n < aXys.length; n++) {
-		if (aXys[n].x !== aXys[n - 1].x) {
-			const a = (aXys[n].y - aXys[n - 1].y) / (aXys[n].x - aXys[n - 1].x);
-			const b = aXys[n].y - a * aXys[n].x;
-			dist = Math.abs(a * pXy.x + b - pXy.y) / Math.sqrt(a * a + 1);
+	for (let n = 1; n < lines.length; n++) {
+		if (lines[n].x !== lines[n - 1].x) {
+			const a = (lines[n].y - lines[n - 1].y) / (lines[n].x - lines[n - 1].x);
+			const b = lines[n].y - a * lines[n].x;
+			dist = Math.abs(a * point.x + b - point.y) / Math.sqrt(a * a + 1);
 		} else {
-			dist = Math.abs(pXy.x - aXys[n].x);
+			dist = Math.abs(point.x - lines[n].x);
 		}
 
 		// length of line segment 
-		const rl = aXys[n].distTo(aXys[n - 1]);
+		const rl = lines[n].distTo(lines[n - 1]);
 		// distance of pt to end line segment
-		const ln = pXy.distTo(aXys[n]);
+		const ln = point.distTo(lines[n]);
 		// distance of pt to begin line segment
-		const lnm1 = pXy.distTo(aXys[n - 1]);
+		const lnm1 = point.distTo(lines[n - 1]);
 		// calculated length of line segment
 		const calcrl = ln + lnm1 - dist;
 
@@ -327,11 +349,11 @@ function getClosestPointOnLines(pXy, aXys) {
 			i = n;
 		}
 
-		const dx = aXys[i - 1].x - aXys[i].x;
-		const dy = aXys[i - 1].y - aXys[i].y;
+		const dx = lines[i - 1].x - lines[i].x;
+		const dy = lines[i - 1].y - lines[i].y;
 
-		x = aXys[i - 1].x - (dx * fTo);
-		y = aXys[i - 1].y - (dy * fTo);
+		x = lines[i - 1].x - (dx * fTo);
+		y = lines[i - 1].y - (dy * fTo);
 
 	}
 
@@ -343,15 +365,13 @@ function getClosestPointOnLines(pXy, aXys) {
 //segment - closest path segment
 /**
  * 
- * @param {Vector} point haha
- * @param {string} name haha
- * @param {*} code 
- * @param {Object} color 
- * @param {*} segment 
+ * @param {Vector} point Point at which to make the triggerPoint
+ * @param {string} name Name of the triggerPoint
+ * @param {*} code Code to run at trigger Point(maybe not happening)
+ * @param {Object} color Color of triggerPoint
+ * @param {number} segment Index along list of lines that the triggerPoint sits on.
  */
 function createTriggerPoint(point, name, code, color, segment) {
-	let previousPoint = lineVectors[lineVectors.length - 1];
-
 	if (closestPoint.distTo(mouseVector.toField()) < 50) { // if the distacne to the mouse on the field is less than 50
 		//add to list this trigger point
 		triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment});
@@ -359,12 +379,10 @@ function createTriggerPoint(point, name, code, color, segment) {
 }
 
 /**
- * 
- * @param {*} lineSeg - line segment being deleted
+ * @param {number} index
  */
-function removeTriggerPoint(lineSeg) {
-	let winner;
-	triggerPointList.splice(winner);
+function removeTriggerPoint(index) {
+	triggerPointList.splice(index, 1);
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -375,7 +393,7 @@ function windowResized() {
 }
 
 function updateHTML() {
-	if (document.readyState === "ready" || document.readyState === "complete" && previousTriggerPointCount != triggerPointList.length) {
+	if (document.readyState === "ready" || document.readyState === "complete" && previousTriggerPointCount !== triggerPointList.length) {
 		if (triggerPointList.length > 0) {
 			document.getElementById("triggerPointTitle").style.visibility = "visible";
 		}
@@ -384,19 +402,20 @@ function updateHTML() {
 		}
 		const triggerPointDiv = document.getElementById("triggerPointDiv");
 		triggerPointDiv.innerHTML = "";
-		triggerPointList.forEach((item, index) => {
+		for (let i = 0; i < triggerPointList.length; i++) {
+			const triggerPoint = triggerPointList[i];
 			const triggerPointElement = document.createElement("div");
 			const triggerPointTitle = document.createElement("h4");
 			const triggerPointNameInput = document.createElement("input");
-			triggerPointTitle.innerHTML = `Trigger point ${index}:`;
-			triggerPointTitle.style.color = "#" + item["color"];
-			triggerPointNameInput.id = `${index}nameInput`;
+			triggerPointTitle.innerHTML = `Trigger point ${i}:`;
+			triggerPointTitle.style.color = "#" + triggerPoint["color"];
+			triggerPointNameInput.id = `${i}nameInput`;
 			triggerPointNameInput.style.zIndex = 999;
 			triggerPointElement.style.display = "inline-block";
 			triggerPointElement.appendChild(triggerPointTitle);
 			triggerPointElement.appendChild(triggerPointNameInput);
 			triggerPointDiv.appendChild(triggerPointElement);
-		}); 
+		}
 		previousTriggerPointCount = triggerPointList.length;
 	}
 }
@@ -461,11 +480,12 @@ function draw() {
 		endShape();
 		
 		strokeWeight(5);
-		for (let j = 0; j < pointList.length; j++) {
-			if (j % visualizeNPoints === 0) {
+		for (let i = 0; i < pointList.length; i++) {
+			if (i % visualizeNPoints === 0) {
+				pointList[i];
 				point(
-					pointList[j].toScreen().x,
-					pointList[j].toScreen().y
+					pointList[i].toScreen().x,
+					pointList[i].toScreen().y
 				);
 			}
 		} 
