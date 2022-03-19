@@ -1,3 +1,9 @@
+// line vector - the big lines created when you click somewhere
+// point - small points spaced about an inch apart that show up on each line vector;
+// 		 these are mostly just for show on the maker and then used in pure pursuit in the robot code
+// trigger point - these are user-specified points across our path, sitting on a chosen line vector,
+//		 that will trigger a certain action at a part along the path
+
 // eslint-disable-next-line no-undef
 disableFriendlyErrors = true;
 
@@ -104,11 +110,13 @@ const colorList = [
 ];
 
 // eslint-disable-next-line no-unused-vars
+//sets up field image as background
 function preload() {
 	img = loadImage("rapidreactfield.png");
 }
 
 // eslint-disable-next-line no-unused-vars
+// sets up coordinates of cursor & displays them
 function setup() {
 	createCanvas(windowWidth, (windowWidth * 0.58));
 	imageCenter = new Vector(width / 2, height / 2);
@@ -116,6 +124,7 @@ function setup() {
 	textSize(15);
 }
 
+//
 function canvasFocused() {
 	if (mouseY > 0 && mouseY < (windowWidth * 0.58) && mouseX > 0 && mouseX < windowWidth) {
 		return true;
@@ -138,16 +147,32 @@ function createNewPoint(vector) {
 }
 
 function removeLastLineVector() {
+	//if there is more than 1
 	if (lineVectors.length > 1) {
-		const previousPoint = lineVectors[lineVectors.length - 2];
-		const currentPoint = lineVectors[lineVectors.length - 1];
-		const length = ceil(previousPoint.distTo(currentPoint) / stepIncrement);
-		for (let i = 0; i < length; i++) {
+		const previousLineVector = lineVectors[lineVectors.length - 2];
+		const currentLineVector = lineVectors[lineVectors.length - 1];
+		const length = ceil(previousLineVector.distTo(currentLineVector) / stepIncrement);
+		for (let i = 0; i < length; i++) {// doesn'y this just take everything out of pointlist
 			pointList.pop();
+		}
+		console.log("go away");
+		//deleting all related trigger points to the line vector being deleted
+		// triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment});
+		for (let i = 0; i < triggerPointList.length; i++) { //
+			triggerPoint = triggerPointList[i];
+			console.log("tpl, clv");
+			console.log(triggerPointList[i].segment);
+			console.log(lineVectors.length-2);
+			console.log(triggerPointList[i].segment == (lineVectors.length-2))
+			if(triggerPointList[i].segment == (lineVectors.length-2)) {
+				console.log("deleted a thing");
+				triggerPointList.splice(i,1);
+				i--;
+			}
 		}
 	}
 	dataChangedSinceSave = true;
-	lineVectors.pop();
+	lineVectors.pop();	
 	updateTitle(pointFile);
 }
 
@@ -158,6 +183,11 @@ function mouseClicked() {
 	}
 }
 
+//controls:
+// s - save points 
+// o - open saved points
+// space key - creates a trigger point 
+// backspace key - deletes last segment of path
 document.addEventListener("keydown", function (e) {
 	if (canvasFocused()) {
 		if (e.key === "s") {
@@ -176,6 +206,7 @@ document.addEventListener("keydown", function (e) {
 		}
 		if (e.key === "Backspace") {
 			removeLastLineVector(closestPoint);
+			//REMOVE LAST TRIGGER POINT
 		}
 	}
 }, false);
@@ -307,16 +338,33 @@ function getClosestPointOnLines(pXy, aXys) {
 	return { "vector": new Vector(x, y), "i": i, "fTo": fTo, "fFrom": fFrom };
 }
 
+// makes a trigger point
+// point - closest point
+//segment - closest path segment
+/**
+ * 
+ * @param {Vector} point haha
+ * @param {string} name haha
+ * @param {*} code 
+ * @param {Object} color 
+ * @param {*} segment 
+ */
 function createTriggerPoint(point, name, code, color, segment) {
-	let previousPoint = lineVectors[0];
-	lineVectors.forEach((item, index) => {
-		if (index > 0) {
-			previousPoint = item;
-		}
-	});
-	if (closestPoint.distTo(mouseVector.toField()) < 50) {
+	let previousPoint = lineVectors[lineVectors.length - 1];
+
+	if (closestPoint.distTo(mouseVector.toField()) < 50) { // if the distacne to the mouse on the field is less than 50
+		//add to list this trigger point
 		triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment});
 	}
+}
+
+/**
+ * 
+ * @param {*} lineSeg - line segment being deleted
+ */
+function removeTriggerPoint(lineSeg) {
+	let winner;
+	triggerPointList.splice(winner);
 }
 
 // eslint-disable-next-line no-unused-vars
