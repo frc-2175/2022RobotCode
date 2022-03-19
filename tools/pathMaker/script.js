@@ -7,6 +7,14 @@
 // eslint-disable-next-line no-undef
 disableFriendlyErrors = true;
 
+function totalDist(listOfVectors,) {
+	var total = 0;
+	for (let i = 0; i < listOfVectors.length-2 ; i++) {
+		total = total + listOfVectors[i].distTo(listOfVectors[i+1]);
+	}
+	console.log("total distance : " + total);
+}
+
 /** Class representing a vector. */
 class Vector {
 	/**
@@ -73,6 +81,7 @@ let lineVectors = [];
 let lineVectorHasChanged = false;
 const stepIncrement = 1;
 let pointFile;
+let triggerPointFile;
 /** @type {Vector} */
 let imageCenter = null;
 const visualizeNPoints = 10;
@@ -159,6 +168,9 @@ function createNewPoint(vector) {
 	updateTitle(pointFile);
 }
 
+/**
+ * removes the most recently made line vector & any trigger points on it
+ */
 function removeLastLineVector() {
 	//if there is more than 1
 	if (lineVectors.length > 1) {
@@ -193,6 +205,7 @@ function removeLastLineVector() {
 function mouseClicked() {
 	if (canvasFocused()) {
 		createNewLineVector((new Vector(mouseX, mouseY)).toField());
+		totalDist(lineVectors);
 	}
 }
 
@@ -266,6 +279,9 @@ async function writeFileToDisk(fileHandle, contents) {
 	await writable.close();
 }
 
+/**
+ * saves all points & trigger points
+ */
 function savePoints() {
 	dataChangedSinceSave = false;
 	if (pointFile == null) {
@@ -278,6 +294,7 @@ function savePoints() {
 	}
 	else {
 		updateTitle(pointFile);
+		updateTitle(triggerPointFile);
 		writeFileToDisk(pointFile, JSON.stringify({ points: pointList, "lineVectors": lineVectors }));
 	}
 }
