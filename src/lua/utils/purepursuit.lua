@@ -138,6 +138,11 @@ function PurePursuit:run()
 	if self.isBackwards then
 		turnValue = -turnValue
 	end
+
+	if self.path.triggerPoints[indexOfClosestPoint] ~= nil then
+		print("whats up")
+	end
+
 	self.previousClosestPoint = indexOfClosestPoint
 
 	-- without this the bot will relentlessly target the last point and that's no good

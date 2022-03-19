@@ -156,15 +156,18 @@ end
 ---@class Path
 ---@field path Vector[]
 ---@field numberOfActualPoints integer
+---@field triggerPoints TriggerPoint[]
 Path = {}
 
 ---@param path Vector[]
 ---@param numberOfActualPoints integer
 ---@return Path path
-function Path:new(path, numberOfActualPoints)
+function Path:new(path, numberOfActualPoints, triggerPoints)
+	triggerPoints = triggerPoints or {}
 	local p = {
 		path = path,
 		numberOfActualPoints = numberOfActualPoints,
+		triggerPoints = triggerPoints,
 	}
 	setmetatable(p, self)
 	self.__index = self
@@ -217,18 +220,38 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	return pathResult
 end
 
+---@class TriggerPoint
+---@field index number
+---@field name string
+TriggerPoint = {}
+
+function TriggerPoint:new(index, name)
+	local p = {
+		index = index,
+		name = name
+	}
+	setmetatable(p, self)
+	self.__index = self
+
+	return p
+end
+
 ---@param fileName string
 ---@return Path
 function readPath(fileName)
-	---@type Vector[]
-	local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a")).points
+	local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a"))
 	---@type Vector[]
 	local resultPath = {}
+	local triggerPoints = {}
 
-	local start = Vector:new(fileContents[1].x, fileContents[1].y)
+	local start = Vector:new(fileContents.points[1].x, fileContents.points[1].y)
 	local angleOffset = math.atan2(start.y, start.x)
 
-	for i, value in ipairs(fileContents) do
+	for i, value in ipairs(fileContents.triggerPoints) do
+		triggerPoints[i] = TriggerPoint:new(value.segment + 1, value.name)
+	end
+
+	for i, value in ipairs(fileContents.points) do
 		resultPath[i] = (Vector:new(value.x, value.y) - start):rotate(angleOffset)
 	end
 
@@ -240,5 +263,5 @@ function readPath(fileName)
 		finalPoint = resultPath[#resultPath]
 	end
 
-	return Path:new(resultPath, #resultPath - 36)
+	return Path:new(resultPath, #resultPath - 36, triggerPoints)
 end
