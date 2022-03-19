@@ -13,10 +13,9 @@ function Robot.robotInit()
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	resetTracking()
-	-- serbo = Servo:new(1111)
-	-- for i, value in ipairs(readPath("funny").path) do
+	-- -- serbo = Servo:new(1111)
+	-- for i, value in ipairs(readPath("triggertest").path) do
 	-- 	print(i, value)
-	-- 	print(makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }).path[i])
 	-- end
 
 	
@@ -28,7 +27,7 @@ function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
 	testPursuit = PurePursuit:new(
-		readPath("test"),
+		readPath("triggertest"),
 		false,
 		0.02, 0, 0.002
 	)

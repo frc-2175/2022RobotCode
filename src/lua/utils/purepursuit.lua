@@ -3,6 +3,7 @@ require("utils.math")
 require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
+require("subsystems.cargo")
 
 local TICKS_TO_INCHES = (6 * math.pi) / (2048 * 10)
 navx = AHRS:new(4)
@@ -140,7 +141,7 @@ function PurePursuit:run()
 	end
 
 	if self.path.triggerPoints[indexOfClosestPoint] ~= nil then
-		print("whats up")
+		Winch:runOut()
 	end
 
 	self.previousClosestPoint = indexOfClosestPoint
