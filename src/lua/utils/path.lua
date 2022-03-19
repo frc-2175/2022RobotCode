@@ -1,7 +1,8 @@
 require("utils.vector")
 require("utils.math")
 local json = require("utils.json")
-local dir = getDeployDirectory() .. "\\paths\\"
+local dir = getDeployDirectory() .. "/paths/"
+print(getDeployDirectory())
 -- Oh boyo, here we go!
 
 --- A way of moving a robot from a starting speed to a middle speed and then to an ending speed, ramping inbetween.
@@ -53,7 +54,7 @@ function getTrapezoidSpeed(
 
 	if currentDistance < 0 then
 		return startSpeed
-	elseif currentDistance < rampDownDistance then
+	elseif currentDistance < rampUpDistance then
 		return lerp(startSpeed, middleSpeed, currentDistance / rampUpDistance)
 	elseif currentDistance < totalDistance - rampDownDistance then
 		return middleSpeed
@@ -220,7 +221,8 @@ end
 ---@return Path
 function readPath(fileName)
 	---@type Vector[]
-	local fileContents = json.decode(io.open(dir .. "\\" .. fileName .. ".path"):read("a")).points
+	local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a")).points
+	---@type Vector[]
 	local resultPath = {}
 
 	local start = Vector:new(fileContents[1].x, fileContents[1].y)
@@ -230,5 +232,13 @@ function readPath(fileName)
 		resultPath[i] = (Vector:new(value.x, value.y) - start):rotate(angleOffset)
 	end
 
-	return Path:new(resultPath, #fileContents - 36)
+	local finalPoint = resultPath[#resultPath]
+	local finalAng = math.atan2(finalPoint.y, finalPoint.x)
+
+	for i = 1, 24 do
+		resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(math.cos(finalAng), math.sin(finalAng))
+		finalPoint = resultPath[#resultPath]
+	end
+
+	return Path:new(resultPath, #resultPath - 36)
 end

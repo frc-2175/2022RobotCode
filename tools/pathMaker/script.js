@@ -104,8 +104,8 @@ const colorList = [
 ];
 
 // eslint-disable-next-line no-unused-vars
-function preload() {
-	img = loadImage("https://firebasestorage.googleapis.com/v0/b/pathmakerviewer.appspot.com/o/rapidreactfield.png?alt=media&token=8cf9f0e0-b56f-49b6-941b-c9240db1a2d7");
+async function preload() {
+	img = loadImage("rapidreactfield.png");
 }
 
 // eslint-disable-next-line no-unused-vars

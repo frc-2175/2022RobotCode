@@ -14,20 +14,25 @@ function Robot.robotInit()
 	gamepad = Joystick:new(2)
 	resetTracking()
 	-- serbo = Servo:new(1111)
+	-- for i, value in ipairs(readPath("funny").path) do
+	-- 	print(i, value)
+	-- 	print(makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }).path[i])
+	-- end
 
 	
 
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
-	testPursuit = PurePursuit:new(
-		makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }),
-		false,
-		0.02, 0, 0.002
-	)
 end
 
 function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
+	testPursuit = PurePursuit:new(
+		readPath("test"),
+		false,
+		0.02, 0, 0.002
+	)
+	print(testPursuit)
 end
 
 function Robot.autonomousPeriodic()
@@ -36,7 +41,7 @@ function Robot.autonomousPeriodic()
 	putNumber("Y", position.y)
 	local rotation, speed = testPursuit:run()
 	putNumber("Rotation", rotation)
-	Drivetrain:drive(0.33 * speed, rotation)
+	Drivetrain:drive(0.25 * speed, rotation)
 end
 
 function Robot.teleopInit()
@@ -55,16 +60,25 @@ function Robot.teleopPeriodic()
 
 
 	if gamepad:getButtonPressed(XboxButton.RightBumper) then
+		print("extending")
 		Intake:extend()
 	elseif gamepad:getButtonPressed(XboxButton.LeftBumper) then
 		Intake:retract()
 	end
 
-	if gamepad:getButtonHeld(XboxButton.Y) then
+	if gamepad:getButtonHeld(XboxButton.A) then
 		Winch:runIn()
-	elseif gamepad:getButtonHeld(XboxButton.X) then
+	elseif gamepad:getButtonHeld(XboxButton.Y) then
 		Winch:runOut()
 	else
 		Winch:stop()
 	end
+
+	-- if gamepad:getButtonHeld(XboxButton.A) then
+	-- 	Winch:runOut2()
+	-- elseif gamepad:getButtonHeld(XboxButton.B) then
+	-- 	Winch:runIn2()
+	-- else
+	-- 	Winch:stop()a
+	-- end
 end

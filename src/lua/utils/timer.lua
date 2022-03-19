@@ -15,6 +15,7 @@ end
 
 function Timer:start()
 	self.startTime = getFPGATimestamp()
+	return self
 end
 
 ---@return number
