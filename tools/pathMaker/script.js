@@ -4,9 +4,6 @@
 // trigger point - these are user-specified points across our path, sitting on a chosen line vector,
 //		 that will trigger a certain action at a part along the path
 
-// eslint-disable-next-line no-undef
-disableFriendlyErrors = true;
-
 /** Class representing a vector. */
 class Vector {
 	/**
@@ -20,7 +17,7 @@ class Vector {
 	}
 
 	distTo(vector) {
-		return dist(this.x, this.y, vector.x, vector.y);
+		return dist(...this, ...vector);
 	}
 
 	add(vector) {
@@ -64,61 +61,29 @@ class Vector {
 }
 
 let img;
-let dataChangedSinceSave = true;
+/** @type {number} */
 let pixelToInchRatio = null;
 /** @type {Vector[]} */
-let pointList = [];
+const points = [];
 /** @type {Vector[]} */
-let lineVectors = [];
+const lineVectors = [];
+/** @type {boolean} */
 let lineVectorHasChanged = false;
-const stepIncrement = 1;
-let pointFile;
-let triggerPointFile;
 /** @type {Vector} */
 let imageCenter = null;
-const visualizeNPoints = 10;
-/** @type {number} */
-/** @type {Vector} */
-let mouseVector;
-/** @type {Vector} */
-let fieldMouse;
-/** @type {{vector: Vector, name: string, code: string, color: Object, segment: number}[]} */
-const triggerPointList = [];
-let previousTriggerPointCount;
+const pointFreq = 10;
+/** @type {{vector: Vector, name: string, code: string, color: string, segment: number}[]} */
+const triggerPoints = [];
 
 const colorList = [
-	{
-		name: "gray",
-		value: "2f4f4f",
-	},
-	{
-		name: "maroon",
-		value: "7f0000",
-	},
-	{
-		name: "green",
-		value: "008000",
-	},
-	{
-		name: "blue",
-		value: "000080",
-	},
-	{
-		name: "orange",
-		value: "ff8c00",
-	},
-	{
-		name: "yellow",
-		value: "ffff00",
-	},
-	{
-		name: "lime",
-		value: "00ff00",
-	},
-	{
-		name: "aqua",
-		value: "00ffff",
-	},
+	{ name: "gray", value: "#2f4f4f" },
+	{ name: "maroon", value: "#7f0000" },
+	{ name: "green", value: "#008000" },
+	{ name: "blue", value: "#000080" },
+	{ name: "orange", value: "#ff8c00" },
+	{ name: "yellow", value: "#ffff00" },
+	{ name: "lime", value: "#00ff00" },
+	{ name: "aqua", value: "#00ffff" },
 ];
 
 // sets up field image as background
@@ -136,16 +101,11 @@ function setup() {
 	textSize(15);
 }
 
-//
 function canvasFocused() {
-	if (mouseY > 0 && mouseY < (windowWidth * 0.58) && mouseX > 0 && mouseX < windowWidth) {
-		return true;
-	}
-
-	return false;
+	return mouseY > 0 && mouseY < (windowWidth * 0.58) && mouseX > 0 && mouseX < windowWidth;
 }
 
-function updateTitle(handle) {
+function updateTitle(handle, dataChangedSinceSave) {
 	try {
 		if (dataChangedSinceSave) {
 			document.title = "*" + handle.name;
@@ -160,52 +120,43 @@ function updateTitle(handle) {
 function createNewLineVector(vector) {
 	lineVectors.push(vector);
 	lineVectorHasChanged = true;
-	dataChangedSinceSave = true;
-	updateTitle(pointFile);
+	updateTitle(pointFile, true);
 }
 
 function createNewPoint(vector) {
-	pointList.push(vector);
+	points.push(vector);
 	updateTitle(pointFile);
 }
 
-/**
- * @param {number} index
- */
+/** @param {number} index */
 function removeTriggerPoint(index) {
-	triggerPointList.splice(index, 1);
+	triggerPoints.splice(index, 1);
 }
 
 /**
  * removes the most recently made line vector & any trigger points on it
  */
 function removeLastLineVector() {
-	// if there is more than 1
-	if (lineVectors.length > 1) {
+	if (lineVectors.length > 1) { // if there is more than 1
 		const previousLineVector = lineVectors[lineVectors.length - 2];
 		const currentLineVector = lineVectors[lineVectors.length - 1];
-		const length = ceil(previousLineVector.distTo(currentLineVector) / stepIncrement);
-		for (let i = 0; i < length; i++) { // doesn'y this just take everything out of pointlist
-			pointList.pop();
-		}
+		const length = previousLineVector.distTo(currentLineVector);
+		points.splice(-length); // remove length elements from end of array
 		// deleting all related trigger points to the line vector being deleted
-		for (let i = 0; i < triggerPointList.length; i++) { //
-			const triggerPoint = triggerPointList[i];
-			if (triggerPoint.segment === (lineVectors.length - 2)) {
-				removeTriggerPoint(i);
-				i--;
+		for (let i = 0; i < triggerPoints.length; i++) {
+			if (triggerPoints[i].segment === (lineVectors.length - 2)) {
+				removeTriggerPoint(i--);
 			}
 		}
 	}
-	dataChangedSinceSave = true;
 	lineVectors.pop();
-	updateTitle(pointFile);
+	updateTitle(pointFile, true);
 }
 
 // eslint-disable-next-line no-unused-vars
 function mouseClicked() {
 	if (canvasFocused()) {
-		createNewLineVector((new Vector(mouseX, mouseY)).toField());
+		createNewLineVector(fieldMouse);
 	}
 }
 
@@ -214,14 +165,12 @@ function randomColor() {
 }
 
 /**
- *
  * @param {Vector} point
  * @param {Vector[]} lines list of points representing a line
  * @returns {{vector: Vector, i: number, fTo: number, fFrom: number}}
  */
 function getClosestPointOnLines(point, lines) {
-	let fFrom; let fTo; let i; let dist; let minDist; let x; let
-		y;
+	let fFrom; let fTo; let i; let dist; let minDist; let x; let y;
 
 	for (let n = 1; n < lines.length; n++) {
 		if (lines[n].x !== lines[n - 1].x) {
@@ -269,9 +218,7 @@ function getClosestPointOnLines(point, lines) {
 		y = lines[i - 1].y - (dy * fTo);
 	}
 
-	return {
-		vector: new Vector(x, y), i, fTo, fFrom,
-	};
+	return { vector: new Vector(x, y), i, fTo, fFrom };
 }
 
 function totalDist(listOfVectors) {
@@ -284,21 +231,17 @@ function totalDist(listOfVectors) {
 
 /**
  * makes a trigger point
- * @param {Vector} point Point at which to make the triggerPoint
+ * @param {Vector} vector Point at which to make the triggerPoint
  * @param {string} name Name of the triggerPoint
- * @param {Object} color Color of triggerPoint
+ * @param {string} color Color of triggerPoint
  * @param {number} segment Index along list of lines that the triggerPoint sits on.
  */
-function createTriggerPoint(point, name, color, segment, dist) {
+function createTriggerPoint(vector, name, color, segment, dist) {
 	const closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
 	if (closestPoint.distTo(mouseVector.toField()) < 50) {
-		// add to list this trigger point
-		triggerPointList.push({
-			vector: point, name, color, segment, dist,
-		});
+		triggerPoints.push({ vector, name, color, segment, dist });
 	}
 }
-
 
 // eslint-disable-next-line no-unused-vars
 function windowResized() {
@@ -307,44 +250,39 @@ function windowResized() {
 	pixelToInchRatio = 1.37 / (width / (2987 / 5));
 }
 
+let prevTriggers = 0;
 function updateHTML() {
-	if ((document.readyState === "ready" || document.readyState === "complete") && previousTriggerPointCount !== triggerPointList.length) {
-		if (triggerPointList.length > 0) {
-			document.getElementById("triggerPointTitle").style.visibility = "visible";
-		} else {
-			document.getElementById("triggerPointTitle").style.visibility = "hidden";
+	if (document.readyState === "complete" && prevTriggers !== triggerPoints.length) {
+		document.getElementById("triggerTitle").style.display = triggerPoints.length ? "block" : "none";
+		const triggerDiv = document.getElementById("triggerDiv");
+		triggerDiv.innerHTML = "";
+		for (let i = 0; i < triggerPoints.length; i++) {
+			const triggerTitle = document.createElement("h4");
+			triggerTitle.innerHTML = `Trigger point ${i}:`;
+			triggerTitle.style.color = triggerPoints[i].color;
+
+			const triggerNameInput = document.createElement("input");
+			triggerNameInput.id = `${i}nameInput`;
+			triggerNameInput.style.zIndex = 999;
+
+			const triggerElement = document.createElement("div");
+			triggerElement.style.display = "inline-block";
+			triggerElement.appendChild(triggerTitle);
+			triggerElement.appendChild(triggerNameInput);
+
+			triggerDiv.appendChild(triggerElement);
 		}
-		const triggerPointDiv = document.getElementById("triggerPointDiv");
-		triggerPointDiv.innerHTML = "";
-		for (let i = 0; i < triggerPointList.length; i++) {
-			const triggerPoint = triggerPointList[i];
-			const triggerPointElement = document.createElement("div");
-			const triggerPointTitle = document.createElement("h4");
-			const triggerPointNameInput = document.createElement("input");
-			triggerPointTitle.innerHTML = `Trigger point ${i}:`;
-			triggerPointTitle.style.color = "#" + triggerPoint.color;
-			triggerPointNameInput.id = `${i}nameInput`;
-			triggerPointNameInput.style.zIndex = 999;
-			triggerPointElement.style.display = "inline-block";
-			triggerPointElement.appendChild(triggerPointTitle);
-			triggerPointElement.appendChild(triggerPointNameInput);
-			triggerPointDiv.appendChild(triggerPointElement);
-		}
-		previousTriggerPointCount = triggerPointList.length;
+		prevTriggers = triggerPoints.length;
 	}
 }
 
 
 async function getNewFileHandle() {
 	const options = {
-		types: [
-			{
-				description: "Pure Pursuit Path File",
-				accept: {
-					"text/plain": [".path"],
-				},
-			},
-		],
+		types: [{
+			description: "Pure Pursuit Path File",
+			accept: { "text/plain": ".path" },
+		}],
 	};
 	const handle = await window.showSaveFilePicker(options);
 	return handle;
@@ -359,24 +297,20 @@ async function writeFileToDisk(fileHandle, contents) {
 	await writable.close();
 }
 
+let pointFile;
 /**
  * saves all points & trigger points
  */
-function savePoints() {
-	dataChangedSinceSave = false;
+async function savePoints() {
 	if (pointFile == null) {
-		getNewFileHandle().then((result) => {
-			updateTitle(result);
-			writeFileToDisk(result, JSON.stringify({ points: pointList, lineVectors, triggerPointList }));
-			console.log(pointList);
-			pointFile = result;
-		});
+		const fileHandle = await getNewFileHandle();
+		updateTitle(fileHandle, false);
+		writeFileToDisk(fileHandle, JSON.stringify({ points, lineVectors, triggerPoints }));
+		console.log(points);
+		pointFile = fileHandle;
 	} else {
-		updateTitle(pointFile);
-		updateTitle(triggerPointFile);
-		writeFileToDisk(pointFile, JSON.stringify({
-			points: pointList, lineVectors, triggerPointList,
-		}));
+		updateTitle(pointFile, false);
+		writeFileToDisk(pointFile, JSON.stringify({ points, lineVectors, triggerPoints }));
 	}
 }
 
@@ -385,13 +319,15 @@ async function openPoints() {
 	const file = await fileHandle.getFile();
 	const contents = JSON.parse(await file.text());
 	console.log(contents);
-	lineVectors = [];
-	pointList = [];
+
+	lineVectors.length = 0;
+	points.length = 0;
+	// we do this because contents has json objects, not our vector classes.
 	for (const lineVector of contents.lineVectors) {
 		lineVectors.push(new Vector(lineVector.x, lineVector.y));
 	}
 	for (const point of contents.points) {
-		pointList.push(new Vector(point.x, point.y));
+		points.push(new Vector(point.x, point.y));
 	}
 }
 
@@ -412,97 +348,80 @@ document.addEventListener("keydown", (e) => {
 			const closestSegment = getClosestPointOnLines(fieldMouse, lineVectors).i - 1;
 			const { vector, fTo } = getClosestPointOnLines(fieldMouse, lineVectors);
 
-			const dist = totalDist(lineVectors.slice(0, -1)) + (totalDist(lineVectors.slice(-2)) * fTo);
+			const startDist = totalDist(lineVectors.slice(0, -1));
+			const dist = startDist + (totalDist(lineVectors.slice(-2)) * fTo);
 			console.log(dist);
-
 
 			createTriggerPoint(vector, null, randomColor().value, closestSegment, dist);
 		}
 		if (e.key === "Backspace") {
 			const closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
 			removeLastLineVector(closestPoint);
-			// REMOVE LAST TRIGGER POINT
 		}
 	}
 }, false);
 
+/** @type {Vector} */
+let mouseVector;
+/** @type {Vector} */
+let fieldMouse;
 // eslint-disable-next-line no-unused-vars
 function draw() {
 	updateHTML();
 	mouseVector = new Vector(mouseX, mouseY);
 	fieldMouse = mouseVector.toField();
 
-	background(220);
 	strokeWeight(0);
 	image(img, 0, 0, width, height);
 	fill(0);
-	text("Screen coordinates: " + String(round(mouseX) + ", " + round(mouseY)), 10, 20);
+	text("Screen coordinates: " + round(mouseX) + ", " + round(mouseY), 10, 20);
 	text("Field coordinates: " + fieldMouse.x + ", " + fieldMouse.y, 10, 40);
 
-	strokeWeight(1);
-
-	if (lineVectors.length === 1) {
+	if (lineVectors.length > 0) { // grey line to mouse
 		stroke(150);
-		line(...lineVectors[0].toScreen(), ...mouseVector);
-	} else if (lineVectors.length > 0) {
-		console.log(totalDist(lineVectors));
+		strokeWeight(2);
+		line(...lineVectors[lineVectors.length - 1].toScreen(), ...mouseVector);
+	}
+
+	if (lineVectors.length > 1) {
 		const previousPoint = lineVectors[lineVectors.length - 2];
 		const currentPoint = lineVectors[lineVectors.length - 1];
 		const length = previousPoint.distTo(currentPoint);
 		const stepSize = (currentPoint.sub(previousPoint)).div(length);
-		const targetDots = ceil(length / stepIncrement);
 
+		const closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
 
-		if (lineVectors.length > 1) {
-			const closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
+		strokeWeight(12);
+		point(...closestPoint.toScreen());
 
-			strokeWeight(12);
-			stroke(150);
-			point(...closestPoint.toScreen());
-
-			if (lineVectorHasChanged) {
-				for (let dotCount = 0; dotCount < targetDots; dotCount++) {
-					const newPoint = previousPoint.add(stepSize.mul(stepIncrement * dotCount));
-					stroke(0);
-					strokeWeight(8);
-					createNewPoint(newPoint);
-				}
-			}
-		}
-
-		beginShape();
-		for (let i = 0; i < lineVectors.length; i++) {
-			const item = lineVectors[i];
-			vertex(item.toScreen().x, item.toScreen().y);
-
-			if (i === lineVectors.length - 1) {
-				stroke(150);
-				strokeWeight(2);
-				line(...lineVectors[i].toScreen(), ...mouseVector);
-			}
-		}
-		noFill();
 		stroke(0);
+		strokeWeight(8);
+		if (lineVectorHasChanged) {
+			for (let dotCount = 0; dotCount < length; dotCount++) {
+				createNewPoint(previousPoint.add(stepSize.mul(dotCount)));
+			}
+		}
+
+		noFill();
 		strokeWeight(2);
+		beginShape();
+		for (let i = 0; i < lineVectors.length; i++) vertex(...lineVectors[i].toScreen());
 		endShape();
 
 		strokeWeight(5);
-		for (let i = 0; i < pointList.length; i++) {
-			if (i % visualizeNPoints === 0) {
-				point(
-					pointList[i].toScreen().x,
-					pointList[i].toScreen().y,
-				);
+		for (let i = 0; i < points.length; i++) {
+			if (i % pointFreq === 0) {
+				point(...points[i].toScreen());
 			}
 		}
 
-		for (const item of triggerPointList) {
+		for (const triggerPoint of triggerPoints) {
 			stroke(0);
 			strokeWeight(18);
-			point(...item.vector.toScreen());
+			point(...triggerPoint.vector.toScreen());
+			stroke(triggerPoint.color);
 			strokeWeight(10);
-			stroke("#" + item.color);
-			point(...item.vector.toScreen());
+			point(...triggerPoint.vector.toScreen());
 		}
 
 		lineVectorHasChanged = false;

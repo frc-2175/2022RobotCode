@@ -247,7 +247,7 @@ function readPath(fileName)
 	local start = Vector:new(fileContents.points[1].x, fileContents.points[1].y)
 	local angleOffset = math.atan2(start.y, start.x)
 
-	for i, value in ipairs(fileContents.triggerPointList) do
+	for i, value in ipairs(fileContents.triggerPoints) do
 		triggerPoints[math.floor(value.dist) + 1] = TriggerPoint:new(value.dist + 1, value.name)
 	end
 
