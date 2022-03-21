@@ -28,6 +28,11 @@ function Robot.autonomousInit()
 	resetTracking()
 	testPursuit = PurePursuit:new(
 		readPath("triggertest"),
+		{
+			walter = function ()
+				Winch:runOut()
+			end
+		},
 		false,
 		0.02, 0, 0.002
 	)

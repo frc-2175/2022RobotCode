@@ -1,5 +1,6 @@
 require("utils.vector")
 require("utils.math")
+require("utils.path")
 require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
@@ -40,10 +41,9 @@ function findClosestPoint(path, fieldPosition, previousClosestPoint)
 end
 
 ---@param path Path
----@param lookAhead number
 ---@param closestPoint integer
 ---@return integer goalPoint
-function findGoalPoint(path, lookAhead, closestPoint)
+function findGoalPoint(path, closestPoint)
 	closestPoint = closestPoint or 0 -- default 0
 	return math.min(closestPoint + lookAhead, #path.path) -- # is length operator
 	-- in case we are aiming PAST the end of the path, just aim at the end instead
@@ -97,23 +97,26 @@ end
 
 ---@class PurePursuit
 ---@field path Path
+---@field triggerFuncs table<string, function>
 ---@field isBackwards boolean
----@field previousClosestPoint number
+---@field previousClosestPoint integer
 ---@field purePursuitPID number
 PurePursuit = {}
 
 ---@param path Path
+---@param triggerFuncs table<string, function>
 ---@param isBackwards boolean
 ---@param p number
 ---@param i number
 ---@param d number
 ---@return PurePursuit
-function PurePursuit:new(path, isBackwards, p, i, d)
+function PurePursuit:new(path, triggerFuncs, isBackwards, p, i, d)
 	local x = {
 		path = path,
+		triggerFuncs = triggerFuncs,
 		isBackwards = isBackwards,
-		previousClosestPoint = 0,
 		purePursuitPID = PIDController:new(p, i, d),
+		previousClosestPoint = 0,
 	}
 	setmetatable(x, PurePursuit)
 	self.__index = self
@@ -124,24 +127,24 @@ end
 ---@return number turnValue, number speed
 function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
-	local indexOfGoalPoint = findGoalPoint(self.path, 12, indexOfClosestPoint)
+	local indexOfGoalPoint = findGoalPoint(self.path, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
-	local angle
-	if self.isBackwards then
-		angle = -getAngleToPoint(-goalPoint)
-	else
-		angle = getAngleToPoint(goalPoint)
-	end
+
+	local angle = getAngleToPoint(goalPoint)
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = getTrapezoidSpeed(
 		0.5, 0.75, 0.5, self.path.numberOfActualPoints, 4, 20, indexOfClosestPoint
 	)
 	if self.isBackwards then
+		angle = -getAngleToPoint(-goalPoint)
 		turnValue = -turnValue
+		speed = -speed
 	end
 
-	if self.path.triggerPoints[indexOfClosestPoint] ~= nil then
-		Winch:runOut()
+	for i = self.previousClosestPoint, indexOfClosestPoint do
+		if self.path.triggerPoints[i] ~= nil then
+			self.triggerFuncs[self.path.triggerPoints.name]()
+		end
 	end
 
 	self.previousClosestPoint = indexOfClosestPoint

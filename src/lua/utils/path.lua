@@ -1,5 +1,6 @@
 require("utils.vector")
 require("utils.math")
+lookAhead = 24
 local json = require("utils.json")
 local dir = getDeployDirectory() .. "/paths/"
 print(getDeployDirectory())
@@ -190,8 +191,8 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 	local finalPath = {}
 	local previousAng = 0
 	local previousPos = Vector:new(0, 0)
-	-- add 25 points to the end so the robot knows where to look ahead
-	local endingPoints = makeLinePathSegment(24)
+	-- add points to the end so the robot knows where to look ahead
+	local endingPoints = makeLinePathSegment(lookAhead)
 
 	-- create table with all the pathSegments elements and add a new element for endingPoints
 	local pathSegmentsList = pathSegments
@@ -258,7 +259,7 @@ function readPath(fileName)
 	local finalPoint = resultPath[#resultPath]
 	local finalAng = math.atan2(finalPoint.y, finalPoint.x)
 
-	for i = 1, 24 do
+	for i = 1, lookAhead do
 		resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(math.cos(finalAng), math.sin(finalAng))
 		finalPoint = resultPath[#resultPath]
 	end
