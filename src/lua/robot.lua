@@ -74,6 +74,8 @@ function Robot.teleopPeriodic()
 		Winch:stop()
 	end
 
+	intakeMotor:set(gamepad:getRightTriggerAmount())
+
 	-- if gamepad:getButtonHeld(XboxButton.A) then
 	-- 	Winch:runOut2()
 	-- elseif gamepad:getButtonHeld(XboxButton.B) then
