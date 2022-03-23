@@ -75,6 +75,8 @@ const pointFreq = 10;
 /** @type {{vector: Vector, name: string, code: string, color: string, segment: number}[]} */
 const triggerPoints = [];
 
+let scale = 1;
+
 const colorList = [
 	{ name: "gray", value: "#2f4f4f" },
 	{ name: "maroon", value: "#7f0000" },
@@ -97,8 +99,9 @@ function preload() {
 function setup() {
 	createCanvas(windowWidth, (windowWidth * 0.58));
 	imageCenter = new Vector(width / 2, height / 2);
-	pixelToInchRatio = 1.37 / (width / (2987 / 5));
+	pixelToInchRatio = (1.37 / (width / (2987 / 5))) / scale;
 	textSize(15);
+	imageMode(CENTER);
 }
 
 function canvasFocused() {
@@ -361,18 +364,26 @@ document.addEventListener("keydown", (e) => {
 	}
 }, false);
 
+// eslint-disable-next-line no-unused-vars
+function mouseWheel(event) {
+	console.log(event.delta);
+	scale *= 1.005 ** event.delta;
+	pixelToInchRatio = (1.37 / (width / (2987 / 5))) / scale;
+}
+
 /** @type {Vector} */
 let mouseVector;
 /** @type {Vector} */
 let fieldMouse;
 // eslint-disable-next-line no-unused-vars
 function draw() {
+	clear();
 	updateHTML();
 	mouseVector = new Vector(mouseX, mouseY);
 	fieldMouse = mouseVector.toField();
 
 	strokeWeight(0);
-	image(img, 0, 0, width, height);
+	image(img, width / 2, height / 2, scale * width, scale * height);
 	fill(0);
 	text("Screen coordinates: " + round(mouseX) + ", " + round(mouseY), 10, 20);
 	text("Field coordinates: " + fieldMouse.x + ", " + fieldMouse.y, 10, 40);
