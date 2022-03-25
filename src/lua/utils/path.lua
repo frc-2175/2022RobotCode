@@ -3,6 +3,9 @@ require("utils.math")
 local json = require("utils.json")
 local dir = getDeployDirectory() .. "/paths/"
 print(getDeployDirectory())
+
+local EXTRA_POINTS = 24 -- this should probably equal LOOKAHEAD_DISTANCE
+
 -- Oh boyo, here we go!
 
 --- A way of moving a robot from a starting speed to a middle speed and then to an ending speed, ramping inbetween.
@@ -235,10 +238,10 @@ function readPath(fileName)
 	local finalPoint = resultPath[#resultPath]
 	local finalAng = math.atan2(finalPoint.y, finalPoint.x)
 
-	for i = 1, 24 do
+	for i = 1, EXTRA_POINTS do
 		resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(math.cos(finalAng), math.sin(finalAng))
 		finalPoint = resultPath[#resultPath]
 	end
 
-	return Path:new(resultPath, #resultPath - 36)
+	return Path:new(resultPath, #resultPath - EXTRA_POINTS)
 end
