@@ -2,7 +2,7 @@ require("utils.teleopcoroutine")
 require("utils.timer")
 
 local intakeSolenoid = DoubleSolenoid:new(0, 1)
-local intakeMotor = TalonSRX:new(0) --TODO: not real number
+intakeMotor = TalonSRX:new(25)
 
 ---@class Intake
 Intake = {}

@@ -28,7 +28,7 @@ function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
 	testPursuit = PurePursuit:new(
-		readPath("test"),
+		readPath("u"),
 		false,
 		0.02, 0, 0.002
 	)
@@ -52,6 +52,8 @@ end
 function Robot.teleopPeriodic()
 	-- joystick driving
 	trackLocation(leftMotor, rightMotor)
+	putNumber("left", leftMotor:getSelectedSensorPosition())
+	putNumber("right", rightMotor:getSelectedSensorPosition())
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
 	putNumber("Rotation", navx:getAngle())
@@ -74,7 +76,7 @@ function Robot.teleopPeriodic()
 		Winch:stop()
 	end
 
-	intakeMotor:set(gamepad:getRightTriggerAmount())
+	intakeMotor:set(gamepad:getLeftTriggerAmount()-gamepad:getRightTriggerAmount())
 
 	-- if gamepad:getButtonHeld(XboxButton.A) then
 	-- 	Winch:runOut2()

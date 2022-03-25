@@ -123,7 +123,7 @@ end
 ---@return number turnValue, number speed
 function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
-	local indexOfGoalPoint = findGoalPoint(self.path, 12, indexOfClosestPoint)
+	local indexOfGoalPoint = findGoalPoint(self.path, 24, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
 	local angle
 	if self.isBackwards then
