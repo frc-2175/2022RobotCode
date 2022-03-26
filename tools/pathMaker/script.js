@@ -7,14 +7,6 @@
 // eslint-disable-next-line no-undef
 disableFriendlyErrors = true;
 
-function totalDist(listOfVectors,) {
-	var total = 0;
-	for (let i = 0; i < listOfVectors.length-2 ; i++) {
-		total = total + listOfVectors[i].distTo(listOfVectors[i+1]);
-	}
-	console.log("total distance : " + total);
-}
-
 /** Class representing a vector. */
 class Vector {
 	/**
@@ -87,13 +79,13 @@ let imageCenter = null;
 const visualizeNPoints = 10;
 /** @type {Vector} */
 let closestPoint;
-let closestSegment;
+let closestSegment; //
 /** @type {Vector} */
 let mouseVector;
 /** @type {Vector} */
 let fieldMouse;
 /** @type {{vector: Vector, name: string, code: string, color: Object, segment: number}[]} */
-const triggerPointList = [];
+let triggerPointList = [];
 let previousTriggerPointCount;
 
 const colorList = [
@@ -156,6 +148,30 @@ function canvasFocused() {
 	}
 }
 
+// triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment/*, "distance": distance */});
+/**
+ * gets the distance from start of list to a specified trigger point in the list
+ * @param {*} lvIndex index of lineVector that tp lies on
+ * @param {*} tpVector point/vector that triggerPoint is (location of TP)
+ */
+function totalDist(lvIndex, tpVector) {
+	// const lvFragmentDistance = getClosestPointOnLines(tpVector,lineVectors).fTo * endLineVector.length;
+	const endLineVector = lineVectors[lvIndex];
+	let total = 0; // total distance up to specified triggerPoint
+	const remainingDistance = endLineVector.distTo(tpVector);
+	const end = lvIndex; //e
+
+	//adding up all of the linevectors up to the specified one before our end TP
+	for (let i = 0 ; i < end ; i++) {
+		total += lineVectors[i].distTo(lineVectors[i+1]);
+	}
+	console.log("the main part is " + total);
+	total += remainingDistance; //add distance to end vector
+	console.log("the remaining distance is: " + remainingDistance);
+
+	console.log("total distance : " + total); //logging :0)
+}
+
 function createNewLineVector(vector) {
 	lineVectors.push(vector);
 	lineVectorHasChanged = true;
@@ -205,7 +221,6 @@ function removeLastLineVector() {
 function mouseClicked() {
 	if (canvasFocused()) {
 		createNewLineVector((new Vector(mouseX, mouseY)).toField());
-		totalDist(lineVectors);
 	}
 }
 
@@ -216,14 +231,16 @@ function mouseClicked() {
 // backspace key - deletes last segment of path
 document.addEventListener("keydown", function (e) {
 	if (canvasFocused()) {
-		if (e.key === "s") {
+		if (e.key === "s"|| e.key === "S") {
 			e.preventDefault();
 			savePoints();
 		}
 	
-		if (e.key === "o") {
+		if (e.key === "o" || e.key === "O") {
+			console.log("GO'AWAY");
 			e.preventDefault();
 			openPoints();
+			triggerPointList = [];
 		}
 	
 		if (e.key === " ") {
@@ -232,7 +249,6 @@ document.addEventListener("keydown", function (e) {
 		}
 		if (e.key === "Backspace") {
 			removeLastLineVector(closestPoint);
-			//REMOVE LAST TRIGGER POINT
 		}
 	}
 }, false);
@@ -287,15 +303,15 @@ function savePoints() {
 	if (pointFile == null) {
 		getNewFileHandle().then(result => {
 			updateTitle(result);
-			writeFileToDisk(result, JSON.stringify({ points: pointList, "lineVectors": lineVectors }));
+
+			writeFileToDisk(result, JSON.stringify({ points: pointList, "lineVectors": lineVectors, "triggerPoints":triggerPointList }));
 			console.log(pointList);
 			pointFile = result;
 		});
 	}
 	else {
 		updateTitle(pointFile);
-		updateTitle(triggerPointFile);
-		writeFileToDisk(pointFile, JSON.stringify({ points: pointList, "lineVectors": lineVectors }));
+		writeFileToDisk(pointFile, JSON.stringify({ points: pointList, "lineVectors": lineVectors , "triggerPoints": triggerPointList}));
 	}
 }
 
@@ -312,16 +328,22 @@ async function openPoints() {
 	for (const point of contents["points"]) {
 		pointList.push(new Vector(point["x"], point["y"]));
 	}
+	// triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "lineVectorIndex": lineVectorIndex, "distance": distance });
+	for (const tp of contents["triggerPoints"]) {
+		triggerPointList.push({ "vector": new Vector(tp["vector"]["x"], tp["vector"]["y"]),"name":tp["name"],"code":tp["code"],"color":tp["color"],"lineVectorIndex":tp["lineVectorIndex"],"distance":tp["distance"] });
+		//triggerPointList.push({ tp["vector"],tp["name"],tp["code"],tp["color"],tp["lineVectorIndex"],tp["distance"] });
+		console.log(tp["color"]);
+	}
 }
 
 /**
- * 
+ * gets the closest point to a singular point/vector on a specified lineVector
  * @param {Vector} point 
- * @param {Vector[]} lines list of points representing a line
- * @returns {Vector} vector Vector of closesst point
- * @returns {number} index Index of closest point along lines
- * @returns {number} fTo Relative distance on line to start point
- * @returns {number} fFrom Relative distance on line to end point
+ * @param {Vector[]} lines - list of points representing a line
+ * @returns {Vector} vector - Vector of closesst point 
+ * @returns {number} i - Index of closest point along lines
+ * @returns {number} fTo - Relative distance on line to start point
+ * @returns {number} fFrom - Relative distance on line to end point
  */
 function getClosestPointOnLines(point, lines) {
 	let fFrom, fTo, i, dist, minDist, x, y;
@@ -386,21 +408,23 @@ function getClosestPointOnLines(point, lines) {
  * @param {string} name Name of the triggerPoint
  * @param {*} code Code to run at trigger Point(maybe not happening)
  * @param {Object} color Color of triggerPoint
- * @param {number} segment Index along list of lines that the triggerPoint sits on.
+ * @param {number} lineVectorIndex Index along list of line vectors that the triggerPoint sits on.
  */
-function createTriggerPoint(point, name, code, color, segment) {
+function createTriggerPoint(point, name, code, color, lineVectorIndex) {
 	if (closestPoint.distTo(mouseVector.toField()) < 50) { // if the distacne to the mouse on the field is less than 50
+		const distance = totalDist(lineVectorIndex, point); // find the distance to the line segment point lies on
+		// console.log("Distance to trigger point: " + distance); 
 		//add to list this trigger point
-		triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "segment": segment});
+		triggerPointList.push({"vector": point, "name": name, "code": code, "color": color, "lineVectorIndex": lineVectorIndex, "distance": distance });
 	}
 }
 
-/**
- * @param {number} index
- */
-function removeTriggerPoint(index) {
-	triggerPointList.splice(index, 1);
-}
+// /** TODO : Make this a thing
+//  * @param {number} index
+//  */
+// function removeTriggerPoint(index) {
+// 	triggerPointList.splice(index, 1);
+// }
 
 // eslint-disable-next-line no-unused-vars
 function windowResized() {
