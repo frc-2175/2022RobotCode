@@ -228,11 +228,16 @@ function readPath(fileName)
 	---@type Vector[]
 	local resultPath = {}
 
-	local start = Vector:new(fileContents[1].x, fileContents[1].y)
-	local angleOffset = math.atan2(start.y, start.x)
+	local a = Vector:new(fileContents[1].x,fileContents[1].y)
+	local b = Vector:new(fileContents[2].x,fileContents[2].y)
+
+	local firstSegment = b-a
+	-- local start = Vector:new(fileContents[2].x, fileContents[2].y)
+	-- local angleOffset = math.atan2(start.y, start.x)
+	local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
 
 	for i, value in ipairs(fileContents) do
-		resultPath[i] = (Vector:new(value.x, value.y) - start):rotate(angleOffset)
+		resultPath[i] = (Vector:new(value.x, value.y) - firstSegment):rotate(angleOffset)
 	end
 
 	local finalPoint = resultPath[#resultPath]

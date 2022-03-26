@@ -28,7 +28,7 @@ function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
 	testPursuit = PurePursuit:new(
-		readPath("u"),
+		readPath("backwardline"),
 		false,
 		0.02, 0, 0.002
 	)
