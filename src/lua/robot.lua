@@ -19,7 +19,9 @@ function Robot.robotInit()
 	-- 	print(makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }).path[i])
 	-- end
 
-	
+	path = orientPath(readPath("p2"))
+	print(path.path[1])
+	print(path.path[2])
 
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
 end
@@ -28,11 +30,11 @@ function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
 	testPursuit = PurePursuit:new(
-		readPath("backwardline"),
+		path,
 		false,
-		0.02, 0, 0.002
+		-- 0.015, 0, 0.002
+		0.015, 0, 0.002
 	)
-	print(testPursuit)
 end
 
 function Robot.autonomousPeriodic()
@@ -41,7 +43,7 @@ function Robot.autonomousPeriodic()
 	putNumber("Y", position.y)
 	local rotation, speed = testPursuit:run()
 	putNumber("Rotation", rotation)
-	Drivetrain:drive(0.25 * speed, rotation)
+	Drivetrain:drive(0.6 * speed, rotation)
 end
 
 function Robot.teleopInit()

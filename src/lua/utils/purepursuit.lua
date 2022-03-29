@@ -3,10 +3,11 @@ require("utils.math")
 require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
+require("wpilib.time")
 
 local TICKS_TO_INCHES = (6 * math.pi) / (2048 * 10)
 local SEARCH_DISTANCE = 36 -- 36 inches before and after the last closest point
-local LOOKAHEAD_DISTANCE = 24 -- look 24 inches ahead of the closest point
+local LOOKAHEAD_DISTANCE = 42 -- look 24 inches ahead of the closest point
 
 navx = AHRS:new(4)
 position = Vector:new(0, 0)
@@ -123,6 +124,8 @@ end
 
 ---@return number turnValue, number speed
 function PurePursuit:run()
+	self.purePursuitPID:updateTime(getFPGATimestamp())
+
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
 	local indexOfGoalPoint = findGoalPoint(self.path, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
@@ -134,7 +137,7 @@ function PurePursuit:run()
 	end
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = getTrapezoidSpeed(
-		0.5, 0.75, 0.5, self.path.numberOfActualPoints, 4, 20, indexOfClosestPoint
+		0.25, 0.75, 0.5, self.path.numberOfActualPoints, 20, 20, indexOfClosestPoint
 	)
 	if self.isBackwards then
 		turnValue = -turnValue
@@ -144,7 +147,13 @@ function PurePursuit:run()
 	-- without this the bot will relentlessly target the last point and that's no good
 	if indexOfClosestPoint >= self.path.numberOfActualPoints then
 		speed = 0
+		turnValue = 0
 	end
 
+	-- if speed > 0 then
+	-- 	print("closest", indexOfClosestPoint)
+	-- 	print("goal", indexOfGoalPoint)
+	-- 	print("max", self.path.numberOfActualPoints)		
+	-- end
 	return turnValue, speed
 end

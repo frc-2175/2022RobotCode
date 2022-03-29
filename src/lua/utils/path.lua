@@ -4,7 +4,7 @@ local json = require("utils.json")
 local dir = getDeployDirectory() .. "/paths/"
 print(getDeployDirectory())
 
-local EXTRA_POINTS = 24 -- this should probably equal LOOKAHEAD_DISTANCE
+local EXTRA_POINTS = 48 -- this should probably equal LOOKAHEAD_DISTANCE
 
 -- Oh boyo, here we go!
 
@@ -221,32 +221,39 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 end
 
 ---@param fileName string
----@return Path
+---@return Vector[]
 function readPath(fileName)
-	---@type Vector[]
-	local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a")).points
-	---@type Vector[]
-	local resultPath = {}
+    ---@type Vector[]
+    local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a")).points
+    ---@type Vector[]
+    local resultPath = {}
 
-	local a = Vector:new(fileContents[1].x,fileContents[1].y)
-	local b = Vector:new(fileContents[2].x,fileContents[2].y)
+    for i, value in ipairs(fileContents) do
+        resultPath[i] = Vector:new(value.x, value.y)
+    end
 
-	local firstSegment = b-a
-	-- local start = Vector:new(fileContents[2].x, fileContents[2].y)
-	-- local angleOffset = math.atan2(start.y, start.x)
-	local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
+    return resultPath
+end
 
-	for i, value in ipairs(fileContents) do
-		resultPath[i] = (Vector:new(value.x, value.y) - firstSegment):rotate(angleOffset)
-	end
+---@param path Vector[]
+---@return Path
+function orientPath(path)
+    local resultPath = {}
 
-	local finalPoint = resultPath[#resultPath]
-	local finalAng = math.atan2(finalPoint.y, finalPoint.x)
+    local firstSegment = path[2] - path[1]
+    local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
 
-	for i = 1, EXTRA_POINTS do
-		resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(math.cos(finalAng), math.sin(finalAng))
-		finalPoint = resultPath[#resultPath]
-	end
+    for i, value in ipairs(path) do
+        resultPath[i] = (value - path[1]):rotate(-angleOffset)
+    end
 
-	return Path:new(resultPath, #resultPath - EXTRA_POINTS)
+    local finalPoint = resultPath[#resultPath]
+    local finalAng = math.atan2(finalPoint.y, finalPoint.x)
+
+    for i = 1, EXTRA_POINTS do
+        resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(1, 0):rotate(finalAng)
+        finalPoint = resultPath[#resultPath]
+    end
+
+    return Path:new(resultPath, #resultPath - EXTRA_POINTS)
 end

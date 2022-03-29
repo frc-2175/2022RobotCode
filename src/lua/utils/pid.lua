@@ -14,7 +14,7 @@ PIDController = {}
 ---@param d number
 ---@return PIDController
 function PIDController:new(p, i, d)
-	local p = {
+	local pid = {
 		kp = p,
 		ki = i,
 		kd = d,
@@ -24,10 +24,10 @@ function PIDController:new(p, i, d)
 		dt = 0,
 		shouldRunIntegral = false,
 	}
-	setmetatable(p, self)
+	setmetatable(pid, self)
 	self.__index = self
 
-	return p
+	return pid
 end
 
 ---@param time number
