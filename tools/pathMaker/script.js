@@ -87,39 +87,40 @@ let fieldMouse;
 /** @type {{vector: Vector, name: string, code: string, color: Object, segment: number}[]} */
 let triggerPointList = [];
 let previousTriggerPointCount;
+let lastColor = 0;
 
 const colorList = [
 	{
-		"name": "gray",
-		"value": "2f4f4f"
-	},
-	{
-		"name": "maroon",
-		"value": "7f0000"
-	},
-	{
-		"name": "green",
-		"value": "008000"
-	},
-	{
-		"name": "blue",
-		"value": "000080"
+		"name": "red",
+		"value": "ff595e"
 	},
 	{
 		"name": "orange",
-		"value": "ff8c00"
+		"value": "ff924c"
 	},
 	{
 		"name": "yellow",
-		"value": "ffff00"
+		"value": "ffca3a"
 	},
 	{
-		"name": "lime",
-		"value": "00ff00"
+		"name": "green",
+		"value": "8ac926"
 	},
 	{
 		"name": "aqua",
-		"value": "00ffff"
+		"value": "52e3e1"
+	},
+	{
+		"name": "blue",
+		"value": "0061e0"
+	},
+	{
+		"name": "purple",
+		"value": "7161ef"
+	},
+	{
+		"name": "bink",
+		"value": "ff7b9c"
 	}
 ];
 
@@ -245,7 +246,7 @@ document.addEventListener("keydown", function (e) {
 	
 		if (e.key === " ") {
 			e.preventDefault();
-			createTriggerPoint(closestPoint, null, null, randomColor()["value"], closestSegment);
+			createTriggerPoint(closestPoint, null, null, nextColor()["value"], closestSegment);
 		}
 		if (e.key === "Backspace") {
 			removeLastLineVector(closestPoint);
@@ -269,6 +270,16 @@ function updateTitle(handle) {
 
 function randomColor() {
 	return colorList[Math.floor(Math.random() * colorList.length)];
+}
+
+function nextColor() {
+	if (lastColor < colorList.length) {
+		lastColor++;
+		return colorList[lastColor-1];
+	} else {
+		lastColor = 1;
+		return colorList[0];
+	}
 }
 
 async function getNewFileHandle() {
