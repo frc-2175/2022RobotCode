@@ -472,6 +472,11 @@ function draw() {
 	fill(0);
 	text("Screen coordinates: " + String(round(mouseX) + ", " + round(mouseY)), 10, 20);
 	text("Field coordinates: " + fieldMouse.x + ", " + fieldMouse.y, 10, 40);
+	if (lineVectors.length > 0) {
+		text("Current segment length: " + lineVectors[lineVectors.length-1].distTo(new Vector(fieldMouse.x, fieldMouse.y)), 10,60);
+	} else {
+		text("Current segment length: " + 0, 10,60);
+	}
 
 	strokeWeight(1);
 
@@ -485,7 +490,6 @@ function draw() {
 		const stepSize = (currentPoint.sub(previousPoint)).div(length);
 		const targetDots = ceil(length / stepIncrement);
 
-		
 		if (lineVectors.length > 1) {
 			closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
 			closestSegment = getClosestPointOnLines(fieldMouse, lineVectors).i - 1;
