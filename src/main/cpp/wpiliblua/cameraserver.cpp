@@ -4,7 +4,6 @@
 
 #include "luadef.h"
 
-LUAFUNC void CameraServer_startAutomaticCapture(void* _this) {
-    ((frc::CameraServer*)_this)
-        ->startAutomaticCapture();
+LUAFUNC void StartAutomaticCapture() {
+    frc::CameraServer::StartAutomaticCapture();
 }

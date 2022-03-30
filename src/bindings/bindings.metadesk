@@ -343,10 +343,8 @@ solenoids: {
 
 @include("<cameraserver/CameraServer.h>")
 cameraserver: {
-	@class("frc::CameraServer")
-	CameraServer: {
-		startAutomaticCapture();
-	} 
+	StartAutomaticCapture() """    frc::CameraServer::StartAutomaticCapture();
+  """;
 }
 
 @include("<frc/Timer.h>")

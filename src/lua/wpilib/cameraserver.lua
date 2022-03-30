@@ -4,11 +4,7 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
----@class CameraServer
----@field _this CameraServer
-CameraServer = {}
-
 ---@return any
-function CameraServer:startAutomaticCapture()
-    ffi.C.CameraServer_startAutomaticCapture(self._this)
+function startAutomaticCapture()
+    ffi.C.StartAutomaticCapture()
 end
