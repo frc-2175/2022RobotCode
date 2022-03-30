@@ -292,7 +292,7 @@ motors: {
 	StopMotor();
 	@nolua Follow(@deref @cast("rev::CANSparkMax*") void* leader, @default(false) bool invert);
   }
-
+	
   @class("frc::DifferentialDrive")
   DifferentialDrive: {
     @nolua @constructor new(void* leftMotor, void* rightMotor) """
@@ -309,6 +309,7 @@ motors: {
       *leftSpeed = speeds.left;
       *rightSpeed = speeds.right;
     """;
+
   }
 }
 
@@ -340,6 +341,13 @@ solenoids: {
   }
 }
 
+@include("<cameraserver/CameraServer.h>")
+cameraserver: {
+	@class("frc::CameraServer")
+	CameraServer: {
+		startAutomaticCapture();
+	} 
+}
 
 @include("<frc/Timer.h>")
 time: {

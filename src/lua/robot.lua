@@ -24,6 +24,7 @@ function Robot.robotInit()
 	print(path.path[2])
 
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
+	CameraServer:startAutomaticCapture();
 end
 
 function Robot.autonomousInit()

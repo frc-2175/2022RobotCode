@@ -330,6 +330,7 @@ void Solenoid_Toggle(void* _this);
 void* DoubleSolenoid_new(int moduleType, int forwardChannel, int reverseChannel);
 void DoubleSolenoid_Set(void* _this, int value);
 void DoubleSolenoid_Toggle(void* _this);
+void CameraServer_startAutomaticCapture(void* _this);
 double GetFPGATimestamp();
 void* AHRS_new(int value);
 float AHRS_GetPitch(void* _this);
