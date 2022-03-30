@@ -223,8 +223,12 @@ end
 ---@param fileName string
 ---@return Vector[]
 function readPath(fileName)
+	local rawFile, err = io.open(dir .. fileName .. ".path")
+	if err ~= nil then -- this one's for you, gophers.
+		return { Vector:new(0, 0) }
+	end
     ---@type Vector[]
-    local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a")).points
+    local fileContents = json.decode(rawFile:read("a")).points
     ---@type Vector[]
     local resultPath = {}
 
