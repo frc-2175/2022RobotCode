@@ -4,9 +4,12 @@ require("utils.path")
 require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
-require("subsystems.cargo")
+require("wpilib.time")
 
 local TICKS_TO_INCHES = (6 * math.pi) / (2048 * 10)
+local SEARCH_DISTANCE = 36 -- 36 inches before and after the last closest point
+local LOOKAHEAD_DISTANCE = 42 -- look 24 inches ahead of the closest point
+
 navx = AHRS:new(4)
 position = Vector:new(0, 0)
 local angleOffset = navx:getAngle()
@@ -21,15 +24,14 @@ local angleOffset = navx:getAngle()
 --]]
 function findClosestPoint(path, fieldPosition, previousClosestPoint)
 	local indexOfClosestPoint = 1
-	local startIndex = previousClosestPoint - 36 -- 36 lookahead distance (in)
-	local endIndex = previousClosestPoint + 36
+	local startIndex = previousClosestPoint - SEARCH_DISTANCE
+	local endIndex = previousClosestPoint + SEARCH_DISTANCE
+	
 	-- making sure indexes make sense
 	startIndex = math.max(startIndex, 1)
+	endIndex = math.min(endIndex, path.numberOfActualPoints) -- closest point cannot be in the extra points
 
-	if endIndex > path.numberOfActualPoints then
-		endIndex = path.numberOfActualPoints
-	end
-	local minDistance = (path.path[1] - fieldPosition):length() -- minimum distance you will have to travel
+	local minDistance = (path.path[1] - fieldPosition):length() -- distance to closest point so far
 	for i = startIndex, endIndex do -- check through each point in list, and ...
 		local distanceToPoint = (path.path[i] - fieldPosition):length()
 		if distanceToPoint <= minDistance then
@@ -44,8 +46,8 @@ end
 ---@param closestPoint integer
 ---@return integer goalPoint
 function findGoalPoint(path, closestPoint)
-	closestPoint = closestPoint or 0 -- default 0
-	return math.min(closestPoint + lookAhead, #path.path) -- # is length operator
+	closestPoint = closestPoint or 1 -- default 1
+	return math.min(closestPoint + LOOKAHEAD_DISTANCE, #path.path) -- # is length operator
 	-- in case we are aiming PAST the end of the path, just aim at the end instead
 end
 
@@ -126,6 +128,8 @@ end
 
 ---@return number turnValue, number speed
 function PurePursuit:run()
+	self.purePursuitPID:updateTime(getFPGATimestamp())
+
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
 	local indexOfGoalPoint = findGoalPoint(self.path, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
@@ -133,7 +137,7 @@ function PurePursuit:run()
 	local angle = getAngleToPoint(goalPoint)
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = getTrapezoidSpeed(
-		0.5, 0.75, 0.5, self.path.numberOfActualPoints, 4, 20, indexOfClosestPoint
+		0.25, 0.75, 0.5, self.path.numberOfActualPoints, 20, 20, indexOfClosestPoint
 	)
 	if self.isBackwards then
 		angle = -getAngleToPoint(-goalPoint)
@@ -152,7 +156,13 @@ function PurePursuit:run()
 	-- without this the bot will relentlessly target the last point and that's no good
 	if indexOfClosestPoint >= self.path.numberOfActualPoints then
 		speed = 0
+		turnValue = 0
 	end
 
+	-- if speed > 0 then
+	-- 	print("closest", indexOfClosestPoint)
+	-- 	print("goal", indexOfGoalPoint)
+	-- 	print("max", self.path.numberOfActualPoints)		
+	-- end
 	return turnValue, speed
 end

@@ -46,10 +46,10 @@ end
 
 ---@return number
 function Joystick:getLeftTriggerAmount()
-	return deadband(ffi.C.Joystick_GetRawAxis(self._this, 2))
+	return ffi.C.Joystick_GetRawAxis(self._this, 2)
 end
 
 ---@return number
 function Joystick:getRightTriggerAmount()
-	return deadband(ffi.C.Joystick_GetRawAxis(self._this, 3))
+	return ffi.C.Joystick_GetRawAxis(self._this, 3)
 end

@@ -18,25 +18,23 @@ function Robot.robotInit()
 	-- 	print(i, value)
 	-- end
 
-	
+	path = orientPath(readPath("p2"))
+	print(path.path[1])
+	print(path.path[2])
 
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
+	CameraServer:StartAutomaticCapture();
 end
 
 function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
 	testPursuit = PurePursuit:new(
-		readPath("triggertest"),
-		{
-			walter = function ()
-				Winch:runOut()
-			end
-		},
+		path,
 		false,
-		0.02, 0, 0.002
+		-- 0.015, 0, 0.002
+		0.015, 0, 0.002
 	)
-	print(testPursuit)
 end
 
 function Robot.autonomousPeriodic()
@@ -45,7 +43,7 @@ function Robot.autonomousPeriodic()
 	putNumber("Y", position.y)
 	local rotation, speed = testPursuit:run()
 	putNumber("Rotation", rotation)
-	Drivetrain:drive(0.25 * speed, rotation)
+	Drivetrain:drive(0.6 * speed, rotation)
 end
 
 function Robot.teleopInit()
@@ -56,6 +54,8 @@ end
 function Robot.teleopPeriodic()
 	-- joystick driving
 	trackLocation(leftMotor, rightMotor)
+	putNumber("left", leftMotor:getSelectedSensorPosition())
+	putNumber("right", rightMotor:getSelectedSensorPosition())
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
 	putNumber("Rotation", navx:getAngle())
@@ -77,6 +77,8 @@ function Robot.teleopPeriodic()
 	else
 		Winch:stop()
 	end
+
+	intakeMotor:set(gamepad:getLeftTriggerAmount()-gamepad:getRightTriggerAmount())
 
 	-- if gamepad:getButtonHeld(XboxButton.A) then
 	-- 	Winch:runOut2()

@@ -4,6 +4,9 @@ lookAhead = 24
 local json = require("utils.json")
 local dir = getDeployDirectory() .. "/paths/"
 print(getDeployDirectory())
+
+local EXTRA_POINTS = 48 -- this should probably equal LOOKAHEAD_DISTANCE
+
 -- Oh boyo, here we go!
 
 --- A way of moving a robot from a starting speed to a middle speed and then to an ending speed, ramping inbetween.
@@ -157,11 +160,12 @@ end
 ---@class Path
 ---@field path Vector[]
 ---@field numberOfActualPoints integer
----@field triggerPoints TriggerPoint[]
+---@field triggerPoints table
 Path = {}
 
 ---@param path Vector[]
 ---@param numberOfActualPoints integer
+---@param triggerPoints table
 ---@return Path path
 function Path:new(path, numberOfActualPoints, triggerPoints)
 	triggerPoints = triggerPoints or {}
@@ -238,34 +242,43 @@ function TriggerPoint:new(index, name)
 end
 
 ---@param fileName string
----@return Path
+---@return Vector[]
 function readPath(fileName)
-	local fileContents = json.decode(io.open(dir .. fileName .. ".path"):read("a"))
-	---@type Vector[]
-	local resultPath = {}
-	local triggerPoints = {}
-
-	local start = Vector:new(fileContents.points[1].x, fileContents.points[1].y)
-	local angleOffset = math.atan2(start.y, start.x)
-
-	for i, value in ipairs(fileContents.triggerPoints) do
-		triggerPoints[math.floor(value.dist) + 1] = TriggerPoint:new(value.dist + 1, value.name)
+	local rawFile, err = io.open(dir .. fileName .. ".path")
+	if err ~= nil then -- this one's for you, gophers.
+		return { Vector:new(0, 0) }
 	end
+    ---@type Vector[]
+    local fileContents = json.decode(rawFile:read("a"))
+    ---@type Vector[]
+    local resultPath = {}
 
-	for i, value in ipairs(fileContents.points) do
-		resultPath[i] = (Vector:new(value.x, value.y) - start):rotate(angleOffset)
-	end
+    for i, value in ipairs(fileContents.points) do
+        resultPath[i] = Vector:new(value.x, value.y)
+    end
 
-	local finalPoint = resultPath[#resultPath]
-	local finalAng = math.atan2(finalPoint.y, finalPoint.x)
+    return resultPath
+end
 
-	for i = 1, lookAhead do
-		resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(math.cos(finalAng), math.sin(finalAng))
-		finalPoint = resultPath[#resultPath]
-	end
+---@param path Vector[]
+---@return Path
+function orientPath(path)
+    local resultPath = {}
 
-	print(resultPath[1])
-	print(triggerPoints[1])
+    local firstSegment = path[2] - path[1]
+    local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
 
-	return Path:new(resultPath, #resultPath - 36, triggerPoints)
+    for i, value in ipairs(path) do
+        resultPath[i] = (value - path[1]):rotate(-angleOffset)
+    end
+
+    local finalPoint = resultPath[#resultPath]
+    local finalAng = math.atan2(finalPoint.y, finalPoint.x)
+
+    for i = 1, EXTRA_POINTS do
+        resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(1, 0):rotate(finalAng)
+        finalPoint = resultPath[#resultPath]
+    end
+
+    return Path:new(resultPath, #resultPath - EXTRA_POINTS)
 end
