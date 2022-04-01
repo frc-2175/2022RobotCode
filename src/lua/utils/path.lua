@@ -225,7 +225,7 @@ function makePath(isBackwards, startingAng, startingPos, pathSegments)
 end
 
 ---@param fileName string
----@return Vector[]
+---@return Path
 function readPath(fileName)
 	local rawFile, err = io.open(dir .. fileName .. ".path")
 	if err ~= nil then -- this one's for you, gophers.
@@ -240,19 +240,26 @@ function readPath(fileName)
         resultPath[i] = Vector:new(value.x, value.y)
     end
 
-    return resultPath
+	local triggerPoints = {}
+
+	for i, value in ipairs(fileContents.triggerPoints) do
+        triggerPoints[math.floor(value.distance)] = value.name
+    end
+
+    return Path:new(resultPath, 0, triggerPoints)
 end
 
----@param path Vector[]
+---@param filePath Path
 ---@return Path
-function orientPath(path)
+function orientPath(filePath)
     local resultPath = {}
+	local points = filePath.path
 
-    local firstSegment = path[2] - path[1]
+    local firstSegment = points[2] - points[1]
     local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
 
-    for i, value in ipairs(path) do
-        resultPath[i] = (value - path[1]):rotate(-angleOffset)
+    for i, value in ipairs(points) do
+        points[i] = (value - points[1]):rotate(-angleOffset)
     end
 
     local finalPoint = resultPath[#resultPath]
@@ -260,8 +267,7 @@ function orientPath(path)
 
     for i = 1, EXTRA_POINTS do
         resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(1, 0):rotate(finalAng)
-        finalPoint = resultPath[#resultPath]
     end
 
-    return Path:new(resultPath, #resultPath - EXTRA_POINTS)
+    return Path:new(resultPath, #resultPath - EXTRA_POINTS, filePath.triggerPoints)
 end

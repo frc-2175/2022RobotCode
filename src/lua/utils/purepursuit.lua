@@ -98,6 +98,7 @@ end
 
 ---@class PurePursuit
 ---@field path Path
+---@field triggerFuncs table<string, function>
 ---@field isBackwards boolean
 ---@field previousClosestPoint number
 ---@field purePursuitPID number
@@ -109,12 +110,13 @@ PurePursuit = {}
 ---@param i number
 ---@param d number
 ---@return PurePursuit
-function PurePursuit:new(path, isBackwards, p, i, d)
+function PurePursuit:new(path, triggerFuncs, isBackwards, p, i, d)
 	local x = {
 		path = path,
+		triggerFuncs = triggerFuncs,
 		isBackwards = isBackwards,
-		previousClosestPoint = 0,
 		purePursuitPID = PIDController:new(p, i, d),
+		previousClosestPoint = 0,
 	}
 	setmetatable(x, PurePursuit)
 	self.__index = self
@@ -129,19 +131,25 @@ function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
 	local indexOfGoalPoint = findGoalPoint(self.path, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
-	local angle
-	if self.isBackwards then
-		angle = -getAngleToPoint(-goalPoint)
-	else
-		angle = getAngleToPoint(goalPoint)
-	end
+	local angle = getAngleToPoint(goalPoint)
+	
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = getTrapezoidSpeed(
 		0.25, 0.75, 0.5, self.path.numberOfActualPoints, 20, 20, indexOfClosestPoint
 	)
+
 	if self.isBackwards then
+		angle = -getAngleToPoint(-goalPoint)
 		turnValue = -turnValue
+		speed = -speed
 	end
+
+	for i = self.previousClosestPoint, indexOfClosestPoint do
+		if self.path.triggerPoints[i] ~= nil then
+			self.triggerFuncs[self.path.triggerPoints.name]()
+		end
+	end
+
 	self.previousClosestPoint = indexOfClosestPoint
 
 	-- without this the bot will relentlessly target the last point and that's no good
