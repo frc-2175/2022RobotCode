@@ -1,5 +1,6 @@
 require("utils.math")
 require("utils.path")
+local pprint = require("utils.pprint")
 
 -- math.lua tests
 
@@ -147,6 +148,31 @@ test(
 		)
 	end
 )
+
+test("orientPath", function(t)
+	local points = {
+		Vector:new(-1, 1), -- up at a 45 degree for a few
+		Vector:new(0, 2),
+		Vector:new(1, 3),
+		Vector:new(2, 2), -- and down to the right for a bit
+		Vector:new(3, 1),
+		Vector:new(4, 0),
+	}
+
+	local before = Path:new(points, #points)
+	local after = orientPath(before)
+
+	t:assertEqual(after.path[1], Vector:new(0, 0))
+	t:assertEqual(after.path[2].x, 0)
+	t:assertEqual(after.path[3].x, 0)
+
+	t:assert(after.path[4].x > 0)
+	t:assertEqual(after.path[4].y, after.path[3].y)
+	t:assert(after.path[5].x > 0)
+	t:assertEqual(after.path[5].y, after.path[3].y)
+	t:assert(after.path[6].x > 0)
+	t:assertEqual(after.path[6].y, after.path[3].y)
+end)
 
 -- ramp tests
 
