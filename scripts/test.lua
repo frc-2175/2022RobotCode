@@ -1,5 +1,7 @@
 #!/usr/bin/env lua
 
+local pprint = require("src.lua.utils.pprint")
+
 PathSep = package.config:sub(1,1)
 
 ResetColor = "\27[0m"
@@ -219,8 +221,8 @@ for _, file in pairs(luaFiles) do
     if err ~= nil then
         table.insert(loadErrs, err)
     else
-        err = runChunk()
-        if err ~= nil then
+        local success, err = pcall(runChunk)
+        if not success then
             table.insert(loadErrs, err)
         end
     end
@@ -234,7 +236,7 @@ if #loadErrs > 0 then
     print()
 end
 for _, err in pairs(loadErrs) do
-    print(err)
+    pprint(err)
 end
 
 local testsFailed = runTests()

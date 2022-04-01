@@ -4,7 +4,7 @@ local json = require("utils.json")
 local dir = getDeployDirectory() .. "/paths/"
 print(getDeployDirectory())
 
-local EXTRA_POINTS = 48 -- this should probably equal LOOKAHEAD_DISTANCE
+local EXTRA_POINTS = 48 -- this should be >= LOOKAHEAD_DISTANCE
 
 -- Oh boyo, here we go!
 
