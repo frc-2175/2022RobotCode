@@ -159,15 +159,19 @@ end
 ---@class Path
 ---@field path Vector[]
 ---@field numberOfActualPoints integer
+---@field triggerPoints table
 Path = {}
 
 ---@param path Vector[]
 ---@param numberOfActualPoints integer
+---@param triggerPoints table
 ---@return Path path
-function Path:new(path, numberOfActualPoints)
+function Path:new(path, numberOfActualPoints, triggerPoints)
+	triggerPoints = triggerPoints or {}
 	local p = {
 		path = path,
 		numberOfActualPoints = numberOfActualPoints,
+		triggerPoints = triggerPoints,
 	}
 	setmetatable(p, self)
 	self.__index = self
@@ -228,11 +232,11 @@ function readPath(fileName)
 		return { Vector:new(0, 0) }
 	end
     ---@type Vector[]
-    local fileContents = json.decode(rawFile:read("a")).points
+    local fileContents = json.decode(rawFile:read("a"))
     ---@type Vector[]
     local resultPath = {}
 
-    for i, value in ipairs(fileContents) do
+    for i, value in ipairs(fileContents.points) do
         resultPath[i] = Vector:new(value.x, value.y)
     end
 

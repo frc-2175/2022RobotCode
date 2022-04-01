@@ -63,21 +63,27 @@ class Vector {
 	}
 }
 
-let img;
-let pixelToInchRatio = null;
+let img,
+	/** @type {number} */
+	pixelToInchRatio,
+	/** @type {number} */
+	imageCenter,
+	/** @type {number} */
+	previousTriggerPointCount,
+	/** @type {boolean} */
+	lineVectorHasChanged,
+	/** @type {Vector} */
+	mouseVector,
+	/** @type {Vector} */
+	fieldMouse;
 /** @type {Vector[]} */
 const points = [];
 /** @type {Vector[]} */
 const lineVectors = [];
-let lineVectorHasChanged = false;
-/** @type {Vector} */
-let imageCenter = null;
+/** @type {number} */
 const pointFreq = 10;
-/** @type {Vector} */
 /** @type {{vector: Vector, name: string, color: Object, segment: number}[]} */
-let triggerPoints = [];
-let previousTriggerPointCount;
-let lastColor = 0;
+const triggerPoints = [];
 
 const colorList = [
 	{
@@ -131,11 +137,7 @@ function setup() {
 
 //
 function canvasFocused() {
-	if (mouseY > 0 && mouseY < (windowWidth * 0.58) && mouseX > 0 && mouseX < windowWidth) {
-		return true;
-	}
-
-	return false;
+	return mouseY > 0 && mouseY < (windowWidth * 0.58) && mouseX > 0 && mouseX < windowWidth;
 }
 
 
@@ -147,20 +149,16 @@ function canvasFocused() {
 function totalDist(lvIndex, tpVector) {
 	// const lvFragmentDistance = getClosestPointOnLines(tpVector,lineVectors).fTo * endLineVector.length;
 	const endLineVector = lineVectors[lvIndex];
-	console.log(lineVectors, lvIndex);
 	let total = 0; // total distance up to specified triggerPoint
 	const remainingDistance = endLineVector.distTo(tpVector);
-	const end = lvIndex; // e
 
-	// adding up all of the linevectors up to the specified one before our end TP
-	for (let i = 0; i < end; i++) {
+	for (let i = 0; i < lvIndex; i++) { // adding up all of the linevectors up to the specified one before our end TP
 		total += lineVectors[i].distTo(lineVectors[i + 1]);
 	}
-	console.log("the main part is " + total);
-	total += remainingDistance; // add distance to end vector
-	console.log("the remaining distance is: " + remainingDistance);
 
-	console.log("total distance : " + total); // logging :0)
+	total += remainingDistance; // add distance to end vector
+
+	return total;
 }
 
 function createNewLineVector(vector) {
@@ -171,7 +169,6 @@ function createNewLineVector(vector) {
 
 function createNewPoint(vector) {
 	points.push(vector);
-	updateTitle(pointFile);
 }
 
 /**
@@ -183,19 +180,14 @@ function removeLastLineVector() {
 		const previousLineVector = lineVectors[lineVectors.length - 2];
 		const currentLineVector = lineVectors[lineVectors.length - 1];
 		const length = previousLineVector.distTo(currentLineVector);
-		for (let i = 0; i < length; i++) { // doesn'y this just take everything out of pointlist
-			points.pop();
-		}
-		console.log("go away");
-		// deleting all related trigger points to the line vector being deleted
-		for (let i = 0; i < triggerPoints.length; i++) { //
-			const triggerPoint = triggerPoints[i];
-			console.log("tpl, clv");
-			console.log(triggerPoint.segment);
-			console.log(lineVectors.length - 2);
-			console.log(triggerPoint.segment === (lineVectors.length - 2));
-			if (triggerPoint.segment === (lineVectors.length - 2)) {
-				console.log("deleted a thing");
+		points.splice(-length);
+
+		document.getElementById("triggerPointDiv").innerHTML = "";
+		previousTriggerPointCount = 0;
+
+
+		for (let i = 0; i < triggerPoints.length; i++) { // deleting all related trigger points to the line vector being deleted
+			if (triggerPoints[i].segment === (lineVectors.length - 2)) {
 				triggerPoints.splice(i, 1);
 				i--;
 			}
@@ -225,18 +217,15 @@ document.addEventListener("keydown", (e) => {
 		}
 
 		if (e.key === "o" || e.key === "O") {
-			console.log("GO'AWAY");
 			e.preventDefault();
 			openPoints();
-			triggerPoints = [];
 		}
-
 
 		if (e.key === " ") {
 			const closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
 			const closestSegment = getClosestPointOnLines(fieldMouse, lineVectors).i - 1;
 			e.preventDefault();
-			createTriggerPoint(closestPoint, null, nextColor().value, closestSegment);
+			createTriggerPoint(closestPoint, "unnamed", nextColor().value, closestSegment);
 		}
 
 		if (e.key === "Backspace") {
@@ -257,6 +246,7 @@ function updateTitle(handle, dataChangedSinceSave) {
 	}
 }
 
+let lastColor = 0;
 function nextColor() {
 	lastColor = (lastColor + 1) % colorList.length;
 	return colorList[lastColor];
@@ -291,11 +281,13 @@ let pointFile;
  * saves all points & trigger points
  */
 async function savePoints() {
-	if (pointFile == null) {
+	for (let i = 0; i < triggerPoints.length; i++) {
+		triggerPoints[i].name = document.getElementById(i).value;
+	}
+	if (pointFile === undefined) {
 		const fileHandle = await getNewFileHandle();
 		updateTitle(fileHandle, false);
 		writeFileToDisk(fileHandle, JSON.stringify({ points, lineVectors, triggerPoints }));
-		console.log(points);
 		pointFile = fileHandle;
 	} else {
 		updateTitle(pointFile, false);
@@ -310,6 +302,7 @@ async function openPoints() {
 	console.log(contents);
 	lineVectors.length = 0;
 	points.length = 0;
+	triggerPoints.length = 0;
 	for (const lineVector of contents.lineVectors) {
 		lineVectors.push(new Vector(lineVector.x, lineVector.y));
 	}
@@ -317,31 +310,27 @@ async function openPoints() {
 		points.push(new Vector(point.x, point.y));
 	}
 
-	for (const { vector, name, color, lineVectorIndex, distance } of contents.triggerPoints) {
-		triggerPoints.push({
-			vector: new Vector(vector.x, vector.y), name, color, lineVectorIndex, distance,
-		});
-		console.log(color);
+	for (const { vector, name, color, segment, distance } of contents.triggerPoints) {
+		triggerPoints.push({ vector: new Vector(vector.x, vector.y), name, color, segment, distance });
 	}
 }
 
 /**
+ *
+ * @typedef {Object} closestPoint
+ * @property {Vector} vector Vector of closest point
+ * @property {number} i Index of closest point along lines
+ * @property {number} fTo Distance scaled 0-1 of closest point along line segment
+ */
+
+/**
  * gets the closest point to a singular point/vector on a specified lineVector
  * @param {Vector} point
- * @param {Vector[]} lines - list of points representing a line
- * @returns {Vector} vector - Vector of closesst point
- * @returns {number} i - Index of closest point along lines
- * @returns {number} fTo - Relative distance on line to start point
- * @returns {number} fFrom - Relative distance on line to end point
+ * @param {Vector[]} lines list of points representing a line
+ * @returns {closestPoint}
  */
 function getClosestPointOnLines(point, lines) {
-	let fFrom,
-		fTo,
-		i,
-		dist,
-		minDist,
-		x,
-		y;
+	let fTo, i, dist, minDist, vector;
 
 	for (let n = 1; n < lines.length; n++) {
 		if (lines[n].x !== lines[n - 1].x) {
@@ -352,44 +341,37 @@ function getClosestPointOnLines(point, lines) {
 			dist = Math.abs(point.x - lines[n].x);
 		}
 
-		// length of line segment
+		/** length of line segment */
 		const rl = lines[n].distTo(lines[n - 1]);
-		// distance of pt to end line segment
+		/** distance of pt to end line segment */
 		const ln = point.distTo(lines[n]);
-		// distance of pt to begin line segment
+		/** distance of pt to begin line segment */
 		const lnm1 = point.distTo(lines[n - 1]);
-		// calculated length of line segment
+		/** calculated length of line segment */
 		const calcrl = ln + lnm1 - dist;
 
 		// redefine minimum distance to line segment (not infinite line) if necessary
 		if (calcrl > rl) dist = Math.min(ln, lnm1);
 
-		if (minDist == null || minDist > dist) {
+		if (minDist === undefined || minDist > dist) {
 			if (calcrl > rl) {
-				if (lnm1 < ln) {
-					fTo = 0;// nearer to previous point
-					fFrom = 1;
-				} else {
-					fFrom = 0;// nearer to current point
+				if (lnm1 < ln) { // nearer to previous point
+					fTo = 0;
+				} else { // nearer to current point
 					fTo = 1;
 				}
-			} else {
-				// perpendicular from point intersects line segment
+			} else { // perpendicular from point intersects line segment
 				fTo = Math.sqrt(lnm1 ** 2 - dist ** 2) / rl;
-				fFrom = Math.sqrt(ln ** 2 - dist ** 2) / rl;
 			}
 			minDist = dist;
 			i = n;
 		}
 
-		const dx = lines[i - 1].x - lines[i].x;
-		const dy = lines[i - 1].y - lines[i].y;
-
-		x = lines[i - 1].x - (dx * fTo);
-		y = lines[i - 1].y - (dy * fTo);
+		const d = lines[i - 1].sub(lines[i]);
+		vector = lines[i - 1].sub(d.mul(fTo));
 	}
 
-	return { vector: new Vector(x, y), i, fTo, fFrom };
+	return { vector, i, fTo };
 }
 
 // makes a trigger point
@@ -400,14 +382,14 @@ function getClosestPointOnLines(point, lines) {
  * @param {Vector} vector Point at which to make the triggerPoint
  * @param {string} name Name of the triggerPoint
  * @param {Object} color Color of triggerPoint
- * @param {number} lineVectorIndex Index along list of line vectors that the triggerPoint sits on.
+ * @param {number} segment Index along list of line vectors that the triggerPoint sits on.
  */
-function createTriggerPoint(vector, name, color, lineVectorIndex) {
+function createTriggerPoint(vector, name, color, segment) {
 	const closestPoint = getClosestPointOnLines(fieldMouse, lineVectors).vector;
 	if (closestPoint.distTo(mouseVector.toField()) < 50) { // if the distacne to the mouse on the field is less than 50
-		const distance = totalDist(lineVectorIndex, vector); // find the distance to the line segment point lies on
+		const distance = totalDist(segment, vector); // find the distance to the line segment point lies on
 		// add to list this trigger point
-		triggerPoints.push({ vector, name, color, lineVectorIndex, distance });
+		triggerPoints.push({ vector, name, color, segment, distance });
 	}
 }
 
@@ -426,42 +408,40 @@ function windowResized() {
 }
 
 function updateHTML() {
-	if (document.readyState === "complete" && previousTriggerPointCount !== triggerPoints.length) {
-		if (triggerPoints.length > 0) {
-			document.getElementById("triggerPointTitle").style.visibility = "visible";
-		} else {
-			document.getElementById("triggerPointTitle").style.visibility = "hidden";
-		}
-		const triggerPointDiv = document.getElementById("triggerPointDiv");
-		triggerPointDiv.innerHTML = "";
-		for (let i = 0; i < triggerPoints.length; i++) {
-			const triggerPoint = triggerPoints[i];
-			const triggerPointElement = document.createElement("div");
-			const triggerPointTitle = document.createElement("h4");
-			const triggerPointNameInput = document.createElement("input");
-			triggerPointTitle.innerHTML = `Trigger point ${i}:`;
-			triggerPointTitle.style.color = "#" + triggerPoint.color;
-			triggerPointNameInput.id = `${i}nameInput`;
-			triggerPointNameInput.style.zIndex = 999;
-			triggerPointElement.style.display = "inline-block";
-			triggerPointElement.appendChild(triggerPointTitle);
-			triggerPointElement.appendChild(triggerPointNameInput);
-			triggerPointDiv.appendChild(triggerPointElement);
-		}
-		previousTriggerPointCount = triggerPoints.length;
+	if (triggerPoints.length > 0) {
+		document.getElementById("triggerPointTitle").style.visibility = "visible";
+	} else {
+		document.getElementById("triggerPointTitle").style.visibility = "hidden";
 	}
+	const triggerPointDiv = document.getElementById("triggerPointDiv");
+	for (let i = previousTriggerPointCount; i < triggerPoints.length; i++) {
+		const triggerPointTitle = document.createElement("h4");
+		triggerPointTitle.innerHTML = `Trigger point ${i}:`;
+		triggerPointTitle.style.color = "#" + triggerPoints[i].color;
+
+		const triggerPointNameInput = document.createElement("input");
+		triggerPointNameInput.id = `${i}`;
+		triggerPointNameInput.style.zIndex = 999;
+
+		const triggerPointElement = document.createElement("div");
+		triggerPointElement.style.display = "inline-block";
+		triggerPointElement.appendChild(triggerPointTitle);
+		triggerPointElement.appendChild(triggerPointNameInput);
+
+		triggerPointDiv.appendChild(triggerPointElement);
+	}
+	previousTriggerPointCount = triggerPoints.length;
 }
 
-/** @type {Vector} */
-let mouseVector;
-/** @type {Vector} */
-let fieldMouse;
+
 // eslint-disable-next-line no-unused-vars
 function draw() {
 	updateHTML();
 	mouseVector = new Vector(mouseX, mouseY);
 	fieldMouse = mouseVector.toField();
 
+	clear();
+	image(img, 0, 0, width, height);
 	strokeWeight(0);
 	image(img, 0, 0, width, height);
 	fill(0);
