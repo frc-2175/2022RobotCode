@@ -259,7 +259,7 @@ function orientPath(filePath)
     local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
 
     for i, value in ipairs(points) do
-        points[i] = (value - points[1]):rotate(-angleOffset)
+        resultPath[i] = (value - points[1]):rotate(-angleOffset)
     end
 
     local finalPoint = resultPath[#resultPath]
