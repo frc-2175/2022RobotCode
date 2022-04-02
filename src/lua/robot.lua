@@ -13,15 +13,8 @@ function Robot.robotInit()
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	resetTracking()
-	-- serbo = Servo:new(1111)
-	-- for i, value in ipairs(readPath("funny").path) do
-	-- 	print(i, value)
-	-- 	print(makePath(false, 0, Vector:new(0, 0), { makeLinePathSegment(60) }).path[i])
-	-- end
 
 	path = orientPath(readPath("p2"))
-	print(path.path[1])
-	print(path.path[2])
 
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
 	startAutomaticCapture();
@@ -33,7 +26,6 @@ function Robot.autonomousInit()
 	testPursuit = PurePursuit:new(
 		path,
 		false,
-		-- 0.015, 0, 0.002
 		0.015, 0, 0.002
 	)
 end
@@ -80,12 +72,4 @@ function Robot.teleopPeriodic()
 	end
 
 	intakeMotor:set(gamepad:getLeftTriggerAmount()-gamepad:getRightTriggerAmount())
-
-	-- if gamepad:getButtonHeld(XboxButton.A) then
-	-- 	Winch:runOut2()
-	-- elseif gamepad:getButtonHeld(XboxButton.B) then
-	-- 	Winch:runIn2()
-	-- else
-	-- 	Winch:stop()a
-	-- end
 end
