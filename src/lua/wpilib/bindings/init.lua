@@ -335,6 +335,7 @@ double GetFPGATimestamp();
 void* AHRS_new(int value);
 float AHRS_GetPitch(void* _this);
 float AHRS_GetAngle(void* _this);
+float AHRS_GetRoll(void* _this);
 void AHRS_Reset(void* _this);
 bool RobotIsReal();
 void PutNumber(const char * keyName, double value);

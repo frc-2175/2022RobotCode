@@ -21,6 +21,12 @@ LUAFUNC float AHRS_GetAngle(void* _this) {
     return (float)_result;
 }
 
+LUAFUNC float AHRS_GetRoll(void* _this) {
+    auto _result = ((AHRS*)_this)
+        ->GetRoll();
+    return (float)_result;
+}
+
 LUAFUNC void AHRS_Reset(void* _this) {
     ((AHRS*)_this)
         ->Reset();

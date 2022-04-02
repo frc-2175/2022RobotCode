@@ -51,7 +51,7 @@ function Robot.teleopPeriodic()
 	putNumber("right", rightMotor:getSelectedSensorPosition())
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
-	putNumber("Rotation", navx:getAngle())
+	putNumber("Rotation", navx:getRoll())
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
 

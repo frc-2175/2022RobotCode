@@ -11,7 +11,7 @@ local LOOKAHEAD_DISTANCE = 42 -- look 24 inches ahead of the closest point
 
 navx = AHRS:new(4)
 position = Vector:new(0, 0)
-local angleOffset = navx:getAngle()
+local angleOffset = navx:getRoll()
 
 ---@param path Path - a pure pursuit path
 ---@param fieldPosition Vector - the robot's current position on the field
@@ -52,7 +52,7 @@ end
 
 ---@param point Vector
 ---@return number degAngle
-function getAngleToPoint(point)
+function getRollToPoint(point)
 	if point:length() == 0 then
 		return 0
 	end
@@ -73,7 +73,7 @@ function trackLocation(leftMotor, rightMotor)
 	-- calculates avg distance traveled
 	distance = (distanceLeft + distanceRight) / 2
 	-- get our heading in radians
-	angle = math.rad(navx:getAngle() - angleOffset)
+	angle = math.rad(navx:getRoll() - angleOffset)
 
 	-- make a vector representing our change in position since last time
 	x = math.sin(angle) * distance
@@ -93,7 +93,7 @@ function resetTracking()
 	zeroEncoderLeft = leftMotor:setSelectedSensorPosition(0)
 	zeroEncoderRight = rightMotor:setSelectedSensorPosition(0)
 	position = Vector:new(0, 0)
-	angleOffset = navx:getAngle()
+	angleOffset = navx:getRoll()
 end
 
 ---@class PurePursuit
@@ -130,8 +130,8 @@ function PurePursuit:run()
 
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
 	local indexOfGoalPoint = findGoalPoint(self.path, indexOfClosestPoint)
-	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getAngle()))
-	local angle = getAngleToPoint(goalPoint)
+	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getRoll()))
+	local angle = getRollToPoint(goalPoint)
 	
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = getTrapezoidSpeed(
@@ -139,7 +139,7 @@ function PurePursuit:run()
 	)
 
 	if self.isBackwards then
-		angle = -getAngleToPoint(-goalPoint)
+		angle = -getRollToPoint(-goalPoint)
 		turnValue = -turnValue
 		speed = -speed
 	end

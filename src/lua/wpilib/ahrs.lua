@@ -30,6 +30,11 @@ function AHRS:getAngle()
     return ffi.C.AHRS_GetAngle(self._this)
 end
 
+---@return number
+function AHRS:getRoll()
+    return ffi.C.AHRS_GetRoll(self._this)
+end
+
 ---@return any
 function AHRS:reset()
     ffi.C.AHRS_Reset(self._this)

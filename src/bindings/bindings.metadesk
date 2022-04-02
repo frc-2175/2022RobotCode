@@ -367,6 +367,7 @@ ahrs: {
     @constructor new(@cast("frc::SPI::Port") int value);
     float GetPitch();
     float GetAngle();
+	float GetRoll();
     Reset();
   }
 } 
