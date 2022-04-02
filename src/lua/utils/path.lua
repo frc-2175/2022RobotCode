@@ -262,8 +262,8 @@ function orientPath(filePath)
         resultPath[i] = (value - points[1]):rotate(-angleOffset)
     end
 
-    local finalPoint = resultPath[#resultPath]
-    local finalAng = math.atan2(finalPoint.y, finalPoint.x)
+    local finalSegment = resultPath[#resultPath] - resultPath[#resultPath - 1]
+    local finalAng = math.atan2(finalSegment.y, finalSegment.x)
 
     for i = 1, EXTRA_POINTS do
         resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(1, 0):rotate(finalAng)

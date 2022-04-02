@@ -172,6 +172,12 @@ test("orientPath", function(t)
 	t:assertEqual(after.path[5].y, after.path[3].y)
 	t:assert(after.path[6].x > 0)
 	t:assertEqual(after.path[6].y, after.path[3].y)
+
+	-- extended points
+	t:assertEqual(after.path[7].y, after.path[3].y)
+	t:assertEqual(after.path[8].y, after.path[3].y)
+	t:assertEqual(after.path[9].y, after.path[3].y)
+	t:assertEqual(after.path[10].y, after.path[3].y)
 end)
 
 -- ramp tests
