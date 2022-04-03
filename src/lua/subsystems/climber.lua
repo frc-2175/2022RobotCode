@@ -1,5 +1,5 @@
-local winchMotor = CANSparkMax:new(24, SparkMaxMotorType.kBrushless)
-local winchFollower = CANSparkMax:new(25, SparkMaxMotorType.kBrushless)
+local winchMotor = DummyMotor:new(24, SparkMaxMotorType.kBrushless)
+local winchFollower = DummyMotor:new(25, SparkMaxMotorType.kBrushless)
 
 winchMotor:restoreFactoryDefaults()
 winchFollower:restoreFactoryDefaults()
