@@ -86,8 +86,15 @@ motors: {
 
   @enum
   IdleMode: {
-	  kCoast: 0,
-	  kBrake: 1,
+	kCoast: 0,
+	kBrake: 1,
+  }
+
+  @enum
+  SparkMaxEncoderType: {
+	kNoSensor: 0,
+	kHallSensor: 1,
+	kQuadrature: 2,
   }
 
   @baseclass
@@ -291,6 +298,13 @@ motors: {
 	Disable();
 	StopMotor();
 	@nolua Follow(@deref @cast("rev::CANSparkMax*") void* leader, @default(false) bool invert);
+	double GetPosition(@default(42) int countsPerRev) """
+	rev::SparkMaxRelativeEncoder encoder = ((rev::CANSparkMax*)_this)->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor, countsPerRev);
+	return encoder.GetPosition();
+	""";
+	SetPosition(double position, @default(42) int countsPerRev) """
+	((rev::CANSparkMax*)_this)->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor, countsPerRev).SetPosition(position);
+	""";
   }
 	
   @class("frc::DifferentialDrive")

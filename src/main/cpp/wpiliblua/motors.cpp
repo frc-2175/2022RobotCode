@@ -1729,6 +1729,15 @@ LUAFUNC void CANSparkMax_Follow(void* _this, void * leader, bool invert) {
         ->Follow(*(rev::CANSparkMax*)leader, invert);
 }
 
+LUAFUNC double CANSparkMax_GetPosition(void* _this, int countsPerRev) {
+	rev::SparkMaxRelativeEncoder encoder = ((rev::CANSparkMax*)_this)->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor, countsPerRev);
+	return encoder.GetPosition();
+}
+
+LUAFUNC void CANSparkMax_SetPosition(void* _this, double position, int countsPerRev) {
+	((rev::CANSparkMax*)_this)->GetEncoder(rev::SparkMaxRelativeEncoder::Type::kHallSensor, countsPerRev).SetPosition(position);
+}
+
 LUAFUNC void* DifferentialDrive_new(void * leftMotor, void * rightMotor) {
       assert(leftMotor);
       assert(rightMotor);

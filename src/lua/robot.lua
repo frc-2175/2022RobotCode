@@ -1,5 +1,5 @@
--- require("subsystems.cargo")
--- require("subsystems.climber")
+require("subsystems.cargo")
+require("subsystems.climber")
 require("subsystems.drivetrain")
 require("utils.logger")
 require("utils.blendeddrive")
@@ -52,24 +52,22 @@ function Robot.teleopPeriodic()
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
 	putNumber("Rotation", navx:getRoll())
+
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
-
-
 	if gamepad:getButtonPressed(XboxButton.RightBumper) then
-		print("extending")
-		Intake:extend()
+		Intake:down()
 	elseif gamepad:getButtonPressed(XboxButton.LeftBumper) then
-		Intake:retract()
+		Intake:up()
 	end
 
-	if gamepad:getButtonHeld(XboxButton.A) then
+	if gamepad:getButtonHeld(XboxButton.Start) then
 		Winch:runIn()
-	elseif gamepad:getButtonHeld(XboxButton.Y) then
+	elseif gamepad:getButtonHeld(XboxButton.Select) then
 		Winch:runOut()
 	else
 		Winch:stop()
 	end
 
-	intakeMotor:set(gamepad:getLeftTriggerAmount()-gamepad:getRightTriggerAmount())
+	intakeMotor:set(gamepad:getLeftTriggerAmount() - gamepad:getRightTriggerAmount())
 end

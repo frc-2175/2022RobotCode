@@ -64,6 +64,16 @@ IdleMode = BindingEnum:new('IdleMode', {
     kBrake = 1,
 })
 
+---@class SparkMaxEncoderType
+---@field kNoSensor integer
+---@field kHallSensor integer
+---@field kQuadrature integer
+SparkMaxEncoderType = BindingEnum:new('SparkMaxEncoderType', {
+    kNoSensor = 0,
+    kHallSensor = 1,
+    kQuadrature = 2,
+})
+
 ---@return any
 function VictorSPX:toSpeedController()
     return ffi.C.VictorSPX_ToSpeedController(self._this)
@@ -2502,6 +2512,24 @@ function CANSparkMax:stopMotor()
     ffi.C.CANSparkMax_StopMotor(self._this)
 end
 
+
+---@param countsPerRev? integer
+---@return number
+function CANSparkMax:getPosition(countsPerRev)
+    countsPerRev = countsPerRev or 42
+    countsPerRev = AssertInt(countsPerRev)
+    return ffi.C.CANSparkMax_GetPosition(self._this, countsPerRev)
+end
+
+---@param position number
+---@param countsPerRev? integer
+---@return any
+function CANSparkMax:setPosition(position, countsPerRev)
+    countsPerRev = countsPerRev or 42
+    position = AssertNumber(position)
+    countsPerRev = AssertInt(countsPerRev)
+    ffi.C.CANSparkMax_SetPosition(self._this, position, countsPerRev)
+end
 
 
 ---@param xSpeed number

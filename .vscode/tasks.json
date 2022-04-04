@@ -18,6 +18,12 @@
 				"args": [
 					"${workspaceFolder}/scripts/test.lua"
 				]
+			},
+			"linux": {
+				"command": "lua",
+				"args": [
+					"${workspaceFolder}/scripts/test.lua"
+				]
 			}
 		},
 		{

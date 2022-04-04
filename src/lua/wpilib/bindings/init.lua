@@ -319,6 +319,8 @@ bool CANSparkMax_GetInverted(void* _this);
 void CANSparkMax_Disable(void* _this);
 void CANSparkMax_StopMotor(void* _this);
 void CANSparkMax_Follow(void* _this, void * leader, bool invert);
+double CANSparkMax_GetPosition(void* _this, int countsPerRev);
+void CANSparkMax_SetPosition(void* _this, double position, int countsPerRev);
 void* DifferentialDrive_new(void * leftMotor, void * rightMotor);
 void DifferentialDrive_ArcadeDrive(void* _this, double xSpeed, double zRotation, bool squareInputs);
 void DifferentialDrive_TankDrive(void* _this, double leftSpeed, double rightSpeed, bool squareInputs);

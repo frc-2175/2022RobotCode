@@ -1,18 +1,33 @@
 require("utils.teleopcoroutine")
 require("utils.timer")
 
-local intakeSolenoid = DummyMotor:new(69)
-intakeMotor = DummyMotor:new(25)
+intakeMotor = TalonSRX:new(26)
+
+---@type CANSparkMax
+local intakeArm = CANSparkMax:new(27, SparkMaxMotorType.kBrushless)
+armPosition = 0
+minPosition = 0 -- TODO: REAL MIN PLEASE DONT RUN THIS
+maxPosition = 100 -- TODO: REAL MAX PLEASE DONT RUN THIS
 
 ---@class Intake
 Intake = {}
 
-function Intake:extend()
-	intakeSolenoid:set(DoubleSolenoidValue.Forward)
+function Intake:up()
+	armPosition = intakeArm:getPosition()
+	if armPosition < maxPosition then
+		intakeArm:set(0.5)
+	else
+		intakeArm:set(0)
+	end
 end
 
-function Intake:retract()
-	intakeSolenoid:set(DoubleSolenoidValue.Reverse)
+function Intake:down()
+	armPosition = intakeArm:getPosition()
+	if armPosition > minPosition then
+		intakeArm:set(-0.5)
+	else
+		intakeArm:set(0)
+	end
 end
 
 function Intake:rollIn()
