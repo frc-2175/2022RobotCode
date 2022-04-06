@@ -22,8 +22,6 @@ test(
 	end
 )
 
--- path.lua tests
-
 test(
 	"getTrapezoidSpeed", function(t)
 		t:assertEqual(getTrapezoidSpeed(0.2, 0.8, 0.4, 5, 1, 2, -1), 0.2)

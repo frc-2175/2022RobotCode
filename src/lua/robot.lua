@@ -20,7 +20,8 @@ function Robot.robotInit()
 end
 
 function Robot.robotPeriodic()
-	armPosition = arm:getPosition(armEncoder)
+	-- we make armPosition negative because i hate you.
+	armPosition = -arm:getPosition(armEncoder)
 	putNumber("arm", armPosition)
 end
 

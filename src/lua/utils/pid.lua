@@ -48,6 +48,7 @@ function PIDController:pid(input, setpoint, thresh)
 	local error = setpoint - input
 	local p = error * self.kp
 	local i = 0
+	
 	if self.shouldRunIntegral then
 		if threshold == 0 or (input < (threshold + setpoint) and input > (setpoint - threshold)) then
 			self.integral = self.integral + self.dt * error
@@ -57,13 +58,17 @@ function PIDController:pid(input, setpoint, thresh)
 	else
 		self.shouldRunIntegral = true
 	end
+
 	local d
+
 	if self.previousError == nil or self.dt == 0 then
 		d = 0
 	else
 		d = ((error - self.previousError) / self.dt) * self.kd
 	end
+
 	self.previousError = error
+
 	return p + i + d
 end
 
