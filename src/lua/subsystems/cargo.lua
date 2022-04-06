@@ -4,30 +4,37 @@ require("utils.timer")
 intakeMotor = TalonSRX:new(26)
 
 ---@type CANSparkMax
-local intakeArm = CANSparkMax:new(27, SparkMaxMotorType.kBrushless)
+arm = CANSparkMax:new(31, SparkMaxMotorType.kBrushless)
+arm:restoreFactoryDefaults()
+arm:setIdleMode(IdleMode.kBrake)
+armEncoder = arm:getEncoder()
 armPosition = 0
-minPosition = 0 -- TODO: REAL MIN PLEASE DONT RUN THIS
-maxPosition = 100 -- TODO: REAL MAX PLEASE DONT RUN THIS
+local minPosition = -12
+local maxPosition = -5
+local upSpeed = 1
+local downSpeed = 0.1
 
 ---@class Intake
 Intake = {}
 
 function Intake:up()
-	armPosition = intakeArm:getPosition()
 	if armPosition < maxPosition then
-		intakeArm:set(0.5)
+		arm:set(upSpeed)
 	else
-		intakeArm:set(0)
+		arm:set(0)
 	end
 end
 
 function Intake:down()
-	armPosition = intakeArm:getPosition()
 	if armPosition > minPosition then
-		intakeArm:set(-0.5)
+		arm:set(-downSpeed)
 	else
-		intakeArm:set(0)
+		arm:set(0)
 	end
+end
+
+function Intake:stopArm()
+	arm:set(0)
 end
 
 function Intake:rollIn()

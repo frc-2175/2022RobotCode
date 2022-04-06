@@ -8,7 +8,6 @@ require("utils.purepursuit")
 require("utils.path")
 
 function Robot.robotInit()
-	initLogging()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
@@ -17,7 +16,12 @@ function Robot.robotInit()
 	path = orientPath(readPath("p2"))
 
 	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
-	startAutomaticCapture();
+	-- startAutomaticCapture();
+end
+
+function Robot.robotPeriodic()
+	armPosition = arm:getPosition(armEncoder)
+	putNumber("arm", armPosition)
 end
 
 function Robot.autonomousInit()
@@ -55,10 +59,12 @@ function Robot.teleopPeriodic()
 
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
-	if gamepad:getButtonPressed(XboxButton.RightBumper) then
+	if gamepad:getButtonHeld(XboxButton.RightBumper) then
 		Intake:down()
-	elseif gamepad:getButtonPressed(XboxButton.LeftBumper) then
+	elseif gamepad:getButtonHeld(XboxButton.LeftBumper) then
 		Intake:up()
+	else
+		Intake:stopArm()
 	end
 
 	if gamepad:getButtonHeld(XboxButton.Start) then
@@ -69,5 +75,6 @@ function Robot.teleopPeriodic()
 		Winch:stop()
 	end
 
+	
 	intakeMotor:set(gamepad:getLeftTriggerAmount() - gamepad:getRightTriggerAmount())
 end

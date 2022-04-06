@@ -2514,11 +2514,17 @@ end
 
 
 ---@param countsPerRev? integer
----@return number
-function CANSparkMax:getPosition(countsPerRev)
+---@return any
+function CANSparkMax:getEncoder(countsPerRev)
     countsPerRev = countsPerRev or 42
     countsPerRev = AssertInt(countsPerRev)
-    return ffi.C.CANSparkMax_GetPosition(self._this, countsPerRev)
+    return ffi.C.CANSparkMax_GetEncoder(self._this, countsPerRev)
+end
+
+---@param encoder any
+---@return number
+function CANSparkMax:getPosition(encoder)
+    return ffi.C.CANSparkMax_GetPosition(self._this, encoder)
 end
 
 ---@param position number

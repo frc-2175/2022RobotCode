@@ -1,6 +1,7 @@
 require("wpilib.bindings")
 
 require("wpilib.ahrs")
+require("wpilib.cameraserver")
 require("wpilib.io")
 require("wpilib.io_ext")
 require("wpilib.motors")

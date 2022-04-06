@@ -1,5 +1,5 @@
-local winchMotor = DummyMotor:new(24, SparkMaxMotorType.kBrushless)
-local winchFollower = DummyMotor:new(25, SparkMaxMotorType.kBrushless)
+winchMotor = CANSparkMax:new(32, SparkMaxMotorType.kBrushless)
+winchFollower = CANSparkMax:new(33, SparkMaxMotorType.kBrushless)
 
 winchMotor:restoreFactoryDefaults()
 winchFollower:restoreFactoryDefaults()
@@ -8,6 +8,8 @@ winchFollower:setInverted(true)
 
 winchMotor:setIdleMode(IdleMode.kBrake)
 winchFollower:setIdleMode(IdleMode.kBrake)
+
+winchEncoder = winchMotor:getEncoder()
 
 local speed = 1
 
