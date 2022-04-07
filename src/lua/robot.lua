@@ -6,16 +6,23 @@ require("utils.blendeddrive")
 require("utils.slideshow")
 require("utils.purepursuit")
 require("utils.path")
+require("auto.coroutines")
+
+local selectedAuto = doNothingAuto
 
 function Robot.robotInit()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	resetTracking()
+	autoChooser = SendableChooser:new()
+	autoChooser:putChooser({
+		{ name = "doNothing", value = doNothingAuto },
+		{ name = "taxi", value = taxiAuto },
+		{ name = "oneBallAuto", value = oneBallAuto }
+	})
 
-	path = orientPath(readPath("p2"))
-
-	testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
+	-- testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
 	-- startAutomaticCapture();
 end
 
@@ -28,20 +35,15 @@ end
 function Robot.autonomousInit()
 	navx:reset()
 	resetTracking()
-	testPursuit = PurePursuit:new(
-		path,
-		false,
-		0.015, 0, 0.002
-	)
+	selectedAuto = autoChooser:getSelected()
+	selectedAuto:reset()
 end
 
 function Robot.autonomousPeriodic()
 	trackLocation(leftMotor, rightMotor)
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
-	local rotation, speed = testPursuit:run()
-	putNumber("Rotation", rotation)
-	Drivetrain:drive(0.6 * speed, rotation)
+	selectedAuto:runWhile(true)
 end
 
 function Robot.teleopInit()

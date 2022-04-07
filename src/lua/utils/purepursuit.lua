@@ -52,7 +52,7 @@ end
 
 ---@param point Vector
 ---@return number degAngle
-function getRollToPoint(point)
+function getAngleToPoint(point)
 	if point:length() == 0 then
 		return 0
 	end
@@ -110,7 +110,11 @@ PurePursuit = {}
 ---@param i number
 ---@param d number
 ---@return PurePursuit
-function PurePursuit:new(path, triggerFuncs, isBackwards, p, i, d)
+function PurePursuit:new(path, isBackwards, p, i, d, triggerFuncs)
+	triggerFuncs = triggerFuncs or {}
+	if isBackwards then
+		path = path:negated()
+	end
 	local x = {
 		path = path,
 		triggerFuncs = triggerFuncs,
@@ -131,15 +135,18 @@ function PurePursuit:run()
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
 	local indexOfGoalPoint = findGoalPoint(self.path, indexOfClosestPoint)
 	local goalPoint = (self.path.path[indexOfGoalPoint] - position):rotate(math.rad(navx:getRoll()))
-	local angle = getRollToPoint(goalPoint)
+	local angle = getAngleToPoint(goalPoint)
+	
+	if self.isBackwards then
+		angle = -getAngleToPoint(-goalPoint)
+	end
 	
 	local turnValue = self.purePursuitPID:pid(-angle, 0)
 	local speed = getTrapezoidSpeed(
 		0.25, 0.75, 0.5, self.path.numberOfActualPoints, 20, 20, indexOfClosestPoint
 	)
 
-	if self.isBackwards then
-		angle = -getRollToPoint(-goalPoint)
+	if self.isBackwards then -- dont join these two
 		turnValue = -turnValue
 		speed = -speed
 	end
@@ -158,10 +165,12 @@ function PurePursuit:run()
 		turnValue = 0
 	end
 
-	-- if speed > 0 then
-	-- 	print("closest", indexOfClosestPoint)
-	-- 	print("goal", indexOfGoalPoint)
-	-- 	print("max", self.path.numberOfActualPoints)		
-	-- end
+	if speed ~= 0 then
+		putNumber("closest", indexOfClosestPoint)
+		putNumber("goal", indexOfGoalPoint)
+		putNumber("max", self.path.numberOfActualPoints)
+		putNumber("x", position.x)
+		putNumber("x", position.y)
+	end
 	return turnValue, speed
 end

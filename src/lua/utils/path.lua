@@ -122,6 +122,16 @@ function Path:print()
 	end
 end
 
+function Path:negated()
+	local negatedPath = {}
+	
+	for i, value in ipairs(self.path) do
+		negatedPath[i] = -value
+	end
+
+	return Path:new(negatedPath, self.numberOfActualPoints, self.triggerPoints)
+end
+
 ---@param isBackwards boolean
 ---@param startingAng number
 ---@param startingPos Vector

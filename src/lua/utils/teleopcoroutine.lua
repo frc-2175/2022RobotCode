@@ -1,4 +1,4 @@
-function NewTeleopCoroutine(coroutineFunc)
+function newFancyCoroutine(coroutineFunc)
 	local t = {
 		coroutineFunc = coroutineFunc,
 		coroutine = nil,
@@ -18,6 +18,9 @@ function NewTeleopCoroutine(coroutineFunc)
 			end
 			self.wasRunning = running
 			return running
+		end,
+		reset = function(self)
+			self:runWhile(false)
 		end,
 	}
 	return t
