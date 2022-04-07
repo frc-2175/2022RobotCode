@@ -12,11 +12,11 @@ armPosition = 0
 
 local upPosition = 1
 local midPosition = 12
-local downPosition = 12
+local downPosition = 14
 
 local upSpeed = 1
 local midSpeed = 0.3
-local downSpeed = 0.1
+local downSpeed = 0.2
 
 ---@class Intake
 Intake = {}

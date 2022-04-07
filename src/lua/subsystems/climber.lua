@@ -32,7 +32,6 @@ end
 
 
 function Winch:runOut()
-	print("running out")
 	winchMotor:set(-speed)
 	winchFollower:set(-speed)
 end

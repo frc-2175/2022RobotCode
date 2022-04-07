@@ -61,9 +61,9 @@ function Robot.teleopPeriodic()
 
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
-	if gamepad:getButtonHeld(XboxButton.RightBumper) then
+	if gamepad:getButtonHeld(XboxButton.RightBumper) or rightStick:getTriggerHeld() then
 		Intake:down()
-	elseif gamepad:getButtonHeld(XboxButton.LeftBumper) then
+	elseif gamepad:getButtonHeld(XboxButton.LeftBumper) or leftStick:getTriggerHeld() then
 		Intake:up()
 	else
 		Intake:stopArm()
@@ -80,5 +80,10 @@ function Robot.teleopPeriodic()
 	end
 
 	
-	intakeMotor:set(gamepad:getLeftTriggerAmount() - gamepad:getRightTriggerAmount())
+	if rightStick:getTriggerHeld() then
+		Intake:rollIn()
+	else
+		Intake:stop()
+		intakeMotor:set(gamepad:getLeftTriggerAmount() - gamepad:getRightTriggerAmount())
+	end
 end
