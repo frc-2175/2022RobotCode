@@ -33,7 +33,6 @@ end
 
 function Intake:down()
 	if armPosition < downPosition then
-		print("setting it")
 		arm:set(-downSpeed)
 	else
 		arm:set(0)
