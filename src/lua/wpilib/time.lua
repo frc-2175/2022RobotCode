@@ -4,7 +4,58 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@return any
+function new()
+    ffi.C.new()
+end
+
+---@return number
+function get()
+    return ffi.C.Get()
+end
+
+---@return any
+function reset()
+    ffi.C.Reset()
+end
+
+---@return any
+function start()
+    ffi.C.Start()
+end
+
+---@return any
+function stop()
+    ffi.C.Stop()
+end
+
+---@param period number
+---@return boolean
+function hasElapsed(period)
+    period = AssertNumber(period)
+    return ffi.C.HasElapsed(period)
+end
+
+---@param period number
+---@return boolean
+function hasPeriodPassed(period)
+    period = AssertNumber(period)
+    return ffi.C.HasPeriodPassed(period)
+end
+
+---@param period number
+---@return boolean
+function advanceIfElapsed(period)
+    period = AssertNumber(period)
+    return ffi.C.AdvanceIfElapsed(period)
+end
+
 ---@return number
 function getFPGATimestamp()
     return ffi.C.GetFPGATimestamp()
+end
+
+---@return number
+function getMatchTime()
+    return ffi.C.GetMatchTime()
 end

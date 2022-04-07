@@ -39,6 +39,16 @@ function Solenoid:toggle()
     ffi.C.Solenoid_Toggle(self._this)
 end
 
+---@return integer
+function Solenoid:getChannel()
+    return ffi.C.Solenoid_GetChannel(self._this)
+end
+
+---@return boolean
+function Solenoid:isDisabled()
+    return ffi.C.Solenoid_IsDisabled(self._this)
+end
+
 
 ---@param value integer
 ---@return any
@@ -48,7 +58,32 @@ function DoubleSolenoid:set(value)
     ffi.C.DoubleSolenoid_Set(self._this, value)
 end
 
+---@return integer
+function DoubleSolenoid:get()
+    return ffi.C.DoubleSolenoid_Get(self._this)
+end
+
 ---@return any
 function DoubleSolenoid:toggle()
     ffi.C.DoubleSolenoid_Toggle(self._this)
+end
+
+---@return integer
+function DoubleSolenoid:getFwdChannel()
+    return ffi.C.DoubleSolenoid_GetFwdChannel(self._this)
+end
+
+---@return integer
+function DoubleSolenoid:getRevChannel()
+    return ffi.C.DoubleSolenoid_GetRevChannel(self._this)
+end
+
+---@return boolean
+function DoubleSolenoid:isFwdSolenoidDisabled()
+    return ffi.C.DoubleSolenoid_IsFwdSolenoidDisabled(self._this)
+end
+
+---@return boolean
+function DoubleSolenoid:isRevSolenoidDisabled()
+    return ffi.C.DoubleSolenoid_IsRevSolenoidDisabled(self._this)
 end

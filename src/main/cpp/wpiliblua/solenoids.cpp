@@ -3,6 +3,7 @@
 #include <frc/Solenoid.h>
 #include <frc/DoubleSolenoid.h>
 #include "frc/PneumaticsModuleType.h"
+#include <units/time.h>
 
 #include "luadef.h"
 
@@ -26,6 +27,18 @@ LUAFUNC void Solenoid_Toggle(void* _this) {
         ->Toggle();
 }
 
+LUAFUNC int Solenoid_GetChannel(void* _this) {
+    auto _result = ((frc::Solenoid*)_this)
+        ->GetChannel();
+    return (int)_result;
+}
+
+LUAFUNC bool Solenoid_IsDisabled(void* _this) {
+    auto _result = ((frc::Solenoid*)_this)
+        ->IsDisabled();
+    return (bool)_result;
+}
+
 LUAFUNC void* DoubleSolenoid_new(int moduleType, int forwardChannel, int reverseChannel) {
     return new frc::DoubleSolenoid((frc::PneumaticsModuleType)moduleType, forwardChannel, reverseChannel);
 }
@@ -35,7 +48,37 @@ LUAFUNC void DoubleSolenoid_Set(void* _this, int value) {
         ->Set((frc::DoubleSolenoid::Value)value);
 }
 
+LUAFUNC int DoubleSolenoid_Get(void* _this) {
+    auto _result = ((frc::DoubleSolenoid*)_this)
+        ->Get();
+    return (int)_result;
+}
+
 LUAFUNC void DoubleSolenoid_Toggle(void* _this) {
     ((frc::DoubleSolenoid*)_this)
         ->Toggle();
+}
+
+LUAFUNC int DoubleSolenoid_GetFwdChannel(void* _this) {
+    auto _result = ((frc::DoubleSolenoid*)_this)
+        ->GetFwdChannel();
+    return (int)_result;
+}
+
+LUAFUNC int DoubleSolenoid_GetRevChannel(void* _this) {
+    auto _result = ((frc::DoubleSolenoid*)_this)
+        ->GetRevChannel();
+    return (int)_result;
+}
+
+LUAFUNC bool DoubleSolenoid_IsFwdSolenoidDisabled(void* _this) {
+    auto _result = ((frc::DoubleSolenoid*)_this)
+        ->IsFwdSolenoidDisabled();
+    return (bool)_result;
+}
+
+LUAFUNC bool DoubleSolenoid_IsRevSolenoidDisabled(void* _this) {
+    auto _result = ((frc::DoubleSolenoid*)_this)
+        ->IsRevSolenoidDisabled();
+    return (bool)_result;
 }

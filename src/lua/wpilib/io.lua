@@ -48,6 +48,11 @@ end
 
 
 
+---@return number
+function Joystick:getTwist()
+    return ffi.C.Joystick_GetTwist(self._this)
+end
+
 
 ---@return boolean
 function Joystick:getTriggerHeld()
@@ -79,6 +84,21 @@ function Joystick:getTopReleased()
     return ffi.C.Joystick_GetTopReleased(self._this)
 end
 
+---@return number
+function Joystick:getMagnitude()
+    return ffi.C.Joystick_GetMagnitude(self._this)
+end
+
+---@return number
+function Joystick:getDirectionRadians()
+    return ffi.C.Joystick_GetDirectionRadians(self._this)
+end
+
+---@return number
+function Joystick:getDirectionDegrees()
+    return ffi.C.Joystick_GetDirectionDegrees(self._this)
+end
+
 ---@param button integer
 ---@return boolean
 function Joystick:getButtonHeld(button)
@@ -104,7 +124,35 @@ function Joystick:getButtonReleased(button)
 end
 
 
+---@param port? integer
 ---@return integer
-function Joystick:getPOV()
-    return ffi.C.Joystick_GetPOV(self._this)
+function Joystick:getPOV(port)
+    port = port or 0
+    port = AssertInt(port)
+    return ffi.C.Joystick_GetPOV(self._this, port)
+end
+
+---@return integer
+function Joystick:getAxisCount()
+    return ffi.C.Joystick_GetAxisCount(self._this)
+end
+
+---@return integer
+function Joystick:getPOVCount()
+    return ffi.C.Joystick_GetPOVCount(self._this)
+end
+
+---@return integer
+function Joystick:getButtonCount()
+    return ffi.C.Joystick_GetButtonCount(self._this)
+end
+
+---@return boolean
+function Joystick:isConnected()
+    return ffi.C.Joystick_IsConnected(self._this)
+end
+
+---@return integer
+function Joystick:getPort()
+    return ffi.C.Joystick_GetPort(self._this)
 end

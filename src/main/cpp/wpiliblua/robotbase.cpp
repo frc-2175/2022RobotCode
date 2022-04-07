@@ -4,6 +4,62 @@
 
 #include "luadef.h"
 
-LUAFUNC bool RobotIsReal() {
-    return frc::RobotBase::IsReal();
+LUAFUNC bool IsEnabled() {
+    auto _result = ::IsEnabled();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsDisabled() {
+    auto _result = ::IsDisabled();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsAutonomous() {
+    auto _result = ::IsAutonomous();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsAutonomousEnabled() {
+    auto _result = ::IsAutonomousEnabled();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsOperatorControl() {
+    auto _result = ::IsOperatorControl();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsTeleop() {
+    auto _result = ::IsTeleop();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsOperatorControlEnabled() {
+    auto _result = ::IsOperatorControlEnabled();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsTeleopEnabled() {
+    auto _result = ::IsTeleopEnabled();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsTest() {
+    auto _result = ::IsTest();
+    return (bool)_result;
+}
+
+LUAFUNC int GetRuntimeType() {
+    auto _result = ::GetRuntimeType();
+    return (int)_result;
+}
+
+LUAFUNC bool IsReal() {
+    auto _result = ::IsReal();
+    return (bool)_result;
+}
+
+LUAFUNC bool IsSimulation() {
+    auto _result = ::IsSimulation();
+    return (bool)_result;
 }

@@ -164,12 +164,23 @@ function VictorSPX:setSensorPhase(PhaseSensor)
     ffi.C.VictorSPX_SetSensorPhase(self._this, PhaseSensor)
 end
 
+---@param invert boolean
+---@return any
+function VictorSPX:setInvertedBool(invert)
+    ffi.C.VictorSPX_SetInvertedBool(self._this, invert)
+end
+
 ---@param invertType integer
 ---@return any
 function VictorSPX:setInverted(invertType)
     invertType = AssertEnumValue(CTREInvertType, invertType)
     invertType = AssertInt(invertType)
     ffi.C.VictorSPX_SetInverted(self._this, invertType)
+end
+
+---@return boolean
+function VictorSPX:getInverted()
+    return ffi.C.VictorSPX_GetInverted(self._this)
 end
 
 ---@param timeoutMs? integer
@@ -361,6 +372,16 @@ function VictorSPX:setControlFramePeriod(frame, periodMs)
     return ffi.C.VictorSPX_SetControlFramePeriod(self._this, frame, periodMs)
 end
 
+---@param windowSize integer
+---@param timeoutMs? integer
+---@return integer
+function VictorSPX:configVelocityMeasurementWindow(windowSize, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    windowSize = AssertInt(windowSize)
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.VictorSPX_ConfigVelocityMeasurementWindow(self._this, windowSize, timeoutMs)
+end
+
 ---@param enable boolean
 ---@return any
 function VictorSPX:overrideLimitSwitchesEnable(enable)
@@ -385,6 +406,24 @@ function VictorSPX:configReverseSoftLimitThreshold(reverseSensorLimit, timeoutMs
     reverseSensorLimit = AssertNumber(reverseSensorLimit)
     timeoutMs = AssertInt(timeoutMs)
     return ffi.C.VictorSPX_ConfigReverseSoftLimitThreshold(self._this, reverseSensorLimit, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function VictorSPX:configForwardSoftLimitEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.VictorSPX_ConfigForwardSoftLimitEnable(self._this, enable, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function VictorSPX:configReverseSoftLimitEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.VictorSPX_ConfigReverseSoftLimitEnable(self._this, enable, timeoutMs)
 end
 
 ---@param enable boolean
@@ -620,6 +659,55 @@ function VictorSPX:getMotionProfileTopLevelBufferCount()
     return ffi.C.VictorSPX_GetMotionProfileTopLevelBufferCount(self._this)
 end
 
+---@return boolean
+function VictorSPX:isMotionProfileFinished()
+    return ffi.C.VictorSPX_IsMotionProfileFinished(self._this)
+end
+
+---@return boolean
+function VictorSPX:isMotionProfileTopLevelBufferFull()
+    return ffi.C.VictorSPX_IsMotionProfileTopLevelBufferFull(self._this)
+end
+
+---@return any
+function VictorSPX:processMotionProfileBuffer()
+    ffi.C.VictorSPX_ProcessMotionProfileBuffer(self._this)
+end
+
+---@param timeoutMs? integer
+---@return integer
+function VictorSPX:clearMotionProfileHasUnderrun(timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.VictorSPX_ClearMotionProfileHasUnderrun(self._this, timeoutMs)
+end
+
+---@param periodMs integer
+---@return integer
+function VictorSPX:changeMotionControlFramePeriod(periodMs)
+    periodMs = AssertInt(periodMs)
+    return ffi.C.VictorSPX_ChangeMotionControlFramePeriod(self._this, periodMs)
+end
+
+---@param baseTrajDurationMs integer
+---@param timeoutMs? integer
+---@return integer
+function VictorSPX:configMotionProfileTrajectoryPeriod(baseTrajDurationMs, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    baseTrajDurationMs = AssertInt(baseTrajDurationMs)
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.VictorSPX_ConfigMotionProfileTrajectoryPeriod(self._this, baseTrajDurationMs, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function VictorSPX:configMotionProfileTrajectoryInterpolationEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.VictorSPX_ConfigMotionProfileTrajectoryInterpolationEnable(self._this, enable, timeoutMs)
+end
+
 ---@param feedbackNotContinuous boolean
 ---@param timeoutMs? integer
 ---@return integer
@@ -723,6 +811,46 @@ end
 ---@return any
 function VictorSPX:valueUpdated()
     ffi.C.VictorSPX_ValueUpdated(self._this)
+end
+
+---@param speed number
+---@return any
+function VictorSPX:set(speed)
+    speed = AssertNumber(speed)
+    ffi.C.VictorSPX_Set(self._this, speed)
+end
+
+---@return number
+function VictorSPX:get()
+    return ffi.C.VictorSPX_Get(self._this)
+end
+
+---@param output number
+---@return any
+function VictorSPX:setVoltage(output)
+    output = AssertNumber(output)
+    ffi.C.VictorSPX_SetVoltage(self._this, output)
+end
+
+---@param isInverted boolean
+---@return any
+function VictorSPX:setInverted(isInverted)
+    ffi.C.VictorSPX_SetInverted(self._this, isInverted)
+end
+
+---@return boolean
+function VictorSPX:getInverted()
+    return ffi.C.VictorSPX_GetInverted(self._this)
+end
+
+---@return any
+function VictorSPX:disable()
+    ffi.C.VictorSPX_Disable(self._this)
+end
+
+---@return any
+function VictorSPX:stopMotor()
+    ffi.C.VictorSPX_StopMotor(self._this)
 end
 
 ---@return any
@@ -882,12 +1010,23 @@ function TalonSRX:setSensorPhase(PhaseSensor)
     ffi.C.TalonSRX_SetSensorPhase(self._this, PhaseSensor)
 end
 
+---@param invert boolean
+---@return any
+function TalonSRX:setInvertedBool(invert)
+    ffi.C.TalonSRX_SetInvertedBool(self._this, invert)
+end
+
 ---@param invertType integer
 ---@return any
 function TalonSRX:setInverted(invertType)
     invertType = AssertEnumValue(CTREInvertType, invertType)
     invertType = AssertInt(invertType)
     ffi.C.TalonSRX_SetInverted(self._this, invertType)
+end
+
+---@return boolean
+function TalonSRX:getInverted()
+    return ffi.C.TalonSRX_GetInverted(self._this)
 end
 
 ---@param timeoutMs? integer
@@ -1079,6 +1218,16 @@ function TalonSRX:setControlFramePeriod(frame, periodMs)
     return ffi.C.TalonSRX_SetControlFramePeriod(self._this, frame, periodMs)
 end
 
+---@param windowSize integer
+---@param timeoutMs? integer
+---@return integer
+function TalonSRX:configVelocityMeasurementWindow(windowSize, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    windowSize = AssertInt(windowSize)
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonSRX_ConfigVelocityMeasurementWindow(self._this, windowSize, timeoutMs)
+end
+
 ---@param enable boolean
 ---@return any
 function TalonSRX:overrideLimitSwitchesEnable(enable)
@@ -1103,6 +1252,24 @@ function TalonSRX:configReverseSoftLimitThreshold(reverseSensorLimit, timeoutMs)
     reverseSensorLimit = AssertNumber(reverseSensorLimit)
     timeoutMs = AssertInt(timeoutMs)
     return ffi.C.TalonSRX_ConfigReverseSoftLimitThreshold(self._this, reverseSensorLimit, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function TalonSRX:configForwardSoftLimitEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonSRX_ConfigForwardSoftLimitEnable(self._this, enable, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function TalonSRX:configReverseSoftLimitEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonSRX_ConfigReverseSoftLimitEnable(self._this, enable, timeoutMs)
 end
 
 ---@param enable boolean
@@ -1338,6 +1505,55 @@ function TalonSRX:getMotionProfileTopLevelBufferCount()
     return ffi.C.TalonSRX_GetMotionProfileTopLevelBufferCount(self._this)
 end
 
+---@return boolean
+function TalonSRX:isMotionProfileFinished()
+    return ffi.C.TalonSRX_IsMotionProfileFinished(self._this)
+end
+
+---@return boolean
+function TalonSRX:isMotionProfileTopLevelBufferFull()
+    return ffi.C.TalonSRX_IsMotionProfileTopLevelBufferFull(self._this)
+end
+
+---@return any
+function TalonSRX:processMotionProfileBuffer()
+    ffi.C.TalonSRX_ProcessMotionProfileBuffer(self._this)
+end
+
+---@param timeoutMs? integer
+---@return integer
+function TalonSRX:clearMotionProfileHasUnderrun(timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonSRX_ClearMotionProfileHasUnderrun(self._this, timeoutMs)
+end
+
+---@param periodMs integer
+---@return integer
+function TalonSRX:changeMotionControlFramePeriod(periodMs)
+    periodMs = AssertInt(periodMs)
+    return ffi.C.TalonSRX_ChangeMotionControlFramePeriod(self._this, periodMs)
+end
+
+---@param baseTrajDurationMs integer
+---@param timeoutMs? integer
+---@return integer
+function TalonSRX:configMotionProfileTrajectoryPeriod(baseTrajDurationMs, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    baseTrajDurationMs = AssertInt(baseTrajDurationMs)
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonSRX_ConfigMotionProfileTrajectoryPeriod(self._this, baseTrajDurationMs, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function TalonSRX:configMotionProfileTrajectoryInterpolationEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonSRX_ConfigMotionProfileTrajectoryInterpolationEnable(self._this, enable, timeoutMs)
+end
+
 ---@param feedbackNotContinuous boolean
 ---@param timeoutMs? integer
 ---@return integer
@@ -1441,6 +1657,46 @@ end
 ---@return any
 function TalonSRX:valueUpdated()
     ffi.C.TalonSRX_ValueUpdated(self._this)
+end
+
+---@param speed number
+---@return any
+function TalonSRX:set(speed)
+    speed = AssertNumber(speed)
+    ffi.C.TalonSRX_Set(self._this, speed)
+end
+
+---@return number
+function TalonSRX:get()
+    return ffi.C.TalonSRX_Get(self._this)
+end
+
+---@param output number
+---@return any
+function TalonSRX:setVoltage(output)
+    output = AssertNumber(output)
+    ffi.C.TalonSRX_SetVoltage(self._this, output)
+end
+
+---@param isInverted boolean
+---@return any
+function TalonSRX:setInverted(isInverted)
+    ffi.C.TalonSRX_SetInverted(self._this, isInverted)
+end
+
+---@return boolean
+function TalonSRX:getInverted()
+    return ffi.C.TalonSRX_GetInverted(self._this)
+end
+
+---@return any
+function TalonSRX:disable()
+    ffi.C.TalonSRX_Disable(self._this)
+end
+
+---@return any
+function TalonSRX:stopMotor()
+    ffi.C.TalonSRX_StopMotor(self._this)
 end
 
 ---@return any
@@ -1718,12 +1974,23 @@ function TalonFX:setSensorPhase(PhaseSensor)
     ffi.C.TalonFX_SetSensorPhase(self._this, PhaseSensor)
 end
 
+---@param invert boolean
+---@return any
+function TalonFX:setInvertedBool(invert)
+    ffi.C.TalonFX_SetInvertedBool(self._this, invert)
+end
+
 ---@param invertType integer
 ---@return any
 function TalonFX:setInverted(invertType)
     invertType = AssertEnumValue(CTREInvertType, invertType)
     invertType = AssertInt(invertType)
     ffi.C.TalonFX_SetInverted(self._this, invertType)
+end
+
+---@return boolean
+function TalonFX:getInverted()
+    return ffi.C.TalonFX_GetInverted(self._this)
 end
 
 ---@param timeoutMs? integer
@@ -1915,6 +2182,16 @@ function TalonFX:setControlFramePeriod(frame, periodMs)
     return ffi.C.TalonFX_SetControlFramePeriod(self._this, frame, periodMs)
 end
 
+---@param windowSize integer
+---@param timeoutMs? integer
+---@return integer
+function TalonFX:configVelocityMeasurementWindow(windowSize, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    windowSize = AssertInt(windowSize)
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonFX_ConfigVelocityMeasurementWindow(self._this, windowSize, timeoutMs)
+end
+
 ---@param enable boolean
 ---@return any
 function TalonFX:overrideLimitSwitchesEnable(enable)
@@ -1939,6 +2216,24 @@ function TalonFX:configReverseSoftLimitThreshold(reverseSensorLimit, timeoutMs)
     reverseSensorLimit = AssertNumber(reverseSensorLimit)
     timeoutMs = AssertInt(timeoutMs)
     return ffi.C.TalonFX_ConfigReverseSoftLimitThreshold(self._this, reverseSensorLimit, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function TalonFX:configForwardSoftLimitEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonFX_ConfigForwardSoftLimitEnable(self._this, enable, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function TalonFX:configReverseSoftLimitEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonFX_ConfigReverseSoftLimitEnable(self._this, enable, timeoutMs)
 end
 
 ---@param enable boolean
@@ -2174,6 +2469,55 @@ function TalonFX:getMotionProfileTopLevelBufferCount()
     return ffi.C.TalonFX_GetMotionProfileTopLevelBufferCount(self._this)
 end
 
+---@return boolean
+function TalonFX:isMotionProfileFinished()
+    return ffi.C.TalonFX_IsMotionProfileFinished(self._this)
+end
+
+---@return boolean
+function TalonFX:isMotionProfileTopLevelBufferFull()
+    return ffi.C.TalonFX_IsMotionProfileTopLevelBufferFull(self._this)
+end
+
+---@return any
+function TalonFX:processMotionProfileBuffer()
+    ffi.C.TalonFX_ProcessMotionProfileBuffer(self._this)
+end
+
+---@param timeoutMs? integer
+---@return integer
+function TalonFX:clearMotionProfileHasUnderrun(timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonFX_ClearMotionProfileHasUnderrun(self._this, timeoutMs)
+end
+
+---@param periodMs integer
+---@return integer
+function TalonFX:changeMotionControlFramePeriod(periodMs)
+    periodMs = AssertInt(periodMs)
+    return ffi.C.TalonFX_ChangeMotionControlFramePeriod(self._this, periodMs)
+end
+
+---@param baseTrajDurationMs integer
+---@param timeoutMs? integer
+---@return integer
+function TalonFX:configMotionProfileTrajectoryPeriod(baseTrajDurationMs, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    baseTrajDurationMs = AssertInt(baseTrajDurationMs)
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonFX_ConfigMotionProfileTrajectoryPeriod(self._this, baseTrajDurationMs, timeoutMs)
+end
+
+---@param enable boolean
+---@param timeoutMs? integer
+---@return integer
+function TalonFX:configMotionProfileTrajectoryInterpolationEnable(enable, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    timeoutMs = AssertInt(timeoutMs)
+    return ffi.C.TalonFX_ConfigMotionProfileTrajectoryInterpolationEnable(self._this, enable, timeoutMs)
+end
+
 ---@param feedbackNotContinuous boolean
 ---@param timeoutMs? integer
 ---@return integer
@@ -2277,6 +2621,46 @@ end
 ---@return any
 function TalonFX:valueUpdated()
     ffi.C.TalonFX_ValueUpdated(self._this)
+end
+
+---@param speed number
+---@return any
+function TalonFX:set(speed)
+    speed = AssertNumber(speed)
+    ffi.C.TalonFX_Set(self._this, speed)
+end
+
+---@return number
+function TalonFX:get()
+    return ffi.C.TalonFX_Get(self._this)
+end
+
+---@param output number
+---@return any
+function TalonFX:setVoltage(output)
+    output = AssertNumber(output)
+    ffi.C.TalonFX_SetVoltage(self._this, output)
+end
+
+---@param isInverted boolean
+---@return any
+function TalonFX:setInverted(isInverted)
+    ffi.C.TalonFX_SetInverted(self._this, isInverted)
+end
+
+---@return boolean
+function TalonFX:getInverted()
+    return ffi.C.TalonFX_GetInverted(self._this)
+end
+
+---@return any
+function TalonFX:disable()
+    ffi.C.TalonFX_Disable(self._this)
+end
+
+---@return any
+function TalonFX:stopMotor()
+    ffi.C.TalonFX_StopMotor(self._this)
 end
 
 ---@return any
@@ -2424,6 +2808,16 @@ end
 function TalonFX:configStatorCurrentLimit(enable, currentLimit)
     currentLimit = AssertNumber(currentLimit)
     ffi.C.TalonFX_ConfigStatorCurrentLimit(self._this, enable, currentLimit)
+end
+
+---@param offsetDegrees number
+---@param timeoutMs? integer
+---@return any
+function TalonFX:configIntegratedSensorOffset(offsetDegrees, timeoutMs)
+    timeoutMs = timeoutMs or 0
+    offsetDegrees = AssertNumber(offsetDegrees)
+    timeoutMs = AssertInt(timeoutMs)
+    ffi.C.TalonFX_ConfigIntegratedSensorOffset(self._this, offsetDegrees, timeoutMs)
 end
 
 ---@param feedbackDevice integer

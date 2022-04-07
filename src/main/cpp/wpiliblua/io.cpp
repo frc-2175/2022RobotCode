@@ -27,6 +27,12 @@ LUAFUNC double Joystick_GetZ(void* _this) {
     return (double)_result;
 }
 
+LUAFUNC double Joystick_GetTwist(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetTwist();
+    return (double)_result;
+}
+
 LUAFUNC double Joystick_GetThrottle(void* _this) {
     auto _result = ((frc::Joystick*)_this)
         ->GetThrottle();
@@ -69,6 +75,24 @@ LUAFUNC bool Joystick_GetTopReleased(void* _this) {
     return (bool)_result;
 }
 
+LUAFUNC double Joystick_GetMagnitude(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetMagnitude();
+    return (double)_result;
+}
+
+LUAFUNC double Joystick_GetDirectionRadians(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetDirectionRadians();
+    return (double)_result;
+}
+
+LUAFUNC double Joystick_GetDirectionDegrees(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetDirectionDegrees();
+    return (double)_result;
+}
+
 LUAFUNC bool Joystick_GetButtonHeld(void* _this, int button) {
     auto _result = ((frc::Joystick*)_this)
         ->GetRawButton(button);
@@ -93,8 +117,38 @@ LUAFUNC double Joystick_GetRawAxis(void* _this, int axis) {
     return (double)_result;
 }
 
-LUAFUNC int Joystick_GetPOV(void* _this) {
+LUAFUNC int Joystick_GetPOV(void* _this, int port) {
     auto _result = ((frc::Joystick*)_this)
-        ->GetPOV();
+        ->GetPOV(port);
+    return (int)_result;
+}
+
+LUAFUNC int Joystick_GetAxisCount(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetAxisCount();
+    return (int)_result;
+}
+
+LUAFUNC int Joystick_GetPOVCount(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetPOVCount();
+    return (int)_result;
+}
+
+LUAFUNC int Joystick_GetButtonCount(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetButtonCount();
+    return (int)_result;
+}
+
+LUAFUNC bool Joystick_IsConnected(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->IsConnected();
+    return (bool)_result;
+}
+
+LUAFUNC int Joystick_GetPort(void* _this) {
+    auto _result = ((frc::Joystick*)_this)
+        ->GetPort();
     return (int)_result;
 }
