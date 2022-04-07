@@ -17,18 +17,15 @@ local speed = 1
 Winch = {}
 
 function Winch:runIn()
-	print("running in")
 	winchMotor:set(speed)
 	winchFollower:set(speed)
 end
 
 function Winch:runIn1()
-	print("running in")
 	winchMotor:set(speed)
 end
 
 function Winch:runIn2()
-	print("running in")
 	winchFollower:set(speed)
 end
 

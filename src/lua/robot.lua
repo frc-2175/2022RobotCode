@@ -15,6 +15,7 @@ function Robot.robotInit()
 	rightStick = Joystick:new(1)
 	gamepad = Joystick:new(2)
 	resetTracking()
+	navx:reset()
 	autoChooser = SendableChooser:new()
 	autoChooser:putChooser({
 		{ name = "doNothing", value = doNothingAuto },
@@ -31,6 +32,11 @@ function Robot.robotPeriodic()
 	armPosition = -arm:getPosition(armEncoder)
 	putNumber("arm", armPosition)
 	putNumber("armSpeed", arm:get())
+	putNumber("left", leftMotor:getSelectedSensorPosition())
+	putNumber("right", rightMotor:getSelectedSensorPosition())
+	putNumber("X", position.x)
+	putNumber("Y", position.y)
+	putNumber("Rotation", navx:getAngle())
 end
 
 function Robot.autonomousInit()
@@ -42,8 +48,6 @@ end
 
 function Robot.autonomousPeriodic()
 	trackLocation(leftMotor, rightMotor)
-	putNumber("X", position.x)
-	putNumber("Y", position.y)
 	selectedAuto:runWhile(true)
 end
 
@@ -54,12 +58,6 @@ end
 
 function Robot.teleopPeriodic()
 	-- joystick driving
-	trackLocation(leftMotor, rightMotor)
-	putNumber("left", leftMotor:getSelectedSensorPosition())
-	putNumber("right", rightMotor:getSelectedSensorPosition())
-	putNumber("X", position.x)
-	putNumber("Y", position.y)
-	putNumber("Rotation", navx:getRoll())
 
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
@@ -73,8 +71,10 @@ function Robot.teleopPeriodic()
 
 	if gamepad:getButtonHeld(XboxButton.Start) then
 		Winch:runIn()
+		Intake:down()
 	elseif gamepad:getButtonHeld(XboxButton.Select) then
 		Winch:runOut()
+		Intake:down()
 	else
 		Winch:stop()
 	end

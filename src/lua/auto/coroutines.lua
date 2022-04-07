@@ -22,11 +22,13 @@ end)
 oneBallAuto = newFancyCoroutine(function()
 	local cargoTimer = Timer:new()
 	cargoTimer:start()
-	while not cargoTimer:hasElapsed(2) do
+	while not cargoTimer:hasElapsed(1) do
 		Intake:rollOut()
 		coroutine.yield()
 	end
 	Intake:stop()
 
-	taxiAuto:runWhile(true)
+	while true do
+		taxiAuto:run()
+	end
 end)

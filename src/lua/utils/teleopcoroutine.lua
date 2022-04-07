@@ -22,6 +22,9 @@ function newFancyCoroutine(coroutineFunc)
 		reset = function(self)
 			self:runWhile(false)
 		end,
+		run = function (self)
+			self.coroutineFunc()
+		end
 	}
 	return t
 end

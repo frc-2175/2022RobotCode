@@ -10,12 +10,12 @@ arm:setIdleMode(IdleMode.kBrake)
 armEncoder = arm:getEncoder()
 armPosition = 0
 
-local upPosition = 3
-local midPosition = 10
-local downPosition = 18
+local upPosition = 1
+local midPosition = 12
+local downPosition = 12
 
 local upSpeed = 1
-local midSpeed = 0.2
+local midSpeed = 0.3
 local downSpeed = 0.1
 
 ---@class Intake
@@ -44,11 +44,11 @@ function Intake:stopArm()
 end
 
 function Intake:rollIn()
-	intakeMotor:set(0.5)
+	intakeMotor:set(-0.7)
 end
 
 function Intake:rollOut()
-	intakeMotor:set(-0.5)
+	intakeMotor:set(0.7)
 end
 
 function Intake:stop()
