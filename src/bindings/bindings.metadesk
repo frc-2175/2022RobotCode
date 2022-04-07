@@ -162,7 +162,6 @@ motors: {
 		NeutralOutput();
 		SetNeutralMode(@cast("ctre::phoenix::motorcontrol::NeutralMode") int neutralMode);
 		SetSensorPhase(bool PhaseSensor);
-		@alias("SetInvertedBool") SetInverted(bool invert);
 		SetInverted(@enum(CTREInvertType) @cast("ctre::phoenix::motorcontrol::InvertType") int invertType);
 		bool GetInverted();
 		int ConfigFactoryDefault(@default(50) int timeoutMs);
@@ -187,7 +186,6 @@ motors: {
 		double GetSelectedSensorVelocity(@default(0) int pidIdx);
 		int SetSelectedSensorPosition(double sensorPos, @default(0) int pidIdx, @default(50) int timeoutMs);
 		int SetControlFramePeriod(@cast("ctre::phoenix::motorcontrol::ControlFrame") int frame, int periodMs);
-		int ConfigVelocityMeasurementWindow(int windowSize, @default(0) int timeoutMs);
 		OverrideLimitSwitchesEnable(bool enable);
 		int ConfigForwardSoftLimitThreshold(double forwardSensorLimit, @default(0) int timeoutMs);
 		int ConfigReverseSoftLimitThreshold(double reverseSensorLimit, @default(0) int timeoutMs);
@@ -260,13 +258,6 @@ motors: {
 	@baseclass
 	"ctre::phoenix::motorcontrol::can::WPI_BaseMotorController": {
 		// GetDescription
-		Set(double speed);
-		double Get();
-		SetVoltage(@cast("units::volt_t") double output);
-		SetInverted(bool isInverted);
-		bool GetInverted();
-		Disable();
-		StopMotor();
 		Feed();
 		SetExpiration(@cast("units::time::second_t") double expirationTime);
 		bool IsAlive();
@@ -427,16 +418,19 @@ cameraserver: {
 @include("<units/time.h>")
 @include("<frc/Timer.h>")
 time: {
-	@constructor new();
-	double Get();
-	Reset();
-	Start();
-	Stop();
-	bool HasElapsed(@cast("uints::second_t") double period);
-	bool HasPeriodPassed(@cast("uints::second_t") double period);
-	bool AdvanceIfElapsed(@cast("uints::second_t") double period);
-	@static double GetFPGATimestamp();
-	@static double GetMatchTime();
+	@class("frc::Timer")
+	Timer: {
+		@constructor new();
+		double Get();
+		Reset();
+		Start();
+		Stop();
+		bool HasElapsed(@cast("units::second_t") double period);
+		bool HasPeriodPassed(@cast("units::second_t") double period);
+		bool AdvanceIfElapsed(@cast("units::second_t") double period);
+		@static double GetFPGATimestamp();
+		@static double GetMatchTime();
+	}
 }
 
 
@@ -488,7 +482,6 @@ ahrs: {
 		Reset();
 		float GetRawGyroX();
 		float GetRawGyroY();
-		float GetRawGyroY();
 		float GetRawAccelX();
 		float GetRawAccelY();
 		float GetRawAccelZ();
@@ -500,7 +493,7 @@ ahrs: {
 		int GetActualUpdateRate();
 		EnableLogging(bool enable);
 		EnableBoardlevelYawReset(bool enable);
-		bool IsBoardLevelYawResetEnabled(); // was the guy naming these functions getting paid by the word???
+		bool IsBoardlevelYawResetEnabled(); // was the guy naming these functions getting paid by the word???
 		int GetGyroFullScaleRangeDPS();
 		int GetAccelFullScaleRangeG();
 		Calibrate();
@@ -510,18 +503,21 @@ ahrs: {
 
 @include("<frc/RobotBase.h>")
 robotbase: {
-	bool IsEnabled();
-	bool IsDisabled();
-	bool IsAutonomous();
-	bool IsAutonomousEnabled();
-	bool IsOperatorControl();
-	bool IsTeleop();
-	bool IsOperatorControlEnabled();
-	bool IsTeleopEnabled();
-	bool IsTest();
-	@static int GetRuntimeType();
-	@static bool IsReal();
-	@static bool IsSimulation();
+	@class("frc::RobotBase")
+	RobotBase: {
+		bool IsEnabled();
+		bool IsDisabled();
+		bool IsAutonomous();
+		bool IsAutonomousEnabled();
+		bool IsOperatorControl();
+		bool IsTeleop();
+		bool IsOperatorControlEnabled();
+		bool IsTeleopEnabled();
+		bool IsTest();
+		@static int GetRuntimeType();
+		@static bool IsReal();
+		@static bool IsSimulation();
+	}
 }
 
 @include("<string_view>")

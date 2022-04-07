@@ -4,62 +4,71 @@
 
 #include "luadef.h"
 
-LUAFUNC bool IsEnabled() {
-    auto _result = ::IsEnabled();
+LUAFUNC bool RobotBase_IsEnabled(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsEnabled();
     return (bool)_result;
 }
 
-LUAFUNC bool IsDisabled() {
-    auto _result = ::IsDisabled();
+LUAFUNC bool RobotBase_IsDisabled(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsDisabled();
     return (bool)_result;
 }
 
-LUAFUNC bool IsAutonomous() {
-    auto _result = ::IsAutonomous();
+LUAFUNC bool RobotBase_IsAutonomous(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsAutonomous();
     return (bool)_result;
 }
 
-LUAFUNC bool IsAutonomousEnabled() {
-    auto _result = ::IsAutonomousEnabled();
+LUAFUNC bool RobotBase_IsAutonomousEnabled(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsAutonomousEnabled();
     return (bool)_result;
 }
 
-LUAFUNC bool IsOperatorControl() {
-    auto _result = ::IsOperatorControl();
+LUAFUNC bool RobotBase_IsOperatorControl(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsOperatorControl();
     return (bool)_result;
 }
 
-LUAFUNC bool IsTeleop() {
-    auto _result = ::IsTeleop();
+LUAFUNC bool RobotBase_IsTeleop(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsTeleop();
     return (bool)_result;
 }
 
-LUAFUNC bool IsOperatorControlEnabled() {
-    auto _result = ::IsOperatorControlEnabled();
+LUAFUNC bool RobotBase_IsOperatorControlEnabled(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsOperatorControlEnabled();
     return (bool)_result;
 }
 
-LUAFUNC bool IsTeleopEnabled() {
-    auto _result = ::IsTeleopEnabled();
+LUAFUNC bool RobotBase_IsTeleopEnabled(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsTeleopEnabled();
     return (bool)_result;
 }
 
-LUAFUNC bool IsTest() {
-    auto _result = ::IsTest();
+LUAFUNC bool RobotBase_IsTest(void* _this) {
+    auto _result = ((frc::RobotBase*)_this)
+        ->IsTest();
     return (bool)_result;
 }
 
 LUAFUNC int GetRuntimeType() {
-    auto _result = ::GetRuntimeType();
+    auto _result = frc::RobotBase::GetRuntimeType();
     return (int)_result;
 }
 
 LUAFUNC bool IsReal() {
-    auto _result = ::IsReal();
+    auto _result = frc::RobotBase::IsReal();
     return (bool)_result;
 }
 
 LUAFUNC bool IsSimulation() {
-    auto _result = ::IsSimulation();
+    auto _result = frc::RobotBase::IsSimulation();
     return (bool)_result;
 }

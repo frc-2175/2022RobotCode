@@ -4,50 +4,59 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@class Timer
+---@field _this Timer
+Timer = {}
+
 ---@return any
-function new()
-    ffi.C.new()
+function Timer:new()
+    local instance = {
+        _this = ffi.C.Timer_new(),
+    }
+    setmetatable(instance, self)
+    self.__index = self
+    return instance
 end
 
 ---@return number
-function get()
-    return ffi.C.Get()
+function Timer:get()
+    return ffi.C.Timer_Get(self._this)
 end
 
 ---@return any
-function reset()
-    ffi.C.Reset()
+function Timer:reset()
+    ffi.C.Timer_Reset(self._this)
 end
 
 ---@return any
-function start()
-    ffi.C.Start()
+function Timer:start()
+    ffi.C.Timer_Start(self._this)
 end
 
 ---@return any
-function stop()
-    ffi.C.Stop()
+function Timer:stop()
+    ffi.C.Timer_Stop(self._this)
 end
 
 ---@param period number
 ---@return boolean
-function hasElapsed(period)
+function Timer:hasElapsed(period)
     period = AssertNumber(period)
-    return ffi.C.HasElapsed(period)
+    return ffi.C.Timer_HasElapsed(self._this, period)
 end
 
 ---@param period number
 ---@return boolean
-function hasPeriodPassed(period)
+function Timer:hasPeriodPassed(period)
     period = AssertNumber(period)
-    return ffi.C.HasPeriodPassed(period)
+    return ffi.C.Timer_HasPeriodPassed(self._this, period)
 end
 
 ---@param period number
 ---@return boolean
-function advanceIfElapsed(period)
+function Timer:advanceIfElapsed(period)
     period = AssertNumber(period)
-    return ffi.C.AdvanceIfElapsed(period)
+    return ffi.C.Timer_AdvanceIfElapsed(self._this, period)
 end
 
 ---@return number

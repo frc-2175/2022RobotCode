@@ -84,11 +84,6 @@ LUAFUNC void VictorSPX_SetSensorPhase(void* _this, bool PhaseSensor) {
         ->SetSensorPhase(PhaseSensor);
 }
 
-LUAFUNC void VictorSPX_SetInvertedBool(void* _this, bool invert) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->SetInverted(invert);
-}
-
 LUAFUNC void VictorSPX_SetInverted(void* _this, int invertType) {
     ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
         ->SetInverted((ctre::phoenix::motorcontrol::InvertType)invertType);
@@ -228,12 +223,6 @@ LUAFUNC int VictorSPX_SetSelectedSensorPosition(void* _this, double sensorPos, i
 LUAFUNC int VictorSPX_SetControlFramePeriod(void* _this, int frame, int periodMs) {
     auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
         ->SetControlFramePeriod((ctre::phoenix::motorcontrol::ControlFrame)frame, periodMs);
-    return (int)_result;
-}
-
-LUAFUNC int VictorSPX_ConfigVelocityMeasurementWindow(void* _this, int windowSize, int timeoutMs) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->ConfigVelocityMeasurementWindow(windowSize, timeoutMs);
     return (int)_result;
 }
 
@@ -538,43 +527,6 @@ LUAFUNC void VictorSPX_ValueUpdated(void* _this) {
         ->ValueUpdated();
 }
 
-LUAFUNC void VictorSPX_Set(void* _this, double speed) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->Set(speed);
-}
-
-LUAFUNC double VictorSPX_Get(void* _this) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->Get();
-    return (double)_result;
-}
-
-LUAFUNC void VictorSPX_SetVoltage(void* _this, double output) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->SetVoltage((units::volt_t)output);
-}
-
-LUAFUNC void VictorSPX_SetInverted(void* _this, bool isInverted) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->SetInverted(isInverted);
-}
-
-LUAFUNC bool VictorSPX_GetInverted(void* _this) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->GetInverted();
-    return (bool)_result;
-}
-
-LUAFUNC void VictorSPX_Disable(void* _this) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->Disable();
-}
-
-LUAFUNC void VictorSPX_StopMotor(void* _this) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
-        ->StopMotor();
-}
-
 LUAFUNC void VictorSPX_Feed(void* _this) {
     ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
         ->Feed();
@@ -692,11 +644,6 @@ LUAFUNC void TalonSRX_SetNeutralMode(void* _this, int neutralMode) {
 LUAFUNC void TalonSRX_SetSensorPhase(void* _this, bool PhaseSensor) {
     ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
         ->SetSensorPhase(PhaseSensor);
-}
-
-LUAFUNC void TalonSRX_SetInvertedBool(void* _this, bool invert) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->SetInverted(invert);
 }
 
 LUAFUNC void TalonSRX_SetInverted(void* _this, int invertType) {
@@ -838,12 +785,6 @@ LUAFUNC int TalonSRX_SetSelectedSensorPosition(void* _this, double sensorPos, in
 LUAFUNC int TalonSRX_SetControlFramePeriod(void* _this, int frame, int periodMs) {
     auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
         ->SetControlFramePeriod((ctre::phoenix::motorcontrol::ControlFrame)frame, periodMs);
-    return (int)_result;
-}
-
-LUAFUNC int TalonSRX_ConfigVelocityMeasurementWindow(void* _this, int windowSize, int timeoutMs) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->ConfigVelocityMeasurementWindow(windowSize, timeoutMs);
     return (int)_result;
 }
 
@@ -1148,43 +1089,6 @@ LUAFUNC void TalonSRX_ValueUpdated(void* _this) {
         ->ValueUpdated();
 }
 
-LUAFUNC void TalonSRX_Set(void* _this, double speed) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->Set(speed);
-}
-
-LUAFUNC double TalonSRX_Get(void* _this) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->Get();
-    return (double)_result;
-}
-
-LUAFUNC void TalonSRX_SetVoltage(void* _this, double output) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->SetVoltage((units::volt_t)output);
-}
-
-LUAFUNC void TalonSRX_SetInverted(void* _this, bool isInverted) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->SetInverted(isInverted);
-}
-
-LUAFUNC bool TalonSRX_GetInverted(void* _this) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->GetInverted();
-    return (bool)_result;
-}
-
-LUAFUNC void TalonSRX_Disable(void* _this) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->Disable();
-}
-
-LUAFUNC void TalonSRX_StopMotor(void* _this) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
-        ->StopMotor();
-}
-
 LUAFUNC void TalonSRX_Feed(void* _this) {
     ((ctre::phoenix::motorcontrol::can::WPI_TalonSRX*)_this)
         ->Feed();
@@ -1387,11 +1291,6 @@ LUAFUNC void TalonFX_SetSensorPhase(void* _this, bool PhaseSensor) {
         ->SetSensorPhase(PhaseSensor);
 }
 
-LUAFUNC void TalonFX_SetInvertedBool(void* _this, bool invert) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->SetInverted(invert);
-}
-
 LUAFUNC void TalonFX_SetInverted(void* _this, int invertType) {
     ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
         ->SetInverted((ctre::phoenix::motorcontrol::InvertType)invertType);
@@ -1531,12 +1430,6 @@ LUAFUNC int TalonFX_SetSelectedSensorPosition(void* _this, double sensorPos, int
 LUAFUNC int TalonFX_SetControlFramePeriod(void* _this, int frame, int periodMs) {
     auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
         ->SetControlFramePeriod((ctre::phoenix::motorcontrol::ControlFrame)frame, periodMs);
-    return (int)_result;
-}
-
-LUAFUNC int TalonFX_ConfigVelocityMeasurementWindow(void* _this, int windowSize, int timeoutMs) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->ConfigVelocityMeasurementWindow(windowSize, timeoutMs);
     return (int)_result;
 }
 
@@ -1839,43 +1732,6 @@ LUAFUNC void TalonFX_Follow(void* _this, void * masterToFollow) {
 LUAFUNC void TalonFX_ValueUpdated(void* _this) {
     ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
         ->ValueUpdated();
-}
-
-LUAFUNC void TalonFX_Set(void* _this, double speed) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->Set(speed);
-}
-
-LUAFUNC double TalonFX_Get(void* _this) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->Get();
-    return (double)_result;
-}
-
-LUAFUNC void TalonFX_SetVoltage(void* _this, double output) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->SetVoltage((units::volt_t)output);
-}
-
-LUAFUNC void TalonFX_SetInverted(void* _this, bool isInverted) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->SetInverted(isInverted);
-}
-
-LUAFUNC bool TalonFX_GetInverted(void* _this) {
-    auto _result = ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->GetInverted();
-    return (bool)_result;
-}
-
-LUAFUNC void TalonFX_Disable(void* _this) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->Disable();
-}
-
-LUAFUNC void TalonFX_StopMotor(void* _this) {
-    ((ctre::phoenix::motorcontrol::can::WPI_TalonFX*)_this)
-        ->StopMotor();
 }
 
 LUAFUNC void TalonFX_Feed(void* _this) {

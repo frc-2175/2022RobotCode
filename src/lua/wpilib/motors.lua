@@ -164,12 +164,6 @@ function VictorSPX:setSensorPhase(PhaseSensor)
     ffi.C.VictorSPX_SetSensorPhase(self._this, PhaseSensor)
 end
 
----@param invert boolean
----@return any
-function VictorSPX:setInvertedBool(invert)
-    ffi.C.VictorSPX_SetInvertedBool(self._this, invert)
-end
-
 ---@param invertType integer
 ---@return any
 function VictorSPX:setInverted(invertType)
@@ -370,16 +364,6 @@ function VictorSPX:setControlFramePeriod(frame, periodMs)
     frame = AssertInt(frame)
     periodMs = AssertInt(periodMs)
     return ffi.C.VictorSPX_SetControlFramePeriod(self._this, frame, periodMs)
-end
-
----@param windowSize integer
----@param timeoutMs? integer
----@return integer
-function VictorSPX:configVelocityMeasurementWindow(windowSize, timeoutMs)
-    timeoutMs = timeoutMs or 0
-    windowSize = AssertInt(windowSize)
-    timeoutMs = AssertInt(timeoutMs)
-    return ffi.C.VictorSPX_ConfigVelocityMeasurementWindow(self._this, windowSize, timeoutMs)
 end
 
 ---@param enable boolean
@@ -813,46 +797,6 @@ function VictorSPX:valueUpdated()
     ffi.C.VictorSPX_ValueUpdated(self._this)
 end
 
----@param speed number
----@return any
-function VictorSPX:set(speed)
-    speed = AssertNumber(speed)
-    ffi.C.VictorSPX_Set(self._this, speed)
-end
-
----@return number
-function VictorSPX:get()
-    return ffi.C.VictorSPX_Get(self._this)
-end
-
----@param output number
----@return any
-function VictorSPX:setVoltage(output)
-    output = AssertNumber(output)
-    ffi.C.VictorSPX_SetVoltage(self._this, output)
-end
-
----@param isInverted boolean
----@return any
-function VictorSPX:setInverted(isInverted)
-    ffi.C.VictorSPX_SetInverted(self._this, isInverted)
-end
-
----@return boolean
-function VictorSPX:getInverted()
-    return ffi.C.VictorSPX_GetInverted(self._this)
-end
-
----@return any
-function VictorSPX:disable()
-    ffi.C.VictorSPX_Disable(self._this)
-end
-
----@return any
-function VictorSPX:stopMotor()
-    ffi.C.VictorSPX_StopMotor(self._this)
-end
-
 ---@return any
 function VictorSPX:feed()
     ffi.C.VictorSPX_Feed(self._this)
@@ -1008,12 +952,6 @@ end
 ---@return any
 function TalonSRX:setSensorPhase(PhaseSensor)
     ffi.C.TalonSRX_SetSensorPhase(self._this, PhaseSensor)
-end
-
----@param invert boolean
----@return any
-function TalonSRX:setInvertedBool(invert)
-    ffi.C.TalonSRX_SetInvertedBool(self._this, invert)
 end
 
 ---@param invertType integer
@@ -1216,16 +1154,6 @@ function TalonSRX:setControlFramePeriod(frame, periodMs)
     frame = AssertInt(frame)
     periodMs = AssertInt(periodMs)
     return ffi.C.TalonSRX_SetControlFramePeriod(self._this, frame, periodMs)
-end
-
----@param windowSize integer
----@param timeoutMs? integer
----@return integer
-function TalonSRX:configVelocityMeasurementWindow(windowSize, timeoutMs)
-    timeoutMs = timeoutMs or 0
-    windowSize = AssertInt(windowSize)
-    timeoutMs = AssertInt(timeoutMs)
-    return ffi.C.TalonSRX_ConfigVelocityMeasurementWindow(self._this, windowSize, timeoutMs)
 end
 
 ---@param enable boolean
@@ -1659,46 +1587,6 @@ function TalonSRX:valueUpdated()
     ffi.C.TalonSRX_ValueUpdated(self._this)
 end
 
----@param speed number
----@return any
-function TalonSRX:set(speed)
-    speed = AssertNumber(speed)
-    ffi.C.TalonSRX_Set(self._this, speed)
-end
-
----@return number
-function TalonSRX:get()
-    return ffi.C.TalonSRX_Get(self._this)
-end
-
----@param output number
----@return any
-function TalonSRX:setVoltage(output)
-    output = AssertNumber(output)
-    ffi.C.TalonSRX_SetVoltage(self._this, output)
-end
-
----@param isInverted boolean
----@return any
-function TalonSRX:setInverted(isInverted)
-    ffi.C.TalonSRX_SetInverted(self._this, isInverted)
-end
-
----@return boolean
-function TalonSRX:getInverted()
-    return ffi.C.TalonSRX_GetInverted(self._this)
-end
-
----@return any
-function TalonSRX:disable()
-    ffi.C.TalonSRX_Disable(self._this)
-end
-
----@return any
-function TalonSRX:stopMotor()
-    ffi.C.TalonSRX_StopMotor(self._this)
-end
-
 ---@return any
 function TalonSRX:feed()
     ffi.C.TalonSRX_Feed(self._this)
@@ -1974,12 +1862,6 @@ function TalonFX:setSensorPhase(PhaseSensor)
     ffi.C.TalonFX_SetSensorPhase(self._this, PhaseSensor)
 end
 
----@param invert boolean
----@return any
-function TalonFX:setInvertedBool(invert)
-    ffi.C.TalonFX_SetInvertedBool(self._this, invert)
-end
-
 ---@param invertType integer
 ---@return any
 function TalonFX:setInverted(invertType)
@@ -2180,16 +2062,6 @@ function TalonFX:setControlFramePeriod(frame, periodMs)
     frame = AssertInt(frame)
     periodMs = AssertInt(periodMs)
     return ffi.C.TalonFX_SetControlFramePeriod(self._this, frame, periodMs)
-end
-
----@param windowSize integer
----@param timeoutMs? integer
----@return integer
-function TalonFX:configVelocityMeasurementWindow(windowSize, timeoutMs)
-    timeoutMs = timeoutMs or 0
-    windowSize = AssertInt(windowSize)
-    timeoutMs = AssertInt(timeoutMs)
-    return ffi.C.TalonFX_ConfigVelocityMeasurementWindow(self._this, windowSize, timeoutMs)
 end
 
 ---@param enable boolean
@@ -2621,46 +2493,6 @@ end
 ---@return any
 function TalonFX:valueUpdated()
     ffi.C.TalonFX_ValueUpdated(self._this)
-end
-
----@param speed number
----@return any
-function TalonFX:set(speed)
-    speed = AssertNumber(speed)
-    ffi.C.TalonFX_Set(self._this, speed)
-end
-
----@return number
-function TalonFX:get()
-    return ffi.C.TalonFX_Get(self._this)
-end
-
----@param output number
----@return any
-function TalonFX:setVoltage(output)
-    output = AssertNumber(output)
-    ffi.C.TalonFX_SetVoltage(self._this, output)
-end
-
----@param isInverted boolean
----@return any
-function TalonFX:setInverted(isInverted)
-    ffi.C.TalonFX_SetInverted(self._this, isInverted)
-end
-
----@return boolean
-function TalonFX:getInverted()
-    return ffi.C.TalonFX_GetInverted(self._this)
-end
-
----@return any
-function TalonFX:disable()
-    ffi.C.TalonFX_Disable(self._this)
-end
-
----@return any
-function TalonFX:stopMotor()
-    ffi.C.TalonFX_StopMotor(self._this)
 end
 
 ---@return any

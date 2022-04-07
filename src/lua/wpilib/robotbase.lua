@@ -4,49 +4,53 @@ local ffi = require("ffi")
 require("wpilib.bindings.asserts")
 require("wpilib.bindings.enum")
 
+---@class RobotBase
+---@field _this RobotBase
+RobotBase = {}
+
 ---@return boolean
-function isEnabled()
-    return ffi.C.IsEnabled()
+function RobotBase:isEnabled()
+    return ffi.C.RobotBase_IsEnabled(self._this)
 end
 
 ---@return boolean
-function isDisabled()
-    return ffi.C.IsDisabled()
+function RobotBase:isDisabled()
+    return ffi.C.RobotBase_IsDisabled(self._this)
 end
 
 ---@return boolean
-function isAutonomous()
-    return ffi.C.IsAutonomous()
+function RobotBase:isAutonomous()
+    return ffi.C.RobotBase_IsAutonomous(self._this)
 end
 
 ---@return boolean
-function isAutonomousEnabled()
-    return ffi.C.IsAutonomousEnabled()
+function RobotBase:isAutonomousEnabled()
+    return ffi.C.RobotBase_IsAutonomousEnabled(self._this)
 end
 
 ---@return boolean
-function isOperatorControl()
-    return ffi.C.IsOperatorControl()
+function RobotBase:isOperatorControl()
+    return ffi.C.RobotBase_IsOperatorControl(self._this)
 end
 
 ---@return boolean
-function isTeleop()
-    return ffi.C.IsTeleop()
+function RobotBase:isTeleop()
+    return ffi.C.RobotBase_IsTeleop(self._this)
 end
 
 ---@return boolean
-function isOperatorControlEnabled()
-    return ffi.C.IsOperatorControlEnabled()
+function RobotBase:isOperatorControlEnabled()
+    return ffi.C.RobotBase_IsOperatorControlEnabled(self._this)
 end
 
 ---@return boolean
-function isTeleopEnabled()
-    return ffi.C.IsTeleopEnabled()
+function RobotBase:isTeleopEnabled()
+    return ffi.C.RobotBase_IsTeleopEnabled(self._this)
 end
 
 ---@return boolean
-function isTest()
-    return ffi.C.IsTest()
+function RobotBase:isTest()
+    return ffi.C.RobotBase_IsTest(self._this)
 end
 
 ---@return integer

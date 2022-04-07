@@ -225,11 +225,6 @@ function AHRS:getRawGyroY()
 end
 
 ---@return number
-function AHRS:getRawGyroY()
-    return ffi.C.AHRS_GetRawGyroY(self._this)
-end
-
----@return number
 function AHRS:getRawAccelX()
     return ffi.C.AHRS_GetRawAccelX(self._this)
 end
@@ -287,8 +282,8 @@ function AHRS:enableBoardlevelYawReset(enable)
 end
 
 ---@return boolean
-function AHRS:isBoardLevelYawResetEnabled()
-    return ffi.C.AHRS_IsBoardLevelYawResetEnabled(self._this)
+function AHRS:isBoardlevelYawResetEnabled()
+    return ffi.C.AHRS_IsBoardlevelYawResetEnabled(self._this)
 end
 
 ---@return integer

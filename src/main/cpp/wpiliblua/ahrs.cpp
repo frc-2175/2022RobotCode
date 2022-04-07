@@ -238,12 +238,6 @@ LUAFUNC float AHRS_GetRawGyroY(void* _this) {
     return (float)_result;
 }
 
-LUAFUNC float AHRS_GetRawGyroY(void* _this) {
-    auto _result = ((AHRS*)_this)
-        ->GetRawGyroY();
-    return (float)_result;
-}
-
 LUAFUNC float AHRS_GetRawAccelX(void* _this) {
     auto _result = ((AHRS*)_this)
         ->GetRawAccelX();
@@ -308,9 +302,9 @@ LUAFUNC void AHRS_EnableBoardlevelYawReset(void* _this, bool enable) {
         ->EnableBoardlevelYawReset(enable);
 }
 
-LUAFUNC bool AHRS_IsBoardLevelYawResetEnabled(void* _this) {
+LUAFUNC bool AHRS_IsBoardlevelYawResetEnabled(void* _this) {
     auto _result = ((AHRS*)_this)
-        ->IsBoardLevelYawResetEnabled();
+        ->IsBoardlevelYawResetEnabled();
     return (bool)_result;
 }
 

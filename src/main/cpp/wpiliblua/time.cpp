@@ -5,48 +5,55 @@
 
 #include "luadef.h"
 
-LUAFUNC void new() {
-    ::new();
+LUAFUNC void* Timer_new() {
+    return new frc::Timer();
 }
 
-LUAFUNC double Get() {
-    auto _result = ::Get();
+LUAFUNC double Timer_Get(void* _this) {
+    auto _result = ((frc::Timer*)_this)
+        ->Get();
     return (double)_result;
 }
 
-LUAFUNC void Reset() {
-    ::Reset();
+LUAFUNC void Timer_Reset(void* _this) {
+    ((frc::Timer*)_this)
+        ->Reset();
 }
 
-LUAFUNC void Start() {
-    ::Start();
+LUAFUNC void Timer_Start(void* _this) {
+    ((frc::Timer*)_this)
+        ->Start();
 }
 
-LUAFUNC void Stop() {
-    ::Stop();
+LUAFUNC void Timer_Stop(void* _this) {
+    ((frc::Timer*)_this)
+        ->Stop();
 }
 
-LUAFUNC bool HasElapsed(double period) {
-    auto _result = ::HasElapsed((uints::second_t)period);
+LUAFUNC bool Timer_HasElapsed(void* _this, double period) {
+    auto _result = ((frc::Timer*)_this)
+        ->HasElapsed((units::second_t)period);
     return (bool)_result;
 }
 
-LUAFUNC bool HasPeriodPassed(double period) {
-    auto _result = ::HasPeriodPassed((uints::second_t)period);
+LUAFUNC bool Timer_HasPeriodPassed(void* _this, double period) {
+    auto _result = ((frc::Timer*)_this)
+        ->HasPeriodPassed((units::second_t)period);
     return (bool)_result;
 }
 
-LUAFUNC bool AdvanceIfElapsed(double period) {
-    auto _result = ::AdvanceIfElapsed((uints::second_t)period);
+LUAFUNC bool Timer_AdvanceIfElapsed(void* _this, double period) {
+    auto _result = ((frc::Timer*)_this)
+        ->AdvanceIfElapsed((units::second_t)period);
     return (bool)_result;
 }
 
 LUAFUNC double GetFPGATimestamp() {
-    auto _result = ::GetFPGATimestamp();
+    auto _result = frc::Timer::GetFPGATimestamp();
     return (double)_result;
 }
 
 LUAFUNC double GetMatchTime() {
-    auto _result = ::GetMatchTime();
+    auto _result = frc::Timer::GetMatchTime();
     return (double)_result;
 }
