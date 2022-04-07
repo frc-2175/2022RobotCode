@@ -21,7 +21,7 @@ local downSpeed = 0.1
 Intake = {}
 
 function Intake:up()
-	local speed = arm:set(getTrapezoidSpeed(upSpeed, upSpeed, 0, downPosition, 0, 6, armPosition))
+	local speed = getTrapezoidSpeed(upSpeed, upSpeed, 0, downPosition, 0, 6, armPosition)
 	if armPosition > upPosition then
 		arm:set(speed)
 	else
