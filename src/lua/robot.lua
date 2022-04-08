@@ -24,7 +24,7 @@ function Robot.robotInit()
 	})
 
 	-- testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
-	startAutomaticCapture();
+	startAutomaticCapture()
 end
 
 function Robot.robotPeriodic()
