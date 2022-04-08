@@ -21,6 +21,7 @@ function Robot.robotInit()
 		{ name = "doNothing", value = doNothingAuto },
 		{ name = "taxi", value = taxiAuto },
 		{ name = "oneBallAuto", value = oneBallAuto },
+		{ name = "test", value = testAuto}
 	})
 
 	-- testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
@@ -40,6 +41,7 @@ function Robot.robotPeriodic()
 end
 
 function Robot.autonomousInit()
+	Intake:periodic()
 	navx:reset()
 	resetTracking()
 	selectedAuto = autoChooser:getSelected()

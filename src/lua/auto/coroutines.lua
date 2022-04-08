@@ -1,5 +1,7 @@
 require("utils.path")
 local taxiPath = orientPath(readPath("taxi"))
+local autoPath1 = orientPath(readPath("auto1"))
+local autoPath2 = orientPath(readPath("auto2"))
 local pprint = require("utils.pprint")
 
 doNothingAuto = FancyCoroutine:new(function()
@@ -40,6 +42,56 @@ oneBallAuto = FancyCoroutine:new(function()
 	while taxiAuto:run() do coroutine.yield(true) end
 
 	coroutine.yield(false)
+end)
+
+local auto1 = FancyCoroutine:new(function ()
+	local pathPursuit = PurePursuit:new(
+		autoPath1,
+		false,
+		0.015, 0, 0.002
+	)
+
+	while true do
+		local rotation, speed = pathPursuit:run()
+		putNumber("SPEEN", rotation)
+		Drivetrain:drive(0.6 * speed, rotation)
+		coroutine.yield(speed ~= 0)
+	end
+end)
+
+local auto2 = FancyCoroutine:new(function ()
+	local pathPursuit = PurePursuit:new(
+		autoPath2,
+		false,
+		0.015, 0, 0.002,
+		{
+			intakeStart = function ()
+				Intake:down()
+				Intake:rollIn()
+			end,
+			intakeStop = function ()
+				Intake:up()
+			end,
+			shoot = function ()
+				Intake:rollOut()
+			end
+		}
+	)
+
+	while true do
+		local rotation, speed = pathPursuit:run()
+		putNumber("Rotation", rotation)
+		Drivetrain:drive(0.6 * speed, rotation)
+		coroutine.yield(speed ~= 0)
+	end
+end)
+
+testAuto = FancyCoroutine:new(function ()
+	auto1:reset()
+	while auto1:run() do coroutine.yield() end
+	
+	auto2:reset()
+	while auto2:run() do coroutine.yield() end
 end)
 
 test("FancyCoroutine", function (t)

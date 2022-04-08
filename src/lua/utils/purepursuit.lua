@@ -4,6 +4,7 @@ require("utils.pid")
 require("wpilib.ahrs")
 require("wpilib.motors")
 require("wpilib.time")
+local pprint = require("utils.pprint")
 
 local TICKS_TO_INCHES = (6 * math.pi) / (2048 * 10)
 local SEARCH_DISTANCE = 36 -- 36 inches before and after the last closest point
@@ -130,6 +131,7 @@ end
 
 ---@return number turnValue, number speed
 function PurePursuit:run()
+	pprint(self.path.triggerPoints)
 	self.purePursuitPID:updateTime(getFPGATimestamp())
 
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
@@ -152,6 +154,7 @@ function PurePursuit:run()
 	end
 
 	for i = self.previousClosestPoint, indexOfClosestPoint do
+		print(i)
 		if self.path.triggerPoints[i] ~= nil then
 			self.triggerFuncs[self.path.triggerPoints.name]()
 		end
