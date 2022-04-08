@@ -20,11 +20,11 @@ function Robot.robotInit()
 	autoChooser:putChooser({
 		{ name = "doNothing", value = doNothingAuto },
 		{ name = "taxi", value = taxiAuto },
-		{ name = "oneBallAuto", value = oneBallAuto }
+		{ name = "oneBallAuto", value = oneBallAuto },
 	})
 
 	-- testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
-	-- startAutomaticCapture();
+	startAutomaticCapture();
 end
 
 function Robot.robotPeriodic()
@@ -48,7 +48,7 @@ end
 
 function Robot.autonomousPeriodic()
 	trackLocation(leftMotor, rightMotor)
-	selectedAuto:runWhile(true)
+	selectedAuto:run()
 end
 
 function Robot.teleopInit()
@@ -57,16 +57,17 @@ function Robot.teleopInit()
 end
 
 function Robot.teleopPeriodic()
-	-- joystick driving
+	Intake:periodic()
 
+	-- joystick driving
 	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
 
-	if gamepad:getButtonHeld(XboxButton.RightBumper) or rightStick:getTriggerHeld() then
+	if gamepad:getButtonPressed(XboxButton.RightBumper) or rightStick:getTriggerPressed() then
 		Intake:down()
-	elseif gamepad:getButtonHeld(XboxButton.LeftBumper) or leftStick:getTriggerHeld() then
+	end
+
+	if gamepad:getButtonReleased(XboxButton.RightBumper) or rightStick:getTriggerReleased() then
 		Intake:up()
-	else
-		Intake:stopArm()
 	end
 
 	if gamepad:getButtonHeld(XboxButton.Start) then

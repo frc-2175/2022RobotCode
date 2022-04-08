@@ -1,10 +1,12 @@
+require("utils.path")
 local taxiPath = orientPath(readPath("taxi"))
+local pprint = require("utils.pprint")
 
-doNothingAuto = newFancyCoroutine(function()
+doNothingAuto = FancyCoroutine:new(function()
 	print("We are doing nothing in auto!!!")
 end)
 
-taxiAuto = newFancyCoroutine(function ()
+taxiAuto = FancyCoroutine:new(function ()
 	local pathPursuit = PurePursuit:new(
 		taxiPath,
 		true,
@@ -15,20 +17,63 @@ taxiAuto = newFancyCoroutine(function ()
 		local rotation, speed = pathPursuit:run()
 		putNumber("Rotation", rotation)
 		Drivetrain:drive(0.6 * speed, rotation)
-		coroutine.yield()
+		coroutine.yield(speed ~= 0)
 	end
 end)
 
-oneBallAuto = newFancyCoroutine(function()
+shootBall = FancyCoroutine:new(function ()
 	local cargoTimer = Timer:new()
 	cargoTimer:start()
 	while not cargoTimer:hasElapsed(1) do
 		Intake:rollOut()
-		coroutine.yield()
+		coroutine.yield(true)
 	end
 	Intake:stop()
+	coroutine.yield(false)
+end)
 
-	while true do
-		taxiAuto:run()
-	end
+oneBallAuto = FancyCoroutine:new(function()
+	shootBall:reset()
+	while shootBall:run() do coroutine.yield(true) end
+
+	taxiAuto:reset()
+	while taxiAuto:run() do coroutine.yield(true) end
+
+	coroutine.yield(false)
+end)
+
+test("FancyCoroutine", function (t)
+	local testTable = {}
+	local appendOne = FancyCoroutine:new(function ()
+		for i = 1, 3 do
+			table.insert(testTable, 1)
+			coroutine.yield(true)
+		end
+		coroutine.yield(false)
+	end)
+	local appendTwo = FancyCoroutine:new(function ()
+		for i = 1, 3 do
+			table.insert(testTable, 2)
+			coroutine.yield(true)
+		end
+		coroutine.yield(false)
+	end)
+	local appendBoth = FancyCoroutine:new(function ()
+		appendOne:reset()
+		while appendOne:run() do
+			coroutine.yield()
+		end
+
+		appendTwo:reset()
+		while appendTwo:run() do
+			coroutine.yield()
+		end
+	end)
+	appendBoth:run()
+	appendBoth:run()
+	appendBoth:run()
+	appendBoth:run()
+	appendBoth:run()
+	appendBoth:run()
+	pprint(testTable)
 end)

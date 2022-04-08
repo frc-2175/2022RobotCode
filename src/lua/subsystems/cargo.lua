@@ -18,25 +18,35 @@ local upSpeed = 1
 local midSpeed = 0.3
 local downSpeed = 0.2
 
+local armDown = false -- false is up true is down
+
 ---@class Intake
 Intake = {}
 
-function Intake:up()
-	if armPosition > midPosition then
-		arm:set(upSpeed)
-	elseif armPosition > upPosition then
-		arm:set(midSpeed)
+function Intake:periodic()
+	if armDown then
+		if armPosition < downPosition then
+			arm:set(-downSpeed)
+		else
+			arm:set(0)
+		end
 	else
-		arm:set(0)
+		if armPosition > midPosition then
+			arm:set(upSpeed)
+		elseif armPosition > upPosition then
+			arm:set(midSpeed)
+		else
+			arm:set(0)
+		end
 	end
 end
 
+function Intake:up()
+	armDown = false
+end
+
 function Intake:down()
-	if armPosition < downPosition then
-		arm:set(-downSpeed)
-	else
-		arm:set(0)
-	end
+	armDown = true
 end
 
 function Intake:stopArm()
@@ -44,11 +54,11 @@ function Intake:stopArm()
 end
 
 function Intake:rollIn()
-	intakeMotor:set(-0.7)
+	intakeMotor:set(-1)
 end
 
 function Intake:rollOut()
-	intakeMotor:set(0.7)
+	intakeMotor:set(1)
 end
 
 function Intake:stop()

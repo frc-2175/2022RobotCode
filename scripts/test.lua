@@ -118,6 +118,10 @@ function fakefile()
     return t
 end
 
+function getDeployDirectory()
+	return 'deploy'
+end
+
 -------------------------------------------------------------------------------
 -- Create our actual global test module
 
