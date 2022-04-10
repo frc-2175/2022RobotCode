@@ -22,11 +22,11 @@ function Winch:runIn()
 end
 
 function Winch:runIn1()
-	winchMotor:set(speed)
+	winchMotor:set(speed / 4)
 end
 
 function Winch:runIn2()
-	winchFollower:set(speed)
+	winchFollower:set(speed / 4)
 end
 
 
@@ -37,11 +37,11 @@ function Winch:runOut()
 end
 
 function Winch:runOut1()
-	winchMotor:set(-speed)
+	winchMotor:set(-speed / 4)
 end
 
 function Winch:runOut2()
-	winchFollower:set(-speed)
+	winchFollower:set(-speed / 4)
 end
 
 

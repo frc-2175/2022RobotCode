@@ -44,22 +44,24 @@ oneBallAuto = FancyCoroutine:new(function()
 	coroutine.yield(false)
 end)
 
-local auto1 = FancyCoroutine:new(function ()
+auto1 = FancyCoroutine:new(function ()
 	local pathPursuit = PurePursuit:new(
 		autoPath1,
 		false,
 		0.015, 0, 0.002
 	)
 
+	local i = 0
 	while true do
+		i = i + 1
 		local rotation, speed = pathPursuit:run()
-		putNumber("SPEEN", rotation)
+		print("speen!!!", speed)
 		Drivetrain:drive(0.6 * speed, rotation)
 		coroutine.yield(speed ~= 0)
 	end
 end)
 
-local auto2 = FancyCoroutine:new(function ()
+auto2 = FancyCoroutine:new(function ()
 	local pathPursuit = PurePursuit:new(
 		autoPath2,
 		false,
@@ -87,11 +89,31 @@ local auto2 = FancyCoroutine:new(function ()
 end)
 
 testAuto = FancyCoroutine:new(function ()
-	auto1:reset()
-	while auto1:run() do coroutine.yield() end
+	local pathPursuit = PurePursuit:new(
+		orientPath(readPath("test")),
+		false,
+		0.015, 0, 0.002,
+		{
+			start1 = function()
+				Intake:down()
+				Intake:rollIn()
+			end,
+			start3 = function()
+				Intake:up()
+				Intake:stop()
+			end,
+			end3 = function()
+				Intake:rollOut()
+			end
+		}
+	)
 	
-	auto2:reset()
-	while auto2:run() do coroutine.yield() end
+	while true do
+		local rotation, speed = pathPursuit:run()
+		putNumber("Rotation", rotation)
+		Drivetrain:drive(0.6 * speed, rotation)
+		coroutine.yield()
+	end
 end)
 
 test("FancyCoroutine", function (t)

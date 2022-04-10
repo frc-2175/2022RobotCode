@@ -41,14 +41,19 @@ function Robot.robotPeriodic()
 end
 
 function Robot.autonomousInit()
-	Intake:periodic()
 	navx:reset()
 	resetTracking()
 	selectedAuto = autoChooser:getSelected()
 	selectedAuto:reset()
+	testPursuit = PurePursuit:new(
+		orientPath(readPath("p")),
+		false,
+		0.015, 0, 0.002
+	)
 end
 
 function Robot.autonomousPeriodic()
+	Intake:periodic()
 	trackLocation(leftMotor, rightMotor)
 	selectedAuto:run()
 end
@@ -80,6 +85,12 @@ function Robot.teleopPeriodic()
 		Intake:down()
 	else
 		Winch:stop()
+	end
+
+	if gamepad:getButtonHeld(XboxButton.B) then
+		Winch:runIn1()
+	elseif gamepad:getButtonHeld(XboxButton.X) then
+		Winch:runIn2()
 	end
 
 	

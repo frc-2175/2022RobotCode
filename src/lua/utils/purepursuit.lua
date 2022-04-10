@@ -74,7 +74,7 @@ function trackLocation(leftMotor, rightMotor)
 	-- calculates avg distance traveled
 	distance = (distanceLeft + distanceRight) / 2
 	-- get our heading in radians
-	angle = math.rad(navx:getAngle() - angleOffset)
+	local angle = math.rad(navx:getAngle() - angleOffset)
 
 	-- make a vector representing our change in position since last time
 	x = math.sin(angle) * distance
@@ -131,7 +131,7 @@ end
 
 ---@return number turnValue, number speed
 function PurePursuit:run()
-	pprint(self.path.triggerPoints)
+	-- pprint(self.path.triggerPoints)
 	self.purePursuitPID:updateTime(getFPGATimestamp())
 
 	local indexOfClosestPoint = findClosestPoint(self.path, position, self.previousClosestPoint)
@@ -153,10 +153,10 @@ function PurePursuit:run()
 		speed = -speed
 	end
 
-	for i = self.previousClosestPoint, indexOfClosestPoint do
+	for i = self.previousClosestPoint - 1, indexOfClosestPoint do
 		print(i)
 		if self.path.triggerPoints[i] ~= nil then
-			self.triggerFuncs[self.path.triggerPoints.name]()
+			self.triggerFuncs[self.path.triggerPoints[i]]()
 		end
 	end
 
@@ -173,7 +173,7 @@ function PurePursuit:run()
 		putNumber("goal", indexOfGoalPoint)
 		putNumber("max", self.path.numberOfActualPoints)
 		putNumber("x", position.x)
-		putNumber("x", position.y)
+		putNumber("y", position.y)
 	end
 	return turnValue, speed
 end
