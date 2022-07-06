@@ -53,7 +53,6 @@
 		},
 		{
 			"label": "Download Godot",
-			"group": "build",
 			"type": "shell",
 			"windows": {
 				"command": "${workspaceFolder}\\scripts\\download_godot.bat",
@@ -65,7 +64,6 @@
 		},
 		{
 			"label": "Edit Godot Simulator",
-			"group": "build",
 			"type": "process",
 			"windows": {
 				"command": "${workspaceFolder}\\lib\\bin\\godot\\Godot_v3.4.2-stable_win64.exe",
@@ -88,10 +86,12 @@
 		},
 		{
 			"label": "Run Godot Simulator",
-			"group": "build",
 			"type": "process",
 			"windows": {
 				"command": "${workspaceFolder}\\simulator\\bin\\win64\\simulator.exe"
+			},
+			"osx": {
+				"command": "echo 'The Godot simulator is not supported on macOS.' && exit 1",
 			}
 		}
 	],
