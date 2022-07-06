@@ -143,6 +143,16 @@ function isTest()
 	return os.getenv("LUA_TEST") ~= nil
 end
 
+-- Unpack shenanigans didn't work :(
+local function sameSizeTablesEqual(a, b)
+	for i = 1, #a do
+		if a[i] ~= b[i] then
+			return false
+		end
+	end
+	return true
+end
+
 local t = {}
 
 --- Assert that a condition is true.
@@ -169,8 +179,13 @@ function t:assertEqual(actual, expected, message)
 			.. "Expected: " .. pprint.pformat(expected) .. "\n"
 			.. "Actual  : " .. pprint.pformat(actual) .. "\n"
 		)
-		assert(table.unpack(actual) == table.unpack(expected),
-			errorPrefix .. "values were not equal: expected " .. tostring(expected) .. ", but got " .. tostring(actual))
+		assert(sameSizeTablesEqual(actual, expected),
+			errorPrefix ..
+			"table values were not equal\n"
+			.. "\n"
+			.. "Expected: " .. pprint.pformat(expected) .. "\n"
+			.. "Actual  : " .. pprint.pformat(actual) .. "\n"
+		)
 	elseif type(actual) == "number" and type(expected) == "number" then
 		assert(math.abs(actual - expected) < 0.00001, defaultMsg)
 	else

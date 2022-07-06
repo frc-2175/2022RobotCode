@@ -102,7 +102,7 @@ test(
 end
 )
 
-test(
+testSkip(
 	"makePath", function(t)
 	local path = makePath(
 		false, 0, Vector:new(0, 0), {

@@ -121,21 +121,24 @@ test("auto routine, nested", function(t)
 
 	t:assertEqual(results, {})
 	auto:tick()
-	t:assertEqual(results, { "auto/1", "p1/1", "p1/1", "p2/1" })
+	t:assertEqual(results, { "auto/1", "p1(x)/1", "p1(y)/1", "p2/1" })
 	auto:tick()
-	t:assertEqual(results, { "auto/1", "p1/1", "p1/1", "p2/1", "auto/2", "p1/2", "p1/2", "p2/2" })
-	auto:tick()
-	t:assertEqual(results,
-		{ "auto/1", "p1/1", "p1/1", "p2/1", "auto/2", "p1/2", "p1/2", "p2/2", "auto/3", "p1/3", "p1/3" })
+	t:assertEqual(results, { "auto/1", "p1(x)/1", "p1(y)/1", "p2/1", "auto/2", "p1(x)/2", "p1(y)/2", "p2/2" })
 	auto:tick()
 	t:assertEqual(results,
-		{ "auto/1", "p1/1", "p1/1", "p2/1", "auto/2", "p1/2", "p1/2", "p2/2", "auto/3", "p1/3", "p1/3", "auto/4" })
+		{ "auto/1", "p1(x)/1", "p1(y)/1", "p2/1", "auto/2", "p1(x)/2", "p1(y)/2", "p2/2", "auto/3", "p1(x)/3", "p1(y)/3" })
 	auto:tick()
 	t:assertEqual(results,
-		{ "auto/1", "p1/1", "p1/1", "p2/1", "auto/2", "p1/2", "p1/2", "p2/2", "auto/3", "p1/3", "p1/3", "auto/4", "auto/5" })
+		{ "auto/1", "p1(x)/1", "p1(y)/1", "p2/1", "auto/2", "p1(x)/2", "p1(y)/2", "p2/2", "auto/3", "p1(x)/3", "p1(y)/3",
+			"auto/4" })
+	auto:tick()
+	t:assertEqual(results,
+		{ "auto/1", "p1(x)/1", "p1(y)/1", "p2/1", "auto/2", "p1(x)/2", "p1(y)/2", "p2/2", "auto/3", "p1(x)/3", "p1(y)/3",
+			"auto/4", "auto/5" })
 
 	-- one more tick for old times' sake
 	auto:tick()
 	t:assertEqual(results,
-		{ "auto/1", "p1/1", "p1/1", "p2/1", "auto/2", "p1/2", "p1/2", "p2/2", "auto/3", "p1/3", "p1/3", "auto/4", "auto/5" })
+		{ "auto/1", "p1(x)/1", "p1(y)/1", "p2/1", "auto/2", "p1(x)/2", "p1(y)/2", "p2/2", "auto/3", "p1(x)/3", "p1(y)/3",
+			"auto/4", "auto/5" })
 end)
