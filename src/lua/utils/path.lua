@@ -101,7 +101,7 @@ Path = {}
 
 ---@param path Vector[]
 ---@param numberOfActualPoints integer
----@param triggerPoints table
+---@param triggerPoints? table
 ---@return Path path
 function Path:new(path, numberOfActualPoints, triggerPoints)
 	triggerPoints = triggerPoints or {}
@@ -124,7 +124,7 @@ end
 
 function Path:negated()
 	local negatedPath = {}
-	
+
 	for i, value in ipairs(self.path) do
 		negatedPath[i] = -value
 	end
@@ -176,45 +176,49 @@ end
 function readPath(fileName)
 	local rawFile, err = io.open(dir .. fileName .. ".path")
 	if err ~= nil then -- this one's for you, gophers.
-		return { Vector:new(0, 0) }
+		if isTest() then
+			return Path:new({ Vector:new(0, 0), Vector:new(0, 0) }, 0, {})
+		else
+			error(err)
+		end
 	end
-    ---@type Vector[]
-    local fileContents = json.decode(rawFile:read("a"))
-    ---@type Vector[]
-    local resultPath = {}
+	---@type Vector[]
+	local fileContents = json.decode(rawFile:read("a"))
+	---@type Vector[]
+	local resultPath = {}
 
-    for i, value in ipairs(fileContents.points) do
-        resultPath[i] = Vector:new(value.x, value.y)
-    end
+	for i, value in ipairs(fileContents.points) do
+		resultPath[i] = Vector:new(value.x, value.y)
+	end
 
 	local triggerPoints = {}
 
 	for i, value in ipairs(fileContents.triggerPoints) do
-        triggerPoints[math.floor(value.distance)] = value.name
-    end
+		triggerPoints[math.floor(value.distance)] = value.name
+	end
 
-    return Path:new(resultPath, 0, triggerPoints)
+	return Path:new(resultPath, 0, triggerPoints)
 end
 
 ---@param filePath Path
 ---@return Path
 function orientPath(filePath)
-    local resultPath = {}
+	local resultPath = {}
 	local points = filePath.path
 
-    local firstSegment = points[2] - points[1]
-    local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
+	local firstSegment = points[2] - points[1]
+	local angleOffset = math.atan2(-firstSegment.x, firstSegment.y)
 
-    for i, value in ipairs(points) do
-        resultPath[i] = (value - points[1]):rotate(-angleOffset)
-    end
+	for i, value in ipairs(points) do
+		resultPath[i] = (value - points[1]):rotate(-angleOffset)
+	end
 
-    local finalSegment = resultPath[#resultPath] - resultPath[#resultPath - 1]
-    local finalAng = math.atan2(finalSegment.y, finalSegment.x)
+	local finalSegment = resultPath[#resultPath] - resultPath[#resultPath - 1]
+	local finalAng = math.atan2(finalSegment.y, finalSegment.x)
 
-    for i = 1, EXTRA_POINTS do
-        resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(1, 0):rotate(finalAng)
-    end
+	for i = 1, EXTRA_POINTS do
+		resultPath[#resultPath + 1] = resultPath[#resultPath] + Vector:new(1, 0):rotate(finalAng)
+	end
 
-    return Path:new(resultPath, #resultPath - EXTRA_POINTS, filePath.triggerPoints)
+	return Path:new(resultPath, #resultPath - EXTRA_POINTS, filePath.triggerPoints)
 end

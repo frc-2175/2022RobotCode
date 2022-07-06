@@ -4,14 +4,9 @@
 ---@field done boolean
 AutoRoutine = {}
 
----@param f? function
+---@param f function
 ---@return AutoRoutine
 function AutoRoutine:new(f)
-	-- A little weird, but: this allows us to "clone" a routine by calling :new on it.
-	if not f then
-		return AutoRoutine:new(self.f)
-	end
-
 	local o = {
 		f = f,
 		co = nil,
@@ -25,11 +20,13 @@ function AutoRoutine:new(f)
 	return o
 end
 
+--- Resets an auto routine to the start.
 function AutoRoutine:reset()
 	self.co = coroutine.create(self.f)
 	self.done = false
 end
 
+--- Runs one tick of the auto routine (until a `coroutine.yield()`).
 function AutoRoutine:tick()
 	if self.done then
 		return
@@ -90,22 +87,29 @@ end)
 
 test("auto routine, nested", function(t)
 	local results = {}
-	local piece1 = AutoRoutine:new(function()
-		for i = 1, 3 do
-			table.insert(results, "p1/" .. i)
-			coroutine.yield()
-		end
-	end)
-	local piece2 = AutoRoutine:new(function()
-		for i = 1, 2 do
-			table.insert(results, "p2/" .. i)
-			coroutine.yield()
-		end
-	end)
+
+	local function piece1(v)
+		return AutoRoutine:new(function()
+			for i = 1, 3 do
+				table.insert(results, "p1(" .. v .. ")/" .. i)
+				coroutine.yield()
+			end
+		end)
+	end
+
+	local function piece2()
+		return AutoRoutine:new(function()
+			for i = 1, 2 do
+				table.insert(results, "p2/" .. i)
+				coroutine.yield()
+			end
+		end)
+	end
+
 	local auto = AutoRoutine:new(function()
-		local p1_1 = piece1:new()
-		local p1_2 = piece1:new()
-		local p2 = piece2:new()
+		local p1_1 = piece1("x")
+		local p1_2 = piece1("y")
+		local p2 = piece2()
 		for i = 1, 5 do
 			table.insert(results, "auto/" .. i)
 			p1_1:tick()

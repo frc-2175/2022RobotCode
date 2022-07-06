@@ -7,6 +7,7 @@ PathSep = package.config:sub(1, 1)
 ResetColor = "\27[0m"
 Red = "\27[31m"
 Green = "\27[32m"
+Yellow = "\27[33m"
 Blue = "\27[94m"
 
 function getOS()
@@ -125,10 +126,21 @@ end
 -------------------------------------------------------------------------------
 -- Create our actual global test module
 
+local TEST_SKIPPED = "TEST_SKIPPED"
+
 -- TODO: Support sub-tests?
 local tests = {}
+
 function test(name, func)
 	tests[name] = func
+end
+
+function testSkip(name, func)
+	tests[name] = TEST_SKIPPED
+end
+
+function isTest()
+	return os.getenv("LUA_TEST") ~= nil
 end
 
 local t = {}
@@ -195,25 +207,30 @@ function runTests()
 		io.write(Blue .. test.name .. ": " .. ResetColor)
 		io.flush()
 
-		local realStdout, realStderr = io.stdout, io.stderr
-		local fakeStdout, fakeStderr = fakefile(), fakefile()
-		io.stdout = fakeStdout
-		io.stderr = fakeStderr
-		local ok, err = xpcall(function()
-			test.func(t)
-		end, debug.traceback)
-		io.stdout = realStdout
-		io.stderr = realStderr
-
-		if err == nil then
-			io.write(Green .. "OK" .. ResetColor .. "\n")
-		else
-			io.write(Red .. "ERROR" .. ResetColor .. "\n")
+		if test.func == TEST_SKIPPED then
+			print(Yellow .. "SKIPPED" .. ResetColor)
 			failed = true
-			print(err)
-			print('Output:')
-			io.stdout:write(fakeStdout.contents)
-			io.stderr:write(fakeStderr.contents)
+		else
+			local realStdout, realStderr = io.stdout, io.stderr
+			local fakeStdout, fakeStderr = fakefile(), fakefile()
+			io.stdout = fakeStdout
+			io.stderr = fakeStderr
+			local ok, err = xpcall(function()
+				test.func(t)
+			end, debug.traceback)
+			io.stdout = realStdout
+			io.stderr = realStderr
+
+			if err == nil then
+				io.write(Green .. "OK" .. ResetColor .. "\n")
+			else
+				io.write(Red .. "ERROR" .. ResetColor .. "\n")
+				failed = true
+				print(err)
+				print('Output:')
+				io.stdout:write(fakeStdout.contents)
+				io.stderr:write(fakeStderr.contents)
+			end
 		end
 	end
 

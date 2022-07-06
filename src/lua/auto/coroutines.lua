@@ -1,4 +1,6 @@
 require("utils.path")
+require("utils.teleopcoroutine")
+
 local taxiPath = orientPath(readPath("taxi"))
 local autoPath1 = orientPath(readPath("auto1"))
 local autoPath2 = orientPath(readPath("auto2"))
@@ -8,7 +10,7 @@ doNothingAuto = FancyCoroutine:new(function()
 	print("We are doing nothing in auto!!!")
 end)
 
-taxiAuto = FancyCoroutine:new(function ()
+taxiAuto = FancyCoroutine:new(function()
 	local pathPursuit = PurePursuit:new(
 		taxiPath,
 		true,
@@ -23,7 +25,7 @@ taxiAuto = FancyCoroutine:new(function ()
 	end
 end)
 
-shootBall = FancyCoroutine:new(function ()
+shootBall = FancyCoroutine:new(function()
 	local cargoTimer = Timer:new()
 	cargoTimer:start()
 	while not cargoTimer:hasElapsed(1) do
@@ -44,7 +46,7 @@ oneBallAuto = FancyCoroutine:new(function()
 	coroutine.yield(false)
 end)
 
-auto1 = FancyCoroutine:new(function ()
+auto1 = FancyCoroutine:new(function()
 	local pathPursuit = PurePursuit:new(
 		autoPath1,
 		false,
@@ -61,20 +63,20 @@ auto1 = FancyCoroutine:new(function ()
 	end
 end)
 
-auto2 = FancyCoroutine:new(function ()
+auto2 = FancyCoroutine:new(function()
 	local pathPursuit = PurePursuit:new(
 		autoPath2,
 		false,
 		0.015, 0, 0.002,
 		{
-			intakeStart = function ()
+			intakeStart = function()
 				Intake:down()
 				Intake:rollIn()
 			end,
-			intakeStop = function ()
+			intakeStop = function()
 				Intake:up()
 			end,
-			shoot = function ()
+			shoot = function()
 				Intake:rollOut()
 			end
 		}
@@ -88,7 +90,7 @@ auto2 = FancyCoroutine:new(function ()
 	end
 end)
 
-testAuto = FancyCoroutine:new(function ()
+testAuto = FancyCoroutine:new(function()
 	local pathPursuit = PurePursuit:new(
 		orientPath(readPath("test")),
 		false,
@@ -107,7 +109,7 @@ testAuto = FancyCoroutine:new(function ()
 			end
 		}
 	)
-	
+
 	while true do
 		local rotation, speed = pathPursuit:run()
 		putNumber("Rotation", rotation)
@@ -116,23 +118,23 @@ testAuto = FancyCoroutine:new(function ()
 	end
 end)
 
-test("FancyCoroutine", function (t)
+test("FancyCoroutine", function(t)
 	local testTable = {}
-	local appendOne = FancyCoroutine:new(function ()
+	local appendOne = FancyCoroutine:new(function()
 		for i = 1, 3 do
 			table.insert(testTable, 1)
 			coroutine.yield(true)
 		end
 		coroutine.yield(false)
 	end)
-	local appendTwo = FancyCoroutine:new(function ()
+	local appendTwo = FancyCoroutine:new(function()
 		for i = 1, 3 do
 			table.insert(testTable, 2)
 			coroutine.yield(true)
 		end
 		coroutine.yield(false)
 	end)
-	local appendBoth = FancyCoroutine:new(function ()
+	local appendBoth = FancyCoroutine:new(function()
 		appendOne:reset()
 		while appendOne:run() do
 			coroutine.yield()

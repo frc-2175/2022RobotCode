@@ -7,6 +7,11 @@
 				"isDefault": true
 			},
 			"type": "process",
+			"options": {
+				"env": {
+					"LUA_TEST": "true"
+				}
+			},
 			"windows": {
 				"command": "${workspaceFolder}\\lib\\bin\\lua51_win64\\lua5.1.exe",
 				"args": [
