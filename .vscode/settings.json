@@ -109,4 +109,7 @@
 	"Lua.diagnostics.disable": [
 		"lowercase-global"
 	],
+	"java.project.sourcePaths": [
+		"src/main/deploy/paths"
+	],
 }

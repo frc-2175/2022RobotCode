@@ -4,6 +4,9 @@
         "lowercase-global",
         "different-requires"
     ],
+    "Lua.diagnostics.globals": [
+        "OVERSHOOTNESS"
+    ],
     "diagnostics": {
         "severity": {
             "lowercase-global": "Hint"
