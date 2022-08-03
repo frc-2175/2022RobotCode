@@ -1,18 +1,7 @@
-leftMotor = TalonFX:new(20)
-leftMotor:setInverted(CTREInvertType.InvertMotorOutput)
+leftMotor = TalonSRX:new(1)
+leftMotor:setInvertedBool(true)
 
-rightMotor = TalonFX:new(21)
-
-leftFollower = TalonFX:new(22)
-leftFollower:follow(leftMotor)
-leftFollower:setInverted(CTREInvertType.FollowMaster)
-
-rightFollower = TalonFX:new(23)
-rightFollower:follow(rightMotor)
-rightFollower:setInverted(CTREInvertType.FollowMaster)
-
-leftMotor:setNeutralMode(2)
-rightMotor:setNeutralMode(2)
+rightMotor = TalonSRX:new(6)
 
 ---@class Drivetrain
 Drivetrain = {}
