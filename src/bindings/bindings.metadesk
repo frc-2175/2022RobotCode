@@ -339,7 +339,7 @@ motors: {
 		Disable();
 		StopMotor();
 		@nolua Follow(@deref @cast("rev::CANSparkMax*") void* leader, @default(false) bool invert);
-		void* GetEncoder(@default(42) int countsPerRev) """
+		@nolua void* GetEncoder(@default(42) int countsPerRev) """
 		auto result = (rev::SparkMaxRelativeEncoder *)malloc(sizeof(rev::SparkMaxRelativeEncoder));
 		auto encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
 		memcpy(result, &encoder, sizeof(rev::SparkMaxRelativeEncoder));
@@ -350,6 +350,11 @@ motors: {
 		""";
 		SetPosition(double position, @default(42) int countsPerRev) """
 		""";
+	}
+
+	@class("rev::SparkMaxRelativeEncoder")
+	SparkMaxRelativeEncoder: {
+		double GetVelocity();
 	}
 	
 	@class("frc::DifferentialDrive")
