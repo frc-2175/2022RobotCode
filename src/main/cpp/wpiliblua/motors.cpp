@@ -1914,7 +1914,7 @@ LUAFUNC void CANSparkMax_Follow(void* _this, void * leader, bool invert) {
 
 LUAFUNC void * CANSparkMax_GetEncoder(void* _this, int countsPerRev) {
 		auto result = (rev::SparkMaxRelativeEncoder *)malloc(sizeof(rev::SparkMaxRelativeEncoder));
-		auto encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
+		rev::SparkMaxRelativeEncoder encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
 		memcpy(result, &encoder, sizeof(rev::SparkMaxRelativeEncoder));
 		return result;
 }

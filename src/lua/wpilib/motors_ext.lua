@@ -95,5 +95,11 @@ end
 function CANSparkMax:getEncoder(countsPerRev)
     countsPerRev = countsPerRev or 42
     countsPerRev = AssertInt(countsPerRev)
-    return SparkMaxRelativeEncoder:wrap(ffi.C.CANSparkMax_GetEncoder(self._this, countsPerRev))
+
+	if not self.encoder then
+		local luaEncoder = SparkMaxRelativeEncoder:wrap(ffi.C.CANSparkMax_GetEncoder(self._this, countsPerRev))
+		self.encoder = luaEncoder
+	end
+	
+	return self.encoder
 end

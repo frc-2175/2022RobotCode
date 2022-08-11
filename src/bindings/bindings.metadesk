@@ -341,7 +341,7 @@ motors: {
 		@nolua Follow(@deref @cast("rev::CANSparkMax*") void* leader, @default(false) bool invert);
 		@nolua void* GetEncoder(@default(42) int countsPerRev) """
 		auto result = (rev::SparkMaxRelativeEncoder *)malloc(sizeof(rev::SparkMaxRelativeEncoder));
-		auto encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
+		rev::SparkMaxRelativeEncoder encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
 		memcpy(result, &encoder, sizeof(rev::SparkMaxRelativeEncoder));
 		return result;
 		""";

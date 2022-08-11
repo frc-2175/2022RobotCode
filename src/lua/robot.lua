@@ -7,6 +7,10 @@ OVERSHOOTNESS = 100
 MAX_RPM = 5620
 targetSpeed = 3000
 
+function Robot.robotPeriodic()
+	print(shooter:getEncoder():getVelocity())
+end
+
 function Robot.robotInit()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
@@ -25,8 +29,4 @@ function Robot.teleopPeriodic()
 	-- else
 	-- 	shooter:set(0)
 	-- end
-
-	if gamepad:getButtonHeld(XboxButton.RightBumper) then
-		-- print(shooter:getEncoder():getVelocity())
-	end
 end
