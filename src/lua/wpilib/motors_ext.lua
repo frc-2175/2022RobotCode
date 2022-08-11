@@ -80,3 +80,26 @@ function CANSparkMax:follow(leader, invert)
 	invert = invert or false
 	ffi.C.CANSparkMax_Follow(self._this, leader._this, invert)
 end
+
+function SparkMaxRelativeEncoder:wrap(cppEncoder)
+    local instance = {
+        _this = cppEncoder, -- no need to call a C++ constructor; we always get one of these from getEncoder()
+    }
+    setmetatable(instance, self)
+    self.__index = self
+    return instance
+end
+
+---@param countsPerRev? integer
+---@return any
+function CANSparkMax:getEncoder(countsPerRev)
+    countsPerRev = countsPerRev or 42
+    countsPerRev = AssertInt(countsPerRev)
+
+	if not self.encoder then
+		local luaEncoder = SparkMaxRelativeEncoder:wrap(ffi.C.CANSparkMax_GetEncoder(self._this, countsPerRev))
+		self.encoder = luaEncoder
+	end
+	
+	return self.encoder
+end

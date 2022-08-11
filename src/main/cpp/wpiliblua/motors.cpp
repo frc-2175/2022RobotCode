@@ -1914,7 +1914,7 @@ LUAFUNC void CANSparkMax_Follow(void* _this, void * leader, bool invert) {
 
 LUAFUNC void * CANSparkMax_GetEncoder(void* _this, int countsPerRev) {
 		auto result = (rev::SparkMaxRelativeEncoder *)malloc(sizeof(rev::SparkMaxRelativeEncoder));
-		auto encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
+		rev::SparkMaxRelativeEncoder encoder = ((rev::CANSparkMax *)_this)->GetEncoder();
 		memcpy(result, &encoder, sizeof(rev::SparkMaxRelativeEncoder));
 		return result;
 }
@@ -1925,6 +1925,12 @@ LUAFUNC double CANSparkMax_GetPosition(void* _this, void * encoder) {
 
 LUAFUNC void CANSparkMax_SetPosition(void* _this, double position, int countsPerRev) {
 		
+}
+
+LUAFUNC double SparkMaxRelativeEncoder_GetVelocity(void* _this) {
+    auto _result = ((rev::SparkMaxRelativeEncoder*)_this)
+        ->GetVelocity();
+    return (double)_result;
 }
 
 LUAFUNC void* DifferentialDrive_new(void * leftMotor, void * rightMotor) {

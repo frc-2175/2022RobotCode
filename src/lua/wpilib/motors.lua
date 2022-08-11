@@ -20,6 +20,10 @@ TalonFX = {}
 ---@field _this CANSparkMax
 CANSparkMax = {}
 
+---@class SparkMaxRelativeEncoder
+---@field _this SparkMaxRelativeEncoder
+SparkMaxRelativeEncoder = {}
+
 ---@class DifferentialDrive
 ---@field _this DifferentialDrive
 DifferentialDrive = {}
@@ -2739,13 +2743,6 @@ function CANSparkMax:stopMotor()
 end
 
 
----@param countsPerRev? integer
----@return any
-function CANSparkMax:getEncoder(countsPerRev)
-    countsPerRev = countsPerRev or 42
-    countsPerRev = AssertInt(countsPerRev)
-    return ffi.C.CANSparkMax_GetEncoder(self._this, countsPerRev)
-end
 
 ---@param encoder any
 ---@return number
@@ -2761,6 +2758,11 @@ function CANSparkMax:setPosition(position, countsPerRev)
     position = AssertNumber(position)
     countsPerRev = AssertInt(countsPerRev)
     ffi.C.CANSparkMax_SetPosition(self._this, position, countsPerRev)
+end
+
+---@return number
+function SparkMaxRelativeEncoder:getVelocity()
+    return ffi.C.SparkMaxRelativeEncoder_GetVelocity(self._this)
 end
 
 
