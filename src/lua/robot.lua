@@ -10,6 +10,9 @@ require("auto.coroutines")
 
 local selectedAuto = doNothingAuto
 
+speedLimiter = 1;
+minSpeedLimit = 0.5;
+
 function Robot.robotInit()
 	leftStick = Joystick:new(0)
 	rightStick = Joystick:new(1)
@@ -30,6 +33,8 @@ end
 
 function Robot.robotPeriodic()
 	-- we make armPosition negative because i hate you.
+	-- no, go build a shed
+	-- no, go spend 25 hours a day playing kerbal space program - Elizabeth
 	armPosition = -arm:getPosition(armEncoder)
 	putNumber("arm", armPosition)
 	putNumber("armSpeed", arm:get())
@@ -66,8 +71,15 @@ end
 function Robot.teleopPeriodic()
 	Intake:periodic()
 
+	if -leftStick:getAxis(JoystickAxes.Throttle) < minSpeedLimit then
+        speedLimiter = minSpeedLimit
+    else
+        speedLimiter = -leftStick:getAxis(JoystickAxes.Throttle)
+    end
+
 	-- joystick driving
-	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
+	Drivetrain:drive(squareInput(leftStick:getY()*speedLimiter), squareInput(rightStick:getX()))
+
 
 	if gamepad:getButtonPressed(XboxButton.RightBumper) or rightStick:getTriggerPressed() then
 		Intake:down()
