@@ -10,7 +10,7 @@ require("auto.coroutines")
 
 local selectedAuto = doNothingAuto
 
-speedLimiter = 1;
+speedLimiter = 0.5;
 minSpeedLimit = 0.5;
 
 function Robot.robotInit()
@@ -71,14 +71,28 @@ end
 function Robot.teleopPeriodic()
 	Intake:periodic()
 
-	if -leftStick:getAxis(JoystickAxes.Throttle) < minSpeedLimit then
-        speedLimiter = minSpeedLimit
-    else
-        speedLimiter = -leftStick:getAxis(JoystickAxes.Throttle)
-    end
+	if gamepad:getButtonPressed(XboxButton.Y) then
+		if speedLimiter + 0.1 > 1 or speedLimiter == 1 then
+			speedLimiter = speedLimiter
+		else
+			speedLimiter = speedLimiter + 0.1
+		end
+	end
+
+	if gamepad:getButtonPressed(XboxButton.A) then
+		if speedLimiter - 0.1 < minSpeedLimit or speedLimiter == minSpeedLimit then
+			speedLimiter = speedLimiter
+		else	
+			speedLimiter = speedLimiter - 0.1
+		end
+	end
+
+
+
+	print("Speed limit:" .. tostring(speedLimiter))
 
 	-- joystick driving
-	Drivetrain:drive(squareInput(leftStick:getY()*speedLimiter), squareInput(rightStick:getX()))
+	Drivetrain:drive(squareInput(leftStick:getY()*speedLimiter), squareInput(rightStick:getX()*speedLimiter))
 
 
 	if gamepad:getButtonPressed(XboxButton.RightBumper) or rightStick:getTriggerPressed() then
