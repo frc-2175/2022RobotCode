@@ -42,6 +42,7 @@ function Robot.robotPeriodic()
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
 	putNumber("Rotation", navx:getAngle())
+	putNumber("Winch", winchEncoder:getPosition())
 end
 
 function Robot.autonomousInit()
