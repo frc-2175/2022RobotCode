@@ -2761,6 +2761,11 @@ function CANSparkMax:setPosition(position, countsPerRev)
 end
 
 ---@return number
+function SparkMaxRelativeEncoder:getPosition()
+    return ffi.C.SparkMaxRelativeEncoder_GetPosition(self._this)
+end
+
+---@return number
 function SparkMaxRelativeEncoder:getVelocity()
     return ffi.C.SparkMaxRelativeEncoder_GetVelocity(self._this)
 end

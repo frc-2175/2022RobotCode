@@ -1927,6 +1927,12 @@ LUAFUNC void CANSparkMax_SetPosition(void* _this, double position, int countsPer
 		
 }
 
+LUAFUNC double SparkMaxRelativeEncoder_GetPosition(void* _this) {
+    auto _result = ((rev::SparkMaxRelativeEncoder*)_this)
+        ->GetPosition();
+    return (double)_result;
+}
+
 LUAFUNC double SparkMaxRelativeEncoder_GetVelocity(void* _this) {
     auto _result = ((rev::SparkMaxRelativeEncoder*)_this)
         ->GetVelocity();

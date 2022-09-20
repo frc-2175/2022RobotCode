@@ -354,6 +354,7 @@ motors: {
 
 	@class("rev::SparkMaxRelativeEncoder")
 	SparkMaxRelativeEncoder: {
+		double GetPosition();
 		double GetVelocity();
 	}
 	

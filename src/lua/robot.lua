@@ -35,7 +35,7 @@ function Robot.robotPeriodic()
 	-- we make armPosition negative because i hate you.
 	-- no, go build a shed
 	-- no, go spend 25 hours a day playing kerbal space program - Elizabeth
-	armPosition = -arm:getPosition(armEncoder)
+	armPosition = -armEncoder:getPosition()
 	putNumber("arm", armPosition)
 	putNumber("armSpeed", arm:get())
 	putNumber("left", leftMotor:getSelectedSensorPosition())
