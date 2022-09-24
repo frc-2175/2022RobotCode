@@ -37,8 +37,12 @@ end
 
 
 function Winch:runOut()
-	winchMotor:set(-speed)
-	winchFollower:set(-speed)
+	if -212 < winchEncoder:getPosition() then
+		winchMotor:set(-speed)
+		winchFollower:set(-speed)
+	else
+		self:stop()
+	end
 end
 
 function Winch:runOut1()
