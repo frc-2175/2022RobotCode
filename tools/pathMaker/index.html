@@ -9,13 +9,27 @@
 		body {
 			margin: 0;
 		}
+
+		#text {
+			font-size: 20px;
+			display: flex;
+			justify-content: space-around;
+			position: fixed;
+			width: 100%;
+			background-color: white;
+		}
 	</style>
 </head>
-<h2 id="triggerPointTitle" style="visibility: hidden;">Trigger Points:</h2>
+<h2 id="triggerPointTitle" style="display: none;">Trigger Points:</h2>
 <div id="triggerPointDiv">
 </div>
 
 <body style="z-index: -1;">
+	<div id="text">
+		<div>Screen Cordinates: <span id="balls"></span></div>
+		<div>Field Cordinates: <span id="balls2"></span></div>
+		<div>Current Segment Length: <span id="balls3"></span></div>
+	</div>
 </body>
 
 </html>

@@ -445,12 +445,18 @@ function draw() {
 	strokeWeight(0);
 	image(img, 0, 0, width, height);
 	fill(0);
-	text("Screen coordinates: " + round(mouseX) + ", " + round(mouseY), 10, 20);
-	text("Field coordinates: " + fieldMouse.x + ", " + fieldMouse.y, 10, 40);
+	console.log(round(mouseX) + ", " + round(mouseY), 10, 20)
+	document.getElementById("balls").innerHTML=round(mouseX) + ", " + round(mouseY), 10, 20;
+	document.getElementById("balls2").innerHTML= fieldMouse.x + ", " + fieldMouse.y, 10, 40;
+	
+	// text("Screen coordinates: " + round(mouseX) + ", " + round(mouseY), 10, 20);
+	// text("Field coordinates: " + fieldMouse.x + ", " + fieldMouse.y, 10, 40);
 	if (lineVectors.length > 0) {
-		text("Current segment length: " + lineVectors[lineVectors.length - 1].distTo(fieldMouse), 10, 60);
+		document.getElementById("balls3").innerHTML = lineVectors[lineVectors.length - 1].distTo(fieldMouse), 10, 60;
+		//text("Current segment length: " + lineVectors[lineVectors.length - 1].distTo(fieldMouse), 10, 60);
 	} else {
-		text("Current segment length: " + 0, 10, 60);
+		document.getElementById("balls3").innerHTML = '0, 10, 60';
+		//text("Current segment length: " + 0, 10, 60);
 	}
 
 	if (lineVectors.length > 0) { // grey line to mouse.
