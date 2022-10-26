@@ -9,6 +9,7 @@ winchFollower:setInverted(true)
 winchMotor:setIdleMode(IdleMode.kBrake)
 winchFollower:setIdleMode(IdleMode.kBrake)
 
+-- up == negative, down == positive
 winchEncoder = winchMotor:getEncoder()
 
 local speed = 1
@@ -17,8 +18,12 @@ local speed = 1
 Winch = {}
 
 function Winch:runIn()
-	winchMotor:set(speed)
-	winchFollower:set(speed)
+	if winchEncoder:getPosition() < 0 then
+		winchMotor:set(speed)
+		winchFollower:set(speed)
+	else
+		self:stop()
+	end
 end
 
 function Winch:runIn1()
@@ -32,8 +37,12 @@ end
 
 
 function Winch:runOut()
-	winchMotor:set(-speed)
-	winchFollower:set(-speed)
+	if -212 < winchEncoder:getPosition() then
+		winchMotor:set(-speed)
+		winchFollower:set(-speed)
+	else
+		self:stop()
+	end
 end
 
 function Winch:runOut1()
