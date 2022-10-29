@@ -18,7 +18,7 @@ LUAFUNC void* VictorSPX_ToSpeedController(void* _this) {
 }
 
 LUAFUNC void VictorSPX_Set(void* _this, double value) {
-    ((ctre::phoenix::motorcontrol::can::WPI_VictorSPX*)_this)
+    ((ctre::pheonix::motorcontrol::can::WPI_VictorSPX*)_this)
         ->Set(value);
 }
 
