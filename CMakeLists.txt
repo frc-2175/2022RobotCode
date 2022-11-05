@@ -128,8 +128,11 @@ else()
 		)
 	endif()
 
+
+	file(GLOB imgui_object "${PROJECT_BINARY_DIR}/binaries/imgui/${systype}/x86-64/static/*")
+
 	file(
-		COPY "${PROJECT_BINARY_DIR}/binaries/imgui/${systype}/x86-64/static/libimgui.a"
+		COPY ${imgui_object}
 		DESTINATION "${wpi_lib_dir}"
 	)
 endif()
