@@ -5,8 +5,6 @@
 	},
 	"editor.bracketPairColorization.enabled": true,
 	"editor.detectIndentation": false,
-	"editor.formatOnPaste": true,
-	"editor.formatOnSave": true,
 	"editor.insertSpaces": false,
 	"editor.minimap.renderCharacters": false,
 	"editor.minimap.showSlider": "always",

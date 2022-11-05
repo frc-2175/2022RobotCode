@@ -14,7 +14,7 @@ class Robot : public frc::TimedRobot {
 	lua_State* L;
 	bool ok = false;
 
-public:
+  public:
 	void RobotInit() override {
 		L = luaL_newstate();
 		luaL_openlibs(L);

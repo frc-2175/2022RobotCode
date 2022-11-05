@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <utility>
 #include <vector>
 #include <regex>
 
@@ -31,7 +32,7 @@ std::string deployPath()
 	}
 }
 
-std::string readFile(std::string path)
+std::string readFile(const std::string& path)
 {
 	FILE *file = fopen((path).c_str(), "r");
 
@@ -58,7 +59,7 @@ class MyHttpServerConnection : public wpi::HttpServerConnection
 {
 public:
 	explicit MyHttpServerConnection(std::shared_ptr<uv::Stream> stream)
-		: HttpServerConnection(stream)
+		: HttpServerConnection(std::move(stream))
 	{
 	}
 

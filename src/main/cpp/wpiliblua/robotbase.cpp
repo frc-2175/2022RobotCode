@@ -28,21 +28,9 @@ LUAFUNC bool RobotBase_IsAutonomousEnabled(void* _this) {
     return (bool)_result;
 }
 
-LUAFUNC bool RobotBase_IsOperatorControl(void* _this) {
-    auto _result = ((frc::RobotBase*)_this)
-        ->IsOperatorControl();
-    return (bool)_result;
-}
-
 LUAFUNC bool RobotBase_IsTeleop(void* _this) {
     auto _result = ((frc::RobotBase*)_this)
         ->IsTeleop();
-    return (bool)_result;
-}
-
-LUAFUNC bool RobotBase_IsOperatorControlEnabled(void* _this) {
-    auto _result = ((frc::RobotBase*)_this)
-        ->IsOperatorControlEnabled();
     return (bool)_result;
 }
 

@@ -432,7 +432,6 @@ time: {
 		Start();
 		Stop();
 		bool HasElapsed(@cast("units::second_t") double period);
-		bool HasPeriodPassed(@cast("units::second_t") double period);
 		bool AdvanceIfElapsed(@cast("units::second_t") double period);
 		@static double GetFPGATimestamp();
 		@static double GetMatchTime();
@@ -515,9 +514,7 @@ robotbase: {
 		bool IsDisabled();
 		bool IsAutonomous();
 		bool IsAutonomousEnabled();
-		bool IsOperatorControl();
 		bool IsTeleop();
-		bool IsOperatorControlEnabled();
 		bool IsTeleopEnabled();
 		bool IsTest();
 		@static int GetRuntimeType();

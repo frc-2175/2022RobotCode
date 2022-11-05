@@ -29,18 +29,8 @@ function RobotBase:isAutonomousEnabled()
 end
 
 ---@return boolean
-function RobotBase:isOperatorControl()
-    return ffi.C.RobotBase_IsOperatorControl(self._this)
-end
-
----@return boolean
 function RobotBase:isTeleop()
     return ffi.C.RobotBase_IsTeleop(self._this)
-end
-
----@return boolean
-function RobotBase:isOperatorControlEnabled()
-    return ffi.C.RobotBase_IsOperatorControlEnabled(self._this)
 end
 
 ---@return boolean

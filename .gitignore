@@ -172,3 +172,6 @@ simulator/.mono
 !simulator/**/*.obj
 !simulator/bin
 !simulator/bin/**/*.exe
+
+.cache
+.idea

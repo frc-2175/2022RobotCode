@@ -66,6 +66,6 @@ pushd %LUAJIT_PATH%
     popd
 popd
 
-xcopy %LUAJIT_PATH%\src\dist\ lib\lib /q /e /y
+xcopy %LUAJIT_PATH%\src\dist\ lib /q /e /y
 
 endlocal

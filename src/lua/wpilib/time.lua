@@ -47,13 +47,6 @@ end
 
 ---@param period number
 ---@return boolean
-function Timer:hasPeriodPassed(period)
-    period = AssertNumber(period)
-    return ffi.C.Timer_HasPeriodPassed(self._this, period)
-end
-
----@param period number
----@return boolean
 function Timer:advanceIfElapsed(period)
     period = AssertNumber(period)
     return ffi.C.Timer_AdvanceIfElapsed(self._this, period)

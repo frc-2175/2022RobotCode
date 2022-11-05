@@ -36,12 +36,6 @@ LUAFUNC bool Timer_HasElapsed(void* _this, double period) {
     return (bool)_result;
 }
 
-LUAFUNC bool Timer_HasPeriodPassed(void* _this, double period) {
-    auto _result = ((frc::Timer*)_this)
-        ->HasPeriodPassed((units::second_t)period);
-    return (bool)_result;
-}
-
 LUAFUNC bool Timer_AdvanceIfElapsed(void* _this, double period) {
     auto _result = ((frc::Timer*)_this)
         ->AdvanceIfElapsed((units::second_t)period);

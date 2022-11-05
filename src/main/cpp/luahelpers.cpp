@@ -6,7 +6,6 @@
 
 const char* luaSearchPaths[] = {
   "/home/lvuser/lua/",
-  ".\\src\\lua\\",
   "./src/lua/"
 };
 

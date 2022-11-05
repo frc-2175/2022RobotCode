@@ -11,8 +11,8 @@ armEncoder = arm:getEncoder()
 armPosition = 0
 
 local upPosition = 1
-local midPosition = 14
-local downPosition = 20
+local midPosition = 12
+local downPosition = 14
 
 local upSpeed = 1
 local midSpeed = 0.3

@@ -10,7 +10,8 @@ require("auto.coroutines")
 
 local selectedAuto = doNothingAuto
 
-
+speedLimiter = 0.5;
+minSpeedLimit = 0.5;
 
 function Robot.robotInit()
 	leftStick = Joystick:new(0)
@@ -23,7 +24,7 @@ function Robot.robotInit()
 		{ name = "doNothing", value = doNothingAuto },
 		{ name = "taxi", value = taxiAuto },
 		{ name = "oneBallAuto", value = oneBallAuto },
-		{ name = "test", value = testAuto}
+		{ name = "test", value = testAuto }
 	})
 
 	-- testSlides = Slideshow:new({ "lemon", "*chomp chomp*", "OoOOOooOoOoOOoooO" })
@@ -42,7 +43,6 @@ function Robot.robotPeriodic()
 	putNumber("X", position.x)
 	putNumber("Y", position.y)
 	putNumber("Rotation", navx:getAngle())
-	putNumber("Winch", winchEncoder:getPosition())
 end
 
 function Robot.autonomousInit()
@@ -71,15 +71,28 @@ end
 function Robot.teleopPeriodic()
 	Intake:periodic()
 
-	
-	
+	if gamepad:getButtonPressed(XboxButton.Y) then
+		if speedLimiter + 0.1 > 1 or speedLimiter == 1 then
+			speedLimiter = speedLimiter
+		else
+			speedLimiter = speedLimiter + 0.1
+		end
+	end
+
+	if gamepad:getButtonPressed(XboxButton.A) then
+		if speedLimiter - 0.1 < minSpeedLimit or speedLimiter == minSpeedLimit then
+			speedLimiter = speedLimiter
+		else
+			speedLimiter = speedLimiter - 0.1
+		end
+	end
 
 
 
-	
+	print("Speed limit:" .. tostring(speedLimiter))
 
 	-- joystick driving
-	Drivetrain:drive(squareInput(leftStick:getY()), squareInput(rightStick:getX()))
+	Drivetrain:drive(squareInput(leftStick:getY() * speedLimiter), squareInput(rightStick:getX() * speedLimiter))
 
 
 	if gamepad:getButtonPressed(XboxButton.RightBumper) or rightStick:getTriggerPressed() then
@@ -106,7 +119,7 @@ function Robot.teleopPeriodic()
 		Winch:runIn2()
 	end
 
-	
+
 	if rightStick:getTriggerHeld() then
 		Intake:rollIn()
 	else

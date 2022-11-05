@@ -18,7 +18,7 @@ function install() {
     pushd $LUAJIT_TMP/lib
         for filename in $1; do mv "$filename" "mac_x86_${filename}"; done;
     popd
-    cp $LUAJIT_TMP/lib/$1 lib/lib
+    cp $LUAJIT_TMP/lib/$1 lib
 }
 
 # install in lib folder
