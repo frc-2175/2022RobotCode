@@ -61,8 +61,10 @@ else()
 			)
 		endif()
 
+		file(GLOB objects "${PROJECT_BINARY_DIR}/binaries/${lib}/${systype}/x86-64/shared/*")
+
 		file(
-			COPY "${PROJECT_BINARY_DIR}/binaries/${lib}/${systype}/x86-64/shared/lib${lib_alt}.so"
+			COPY ${objects}
 			DESTINATION "${wpi_lib_dir}"
 		)
 
@@ -86,8 +88,10 @@ else()
 			)
 		endif()
 
+		file(GLOB objects "${PROJECT_BINARY_DIR}/binaries/${lib}/${systype}/x86-64/shared/*")
+
 		file(
-			COPY "${PROJECT_BINARY_DIR}/binaries/${lib}/${systype}/x86-64/shared/lib${lib}.so"
+			COPY ${objects}
 			DESTINATION "${wpi_lib_dir}"
 		)
 
