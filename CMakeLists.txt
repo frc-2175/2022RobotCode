@@ -20,6 +20,10 @@ project(RobotCode)
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/main/cpp/*.cpp")
 add_executable(${PROJECT_NAME} ${sources})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+target_compile_options(${PROJECT_NAME} PRIVATE -w)
+target_link_options(${PROJECT_NAME} PRIVATE -rdynamic)
+
 
 if(APPLE)
 	set(systype "osx")
@@ -283,10 +287,6 @@ elseif(NOT EXISTS "${PROJECT_BINARY_DIR}/binaries/navx/")
 		"${navx_include_dir}"
 	)
 endif()
-
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
-target_compile_options(${PROJECT_NAME} PRIVATE -w)
-target_link_options(${PROJECT_NAME} PRIVATE -rdynamic)
 
 target_include_directories(
 	${PROJECT_NAME} PUBLIC
