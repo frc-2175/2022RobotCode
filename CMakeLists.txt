@@ -234,34 +234,35 @@ endforeach()
 
 
 # NAVX
-set(navx_version 4.0.447)
-set(navx_url "https://repo1.maven.org/maven2/com/kauailabs/navx/frc/navx-cpp/${navx_version}")
-set(navx_libs navx_frc)
+set(navx_version 		4.0.447)
+set(navx_url 			"https://repo1.maven.org/maven2/com/kauailabs/navx/frc/navx-cpp/${navx_version}")
 set(navx_lib_dir		"${PROJECT_BINARY_DIR}/navx/lib")
 set(navx_include_dir	"${PROJECT_BINARY_DIR}/navx/include")
 
 if(UNIX)
 	downzip(
-			navx
-			"${navx_url}/navx-cpp-${navx_version}-sources.zip"
-			"${PROJECT_BINARY_DIR}/navx"
+		navx
+		"${navx_url}/navx-cpp-${navx_version}-sources.zip"
+		"${PROJECT_BINARY_DIR}/navx/src"
 	)
-	file(GLOB navx_sources CONFIGURE_DEPENDS "${PROJECT_BINARY_DIR}/navx/*.cpp" "${PROJECT_BINARY_DIR}/navx/*.h")
 
-	add_library(navx SHARED ${navx_sources})
+	file(GLOB navx_sources CONFIGURE_DEPENDS "${PROJECT_BINARY_DIR}/navx/src/*.cpp" "${PROJECT_BINARY_DIR}/navx/src/*.h")
+
+	add_library(navx_frc SHARED ${navx_sources})
+	set_target_properties(navx_frc PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${navx_lib_dir})
 
 	foreach(lib ${wpi_libs})
-		target_include_directories(navx PUBLIC "${wpi_include_dir}/${lib}")
+		target_include_directories(navx_frc PUBLIC "${wpi_include_dir}/${lib}")
 	endforeach()
 
 	downzip(
-			navx-headers
-			"${navx_url}/navx-cpp-${navx_version}-headers.zip"
-			"${navx_include_dir}"
+		navx-headers
+		"${navx_url}/navx-cpp-${navx_version}-headers.zip"
+		"${navx_include_dir}"
 	)
-	target_include_directories(navx PUBLIC ${navx_include_dir})
+	target_include_directories(navx_frc PUBLIC ${navx_include_dir})
 
-	add_dependencies(${PROJECT_NAME} navx)
+	add_dependencies(${PROJECT_NAME} navx_frc)
 elseif(NOT EXISTS "${PROJECT_BINARY_DIR}/binaries/navx/")
 	downzip(
 		navx
@@ -271,15 +272,17 @@ elseif(NOT EXISTS "${PROJECT_BINARY_DIR}/binaries/navx/")
 
 	file(GLOB objects "${PROJECT_BINARY_DIR}/binaries/navx/${systype}/x86-64/shared/*")
 
+	file(
+		COPY ${objects}
+		DESTINATION "${navx_lib_dir}"
+	)
 
 	downzip(
-			navx-headers
-			"${navx_url}/navx-cpp-${navx_version}-headers.zip"
-			"${navx_include_dir}"
+		navx-headers
+		"${navx_url}/navx-cpp-${navx_version}-headers.zip"
+		"${navx_include_dir}"
 	)
 endif()
-
-
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PRIVATE -w)
@@ -306,7 +309,6 @@ target_link_directories(
 
 target_link_libraries(
 	${PROJECT_NAME}
-	uv
 	${wpi_libs_alt}
 	CTRE_Phoenix
 	CTRE_PhoenixSim
@@ -321,6 +323,6 @@ target_link_libraries(
 	CTRE_SimVictorSPX
 	REVLib
 	REVLibDriver
-	navx
+	navx_frc
 	luajit-5.1_linux
 )
