@@ -253,7 +253,8 @@ if(UNIX)
 	file(GLOB navx_sources CONFIGURE_DEPENDS "${PROJECT_BINARY_DIR}/navx/src/*.cpp" "${PROJECT_BINARY_DIR}/navx/src/*.h")
 
 	add_library(navx_frc SHARED ${navx_sources})
-	set_target_properties(navx_frc PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${navx_lib_dir})
+	set_target_properties(navx_frc PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${navx_lib_dir} CXX_STANDARD 17)
+	target_compile_options(${PROJECT_NAME} PRIVATE -w)
 
 	foreach(lib ${wpi_libs})
 		target_include_directories(navx_frc PUBLIC "${wpi_include_dir}/${lib}")
