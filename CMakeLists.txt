@@ -267,6 +267,7 @@ if(UNIX)
 	)
 	target_include_directories(navx_frc PUBLIC ${navx_include_dir})
 
+	add_dependencies(navx_frc allwpilib)
 	add_dependencies(${PROJECT_NAME} navx_frc)
 elseif(NOT EXISTS "${PROJECT_BINARY_DIR}/binaries/navx/")
 	downzip(
