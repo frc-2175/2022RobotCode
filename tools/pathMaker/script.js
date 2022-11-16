@@ -445,9 +445,9 @@ function draw() {
 	strokeWeight(0);
 	image(img, 0, 0, width, height);
 	fill(0);
-	console.log(round(mouseX) + ", " + round(mouseY), 10, 20);
 	document.getElementById("screenCords").innerHTML = round(mouseX) + ", " + round(mouseY);
 	document.getElementById("fieldCords").innerHTML = fieldMouse.x + ", " + fieldMouse.y;
+	document.getElementById("frameRate").innerHTML = round(frameRate());
 	
 	if (lineVectors.length > 0) {
 		document.getElementById("segmentLength").innerHTML = lineVectors[lineVectors.length - 1].distTo(fieldMouse);
