@@ -454,7 +454,7 @@ function draw() {
 	document.getElementById("frameRate").innerHTML = round(frameRate());
 	
 	if (lineVectors.length > 0) {
-		document.getElementById("segmentLength").innerHTML = lineVectors[lineVectors.length - 1].distTo(fieldMouse);
+		document.getElementById("segmentLength").innerHTML = round(lineVectors[lineVectors.length - 1].distTo(fieldMouse));
 	} else {
 		document.getElementById("segmentLength").innerHTML = "";
 	}
