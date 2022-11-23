@@ -91,8 +91,17 @@ const colorList = [
 		value: "ff595e",
 	},
 	{
+		name: "scarlet",
+		value: "ff5500",
+	},
+	
+	{
 		name: "orange",
 		value: "ff924c",
+	},
+	{
+		name: "bannnnnnnana",
+		value: "ffea00",
 	},
 	{
 		name: "yellow",
@@ -246,7 +255,7 @@ function updateTitle(handle, dataChangedSinceSave) {
 	}
 }
 
-let lastColor = 0;
+let lastColor = -1;
 function nextColor() {
 	lastColor = (lastColor + 1) % colorList.length;
 	return colorList[lastColor];
@@ -316,6 +325,14 @@ async function openPoints() {
 
 	for (const { vector, name, color, segment, distance } of contents.triggerPoints) {
 		triggerPoints.push({ vector: new Vector(vector.x, vector.y), name, color, segment, distance });
+	}
+
+	const lastTriggerPointColor = contents.triggerPoints[contents.triggerPoints.length - 1].color
+	
+	for(let i = 0; i< colorList.length; i++) {
+		if(colorList[i].value === lastTriggerPointColor){
+			lastColor = i
+		}
 	}
 }
 
