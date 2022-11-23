@@ -296,6 +296,10 @@ async function savePoints() {
 }
 
 async function openPoints() {
+	if (!confirm("This will erase your current file!!!")) {
+		return;
+	}
+
 	const [fileHandle] = await window.showOpenFilePicker();
 	const file = await fileHandle.getFile();
 	const contents = JSON.parse(await file.text());
